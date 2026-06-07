@@ -1,0 +1,16 @@
+/* RADIUS & SHADOW — LaPasseTech */
+:root {
+  /* Radius */
+  --radius-xs:  2px;   /* hero <mark> */
+  --radius-sm:  5px;   /* header CTA */
+  --radius-md:  6px;   /* most buttons, inputs */
+  --radius-lg:  8px;   /* primary CTA, stat cards */
+  --radius-xl:  10px;  /* "3 étapes" grid container */
+  --radius-2xl: 18px;  /* persona cards */
+  --radius-pill: 999px;
+
+  /* Shadow */
+  --shadow-card:  0 12px 32px -16px rgba(42,37,32,0.18);   /* persona / raised cards */
+  --shadow-cta:   0 14px 30px -14px rgba(156,90,44,0.55);  /* caramel CTA */
+  --shadow-frame: 0 30px 90px -40px rgba(42,37,32,.5);     /* page frame in showcase */
+}

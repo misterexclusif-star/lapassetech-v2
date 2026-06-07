@@ -1,0 +1,194 @@
+/* CONTENT & PAGE PATTERNS — LaPasseTech
+   Page-level building blocks for inner pages (article, resource, fiche métier):
+   header/footer chrome, breadcrumb, long-form prose, callouts, code blocks,
+   stepper, stat grid, sticky aside, CTA band. All token-driven. */
+
+/* ── Page chrome ────────────────────────────────────────────────── */
+.lpt-header {
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--nav-h); padding: 0 var(--nav-pad-x);
+  background: var(--surface-header);
+  border-bottom: 1.5px solid var(--lpt-black);
+}
+.lpt-header__brand { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -0.02em; color: var(--lpt-black); }
+.lpt-header__brand span { color: var(--accent); }
+.lpt-header__nav { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
+.lpt-header__nav a { font-size: 14px; color: var(--text-body); }
+.lpt-header__nav a:hover { color: var(--text-strong); }
+
+.lpt-footer { background: var(--surface-dark); color: var(--text-on-dark); padding: 56px var(--section-pad-x) 24px; }
+.lpt-footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 56px; max-width: var(--content-max); margin-inline: auto; }
+.lpt-footer h4 { font-family: var(--font-body); font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 16px; }
+.lpt-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.lpt-footer a { font-size: 14px; color: var(--text-faint); }
+.lpt-footer a:hover { color: var(--text-on-dark); }
+.lpt-footer__legal { max-width: var(--content-max); margin: 40px auto 0; padding-top: 20px; border-top: 1px solid var(--border-on-dark); display: flex; justify-content: space-between; font-size: 12px; color: var(--text-faint); }
+
+/* ── Breadcrumb ─────────────────────────────────────────────────── */
+.lpt-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
+.lpt-breadcrumb a:hover { color: var(--accent); }
+
+/* ── Inner hero (article / resource / fiche) ────────────────────── */
+.lpt-page-hero { background: var(--surface-cream); padding: 40px var(--section-pad-x) 48px; border-bottom: 1px solid var(--border); }
+.lpt-page-hero__title { font-size: var(--fs-h2-lg); max-width: 920px; margin: 16px 0 0; }
+.lpt-page-hero__meta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 18px; font-size: 13px; color: var(--text-muted); }
+
+/* Inner hero — cover-image variant (V1): photo en fond, titre superposé.
+   Usage: <section class="lpt-page-hero lpt-hero-cover" style="background-image:url(...)">
+   Repli : sans background-image, on garde le fond crème (équivalent V4). */
+.lpt-hero-cover { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 440px; background-size: cover; background-position: center 22%; }
+.lpt-hero-cover::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(26,23,20,.12) 0%, rgba(26,23,20,.5) 55%, rgba(26,23,20,.9) 100%); }
+.lpt-hero-cover > * { position: relative; z-index: 1; }
+.lpt-hero-cover .lpt-page-hero__title, .lpt-hero-cover h1 { color: #fff; }
+.lpt-hero-cover .lpt-serif-italic { color: #E7A86A; }
+.lpt-hero-cover .lpt-breadcrumb, .lpt-hero-cover .lpt-breadcrumb a { color: rgba(255,255,255,.78); }
+.lpt-hero-cover .lpt-page-hero__meta, .lpt-hero-cover .lpt-status { color: rgba(255,255,255,.88); }
+.lpt-hero-cover .lpt-tag { background: rgba(255,255,255,.18); color: #fff; }
+.lpt-hero-cover .lpt-pill { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.28); color: rgba(255,255,255,.92); }
+
+/* ── Two-column reading layout (prose + sticky aside) ───────────── */
+.lpt-reading { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 56px; max-width: var(--content-max); margin-inline: auto; padding: 56px var(--section-pad-x); }
+.lpt-aside { position: sticky; top: 24px; align-self: start; display: flex; flex-direction: column; gap: 16px; }
+.lpt-aside-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
+.lpt-aside-card--dark { background: var(--surface-dark); color: var(--text-on-dark); border: 0; }
+/* Bilan card — colour variants (alternatives to dark) */
+.lpt-aside-card--brown { background: var(--accent); color: #fff; border: 0; }
+.lpt-aside-card--brown p { color: rgba(255,255,255,.82) !important; }
+.lpt-aside-card--beige { background: var(--lpt-guy-bg); color: var(--text-strong); border: 1px solid var(--accent-soft); }
+.lpt-aside-card--beige p { color: var(--text-body) !important; }
+.lpt-aside-card h4 { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 0 0 10px; color: inherit; }
+
+/* Table of contents */
+.lpt-toc { display: flex; flex-direction: column; gap: 9px; }
+.lpt-toc a { font-size: 13.5px; color: var(--text-body); line-height: 1.4; border-left: 2px solid var(--border); padding-left: 12px; }
+.lpt-toc a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ── Long-form prose ────────────────────────────────────────────── */
+.lpt-prose { max-width: 720px; color: var(--lpt-ink); font-size: 17px; line-height: 1.75; }
+.lpt-prose > * + * { margin-top: 22px; }
+.lpt-prose h2 { font-size: 28px; line-height: 1.2; margin-top: 48px; }
+.lpt-prose h2 .lpt-em { font-size: 1em; }
+.lpt-prose h3 { font-size: 20px; margin-top: 36px; }
+.lpt-prose p { color: var(--lpt-ink); }
+.lpt-prose a:not(.lpt-btn) { color: var(--accent-strong); text-decoration: underline; text-underline-offset: 2px; }
+.lpt-prose .lpt-btn { text-decoration: none; }
+.lpt-prose strong { font-weight: 700; color: var(--text-strong); }
+.lpt-prose em { font-family: var(--font-serif); font-style: italic; font-size: 1.05em; }
+.lpt-prose ul, .lpt-prose ol { padding-left: 22px; display: flex; flex-direction: column; gap: 10px; }
+.lpt-prose li { padding-left: 4px; }
+.lpt-prose ul li::marker { color: var(--accent); }
+.lpt-prose blockquote {
+  font-family: var(--font-serif); font-style: italic; font-size: 24px; line-height: 1.4;
+  color: var(--text-strong); margin: 32px 0; padding: 18px 24px;
+  border-left: 3px solid var(--accent-strong); background: var(--surface-cream); border-radius: 0 6px 6px 0;
+}
+
+/* ── Callouts ───────────────────────────────────────────────────── */
+.lpt-callout { background: var(--accent-soft); border: 1px solid var(--accent-soft); border-radius: var(--radius-lg); padding: 22px 26px; }
+.lpt-callout__label { font-family: var(--font-body); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-strong); margin: 0 0 8px; }
+.lpt-callout--guy { background: var(--surface-cream); border-left: 3px solid var(--accent); }
+
+/* ── Code / prompt block ────────────────────────────────────────── */
+.lpt-codeblock {
+  position: relative; background: var(--lpt-black); color: #EDE6DC;
+  font-family: var(--font-mono); font-size: 13.5px; line-height: 1.65;
+  border-radius: var(--radius-md); padding: 20px 22px; white-space: pre-wrap;
+}
+.lpt-codeblock__copy { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 700; color: var(--lpt-black); background: var(--lpt-yellow); border: 0; border-radius: 4px; padding: 4px 10px; cursor: pointer; font-family: var(--font-body); }
+
+/* Code block — variants (alternatives to the black default) */
+.lpt-codeblock--brown { background: #6F4522; color: #F4E8DA; }
+.lpt-codeblock--brown .lpt-codeblock__copy { background: #F4E8DA; color: #5C2E10; }
+.lpt-codeblock--beige { background: #F4E9D7; color: #4A350F; border: 1px solid var(--accent-soft); }
+.lpt-codeblock--beige .lpt-codeblock__copy { background: var(--accent); color: #fff; }
+
+/* ── Stepper (resource progress) ────────────────────────────────── */
+.lpt-stepper { display: flex; gap: 0; align-items: center; flex-wrap: wrap; }
+.lpt-stepper__item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); }
+.lpt-stepper__num { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 13px; background: var(--accent-soft); color: var(--accent-strong); }
+.lpt-stepper__item[data-active] .lpt-stepper__num { background: var(--accent); color: #fff; }
+.lpt-stepper__line { flex: 1; min-width: 24px; height: 1px; background: var(--border); margin: 0 14px; }
+
+/* ── Stat grid (fiche métier) ───────────────────────────────────── */
+.lpt-statgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.lpt-stat { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
+.lpt-stat__k { font-family: var(--font-body); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.lpt-stat__v { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -0.02em; color: var(--accent-strong); margin-top: 8px; line-height: 1.1; }
+.lpt-stat__d { font-size: 13px; color: var(--text-body); margin-top: 6px; }
+
+/* Two-col compare (compétences transférables / à acquérir) */
+.lpt-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lpt-compare__col { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+
+/* ── Inline CTA cards (bilan / guide) ───────────────────────────── */
+.lpt-inline-cta { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 36px 0; }
+.lpt-inline-cta__card { background: var(--surface-cream); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; }
+.lpt-inline-cta__card h4 { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--text-strong); margin: 0 0 6px; }
+.lpt-inline-cta__card p { font-size: 13.5px; color: var(--text-body); margin: 0 0 16px; }
+
+/* ── Closing CTA band ───────────────────────────────────────────── */
+.lpt-cta-band { background: var(--surface-cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 72px var(--section-pad-x); text-align: center; }
+.lpt-cta-band h2 { font-size: var(--fs-h2); }
+.lpt-cta-band .row { display: flex; gap: 12px; justify-content: center; margin-top: 26px; flex-wrap: wrap; }
+
+/* ── Listing pages (articles / ressources / fiches) ─────────────── */
+.lpt-listing-hero { background: var(--surface-cream); padding: 44px var(--section-pad-x) 40px; border-bottom: 1px solid var(--border); }
+.lpt-listing-hero h1 { font-size: var(--fs-h2-lg); max-width: 820px; }
+.lpt-listing-hero p { font-size: 16px; color: var(--text-body); max-width: 620px; margin-top: 14px; }
+.lpt-listing-hero__count { font-size: 14px; color: var(--text-muted); margin-top: 10px; }
+
+.lpt-filterbar { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: space-between; max-width: var(--content-max); margin-inline: auto; padding: 24px var(--section-pad-x); border-bottom: 1px solid var(--border); }
+.lpt-search { flex: 0 1 300px; }
+.lpt-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.lpt-filter { font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text-body); background: var(--surface-card); border: 1px solid var(--border); padding: 8px 16px; border-radius: var(--radius-pill); cursor: pointer; white-space: nowrap; transition: all .15s ease; }
+.lpt-filter:hover { border-color: var(--accent); color: var(--accent-strong); }
+.lpt-filter[data-active] { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.lpt-grid-section { max-width: var(--content-max); margin-inline: auto; padding: 40px var(--section-pad-x) 64px; }
+.lpt-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+/* Cover image on article/resource/metier cards */
+.lpt-article-card__cover { width: 100%; height: 168px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--lpt-beige); }
+.lpt-article-card__foot { display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 4px; font-size: var(--fs-foot); color: var(--text-muted); }
+.lpt-article-card__link { font-family: var(--font-body); font-size: 13.5px; font-weight: 700; color: var(--accent-strong); margin-top: 6px; }
+
+/* Featured (big horizontal) card */
+.lpt-featured { display: grid; grid-template-columns: 1.05fr 1fr; border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--surface-card); margin-bottom: 28px; }
+.lpt-featured__img { width: 100%; height: 100%; min-height: 320px; object-fit: cover; background: var(--lpt-beige); }
+.lpt-featured__body { padding: 40px 44px; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.lpt-featured__title { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1.18; letter-spacing: -0.02em; color: var(--text-strong); }
+
+/* Level badge (resource) */
+.lpt-level { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body); font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: var(--radius-pill); white-space: nowrap; }
+.lpt-level--deb { background: var(--lpt-green-soft); color: var(--lpt-green-deep); }
+.lpt-level--int { background: var(--accent-soft); color: var(--accent-strong); }
+.lpt-level__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* Métier card stat chips */
+.lpt-metier-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.lpt-metier-chip { font-family: var(--font-body); font-size: 12px; color: var(--text-body); background: var(--surface-cream); border: 1px solid var(--border); padding: 5px 11px; border-radius: var(--radius-pill); }
+.lpt-metier-chip b { color: var(--accent-strong); font-weight: 700; }
+
+/* À propos */
+.lpt-about-hero { display: grid; grid-template-columns: 1fr 0.8fr; gap: 56px; align-items: center; max-width: var(--content-max); margin-inline: auto; padding: 64px var(--section-pad-x); }
+.lpt-about-hero__img { width: 100%; height: 460px; object-fit: cover; border-radius: var(--radius-xl); border: 1px solid var(--border); background: var(--lpt-beige); }
+.lpt-timeline { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+.lpt-timeline li { display: grid; grid-template-columns: 120px 1fr; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.lpt-timeline__year { font-family: var(--font-mono); font-size: 13px; color: var(--accent-strong); font-weight: 700; }
+.lpt-timeline__what b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--text-strong); margin-bottom: 4px; }
+.lpt-timeline__what span { font-size: 14px; color: var(--text-body); }
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .lpt-reading { grid-template-columns: 1fr; }
+  .lpt-aside { position: static; }
+  .lpt-statgrid { grid-template-columns: 1fr 1fr; }
+  .lpt-compare, .lpt-inline-cta, .lpt-footer__grid { grid-template-columns: 1fr; }
+  .lpt-card-grid { grid-template-columns: 1fr 1fr; }
+  .lpt-featured, .lpt-about-hero { grid-template-columns: 1fr; }
+  .lpt-about-hero__img { height: 320px; }
+  .lpt-header__nav { display: none; }
+}
+@media (max-width: 640px) {
+  .lpt-card-grid { grid-template-columns: 1fr; }
+}

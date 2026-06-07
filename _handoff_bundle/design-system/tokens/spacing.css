@@ -1,0 +1,24 @@
+/* SPACING & LAYOUT — LaPasseTech */
+:root {
+  /* 4px base scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-22: 88px;
+
+  /* Layout */
+  --content-max: 1280px;       /* design width */
+  --section-pad-y: 80px;       /* default vertical section padding */
+  --section-pad-x: 64px;       /* default horizontal section padding */
+  --hero-pad: 56px 52px 48px;
+  --nav-h: 64px;
+  --nav-pad-x: 40px;
+}

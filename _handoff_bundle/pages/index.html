@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LaPasseTech V2 — Maquettes de pages</title>
+<link rel="stylesheet" href="../design-system/styles.css" />
+<style>
+  body { background: var(--surface-cream); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 64px 40px 96px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+  .tile { display:block; background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; transition: box-shadow .18s ease, transform .18s ease; }
+  .tile:hover { box-shadow: var(--shadow-card); transform: translateY(-2px); }
+  .tile h3 { font-family:var(--font-display); font-weight:700; font-size:20px; color:var(--text-strong); margin:0 0 6px; }
+  .tile p { font-size:14px; color:var(--text-body); margin:0; }
+  .tile .lpt-tag { margin-bottom:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lpt-eyebrow" style="margin-bottom:14px;">LaPasseTech · V2</div>
+  <h1 style="font-size:46px;">Maquettes de <em class="lpt-serif-italic" style="color:var(--accent)">pages.</em></h1>
+  <p style="font-size:16px; color:var(--text-body); max-width:600px; margin-top:12px;">Gabarits de contenu pour la V2, construits sur le design system. Contenu réel issu du site actuel. Clique pour ouvrir chaque template en plein écran.</p>
+
+  <div class="grid">
+    <a class="tile" href="article-detail.html">
+      <span class="lpt-tag">Article</span>
+      <h3>Article — détail</h3>
+      <p>Long-form éditorial : hero, sommaire collant, prose, CTA inline, bloc bilan. « 16 ans en marketing… »</p>
+    </a>
+    <a class="tile" href="ressource-detail.html">
+      <span class="lpt-tag">Ressource</span>
+      <h3>Ressource — détail</h3>
+      <p>Pas-à-pas avec stepper, blocs de prompt copiables, récap latéral. « Utiliser Gemini… »</p>
+    </a>
+    <a class="tile" href="fiche-metier.html">
+      <span class="lpt-tag">Fiche métier</span>
+      <h3>Fiche métier</h3>
+      <p>Données structurées : stats clés, journée type, compétences transférables vs à acquérir. « Business Analyst Salesforce »</p>
+    </a>
+    <a class="tile" href="articles.html">
+      <span class="lpt-tag">Listing</span>
+      <h3>Articles — listing</h3>
+      <p>Hero + recherche + filtres, article à la une avec couverture, grille de cartes avec images.</p>
+    </a>
+    <a class="tile" href="ressources.html">
+      <span class="lpt-tag">Listing</span>
+      <h3>Ressources — listing</h3>
+      <p>Grille de ressources avec badge niveau (Débutant/Intermédiaire), thème et durée.</p>
+    </a>
+    <a class="tile" href="fiches-metiers.html">
+      <span class="lpt-tag">Listing</span>
+      <h3>Fiches métiers — listing</h3>
+      <p>Grille de métiers avec chips salaire + accessibilité, filtres par famille.</p>
+    </a>
+    <a class="tile" href="a-propos.html">
+      <span class="lpt-tag">Page</span>
+      <h3>À propos</h3>
+      <p>Histoire de Guy : hero portrait, mission, parcours en timeline, stats, CTA.</p>
+    </a>
+    <a class="tile" href="../design-system/design-system.html">
+      <span class="lpt-tag">Système</span>
+      <h3>Design System</h3>
+      <p>Tokens, typographie, couleurs, composants — la référence visuelle.</p>
+    </a>
+    <a class="tile" href="options-blocs.html" style="border-color:var(--accent);">
+      <span class="lpt-tag">À choisir</span>
+      <h3>Alternatives de blocs</h3>
+      <p>Bloc de prompt (ressource) + carte bilan — variantes Noir / Marron / Beige. Dis-moi tes préférées.</p>
+    </a>
+    <a class="tile" href="options-article-hero.html" style="border-color:var(--accent);">
+      <span class="lpt-tag">À choisir</span>
+      <h3>En-tête d'article</h3>
+      <p>4 traitements pour réduire le scroll avant le texte : image en fond, bandeau réduit, côte à côte, ou sans image.</p>
+    </a>
+  </div>
+</div>
+</body>
+</html>

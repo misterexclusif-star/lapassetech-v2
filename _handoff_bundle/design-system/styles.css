@@ -1,0 +1,12 @@
+/* LaPasseTech — Design System · global entry
+   Link THIS file once; it pulls in fonts + tokens + base + components.
+   Astro: import "../design-system/styles.css" in your layout, or copy
+   these files into src/styles/ and import there. */
+@import "./tokens/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/radius-shadow.css";
+@import "./base.css";
+@import "./components.css";
+@import "./content.css";

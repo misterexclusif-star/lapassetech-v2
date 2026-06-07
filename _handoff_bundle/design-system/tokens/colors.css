@@ -1,0 +1,68 @@
+/* COLORS — LaPasseTech
+   Warm editorial palette: caramel primary + a discreet green "tech" punch.
+   Base tokens first, then semantic aliases (prefer the aliases in app code). */
+:root {
+  /* ── Brand · caramel (primary accent) ───────────────────────────── */
+  --lpt-caramel:        #9C5A2C;  /* primary accent — emphasis words, bilan band, CTAs */
+  --lpt-caramel-deep:   #5C2E10;  /* accent text/borders on light bg */
+  --lpt-caramel-soft:   #F2E2CC;  /* eyebrow / pill backgrounds */
+
+  /* ── Tech punch · green (≈5% usage) ─────────────────────────────── */
+  --lpt-green:          #16B877;  /* "en ligne" dot, action arrows, active-step bar */
+  --lpt-green-deep:     #0E7A4D;  /* active-step number/badge text */
+  --lpt-green-soft:     rgba(22,184,119,.14); /* halo / active-step badge bg */
+
+  /* ── Signal · yellow ────────────────────────────────────────────── */
+  --lpt-yellow:         #F5C542;  /* header CTA, "Commencer mon bilan" button */
+
+  /* ── Ink / neutrals (warm) ──────────────────────────────────────── */
+  --lpt-ink:            #2A2520;  /* primary text */
+  --lpt-black:          #1A1714;  /* hero CTA, dark sections, "Envoyer" chip */
+  --lpt-gray:           #6B655D;  /* secondary text */
+  --lpt-gray-lt:        #9A9388;  /* eyebrows, meta */
+  --lpt-gray-light:     #B5AE9F;  /* footnotes, muted-on-dark */
+
+  /* ── Surfaces (warm paper) ──────────────────────────────────────── */
+  --lpt-paper:          #FFFFFF;  /* cards, several section bgs */
+  --lpt-cream:          #F8F4EB;  /* hero bg, quote chip, stat cards */
+  --lpt-cream-header:   #FAF7F3;  /* header background */
+  --lpt-beige:          #EFE6D2;
+  --lpt-temoignage-bg:  #F2E4D4;  /* testimonials section */
+  --lpt-guy-bg:         #F6ECDD;  /* founder section */
+
+  /* ── Lines ──────────────────────────────────────────────────────── */
+  --lpt-border:         #E5DDC9;            /* hairlines on light bg */
+  --lpt-border-soft:    #EFE9D9;
+  --lpt-border-dark:    rgba(255,255,255,.1); /* dividers on dark bg */
+
+  /* ── Semantic aliases (use these in components) ─────────────────── */
+  --accent:             var(--lpt-caramel);
+  --accent-strong:      var(--lpt-caramel-deep);
+  --accent-soft:        var(--lpt-caramel-soft);
+  --tech:               var(--lpt-green);
+
+  --text-strong:        var(--lpt-ink);
+  --text-body:          var(--lpt-gray);
+  --text-muted:         var(--lpt-gray-lt);
+  --text-faint:         var(--lpt-gray-light);
+  --text-on-dark:       var(--lpt-cream);
+  --text-on-accent:     var(--lpt-cream);   /* caramel is dark → light text */
+
+  --surface-page:       var(--lpt-paper);
+  --surface-card:       var(--lpt-paper);
+  --surface-cream:      var(--lpt-cream);
+  --surface-header:     var(--lpt-cream-header);
+  --surface-dark:       var(--lpt-black);
+  --surface-accent:     var(--lpt-caramel);
+
+  --border:             var(--lpt-border);
+  --border-on-dark:     var(--lpt-border-dark);
+
+  /* Button intents */
+  --btn-primary-bg:     var(--lpt-black);   /* hero / generic primary */
+  --btn-primary-fg:     var(--lpt-cream);
+  --btn-cta-bg:         var(--lpt-yellow);  /* header + bilan CTA */
+  --btn-cta-fg:         var(--lpt-black);
+  --btn-accent-bg:      var(--lpt-caramel); /* guide / guy / newsletter */
+  --btn-accent-fg:      #FFFFFF;
+}

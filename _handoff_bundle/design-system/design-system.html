@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LaPasseTech — Design System</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  body { background: #efeae0; color: var(--text-strong); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 40px 96px; }
+  .ds-head { font-family: var(--font-display); font-weight: 800; font-size: 52px; letter-spacing: -0.03em; margin: 0 0 6px; }
+  .ds-sub { font-size: 16px; color: var(--text-body); max-width: 620px; }
+  .ds-h { font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin: 64px 0 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .grid { display: grid; gap: 16px; }
+  .swatch { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #fff; }
+  .swatch .chip { height: 76px; }
+  .swatch .meta { padding: 10px 12px; font-size: 12px; }
+  .swatch .meta b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 13px; color: var(--text-strong); }
+  .swatch .meta span { color: var(--text-muted); font-family: var(--font-mono); }
+  .card-panel { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
+  .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .label { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .type-row { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; border-bottom: 1px dashed var(--border); padding-bottom: 16px; }
+  .type-row .tok { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lpt-eyebrow" style="margin-bottom:14px;">Design System · V2</div>
+  <h1 class="ds-head">LaPasse<span style="color:var(--accent)">Tech</span></h1>
+  <p class="ds-sub">Système éditorial chaleureux — caramel principal, punch vert « tech » discret, typographie Cabinet Grotesk / DM Sans / Instrument Serif. Cette page rend les tokens et composants réels définis dans <code class="lpt-mono">styles.css</code>.</p>
+
+  <!-- COLORS -->
+  <div class="ds-h">Couleurs</div>
+  <div class="label">Marque · caramel + punch tech</div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr); margin-bottom:20px;">
+    <div class="swatch"><div class="chip" style="background:var(--lpt-caramel)"></div><div class="meta"><b>Caramel</b><span>#9C5A2C</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-caramel-deep)"></div><div class="meta"><b>Caramel deep</b><span>#5C2E10</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-caramel-soft)"></div><div class="meta"><b>Caramel soft</b><span>#F2E2CC</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-green)"></div><div class="meta"><b>Green punch</b><span>#16B877</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-green-deep)"></div><div class="meta"><b>Green deep</b><span>#0E7A4D</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-yellow)"></div><div class="meta"><b>Yellow</b><span>#F5C542</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-black)"></div><div class="meta"><b>Black</b><span>#1A1714</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-ink)"></div><div class="meta"><b>Ink</b><span>#2A2520</span></div></div>
+  </div>
+  <div class="label">Surfaces & neutres</div>
+  <div class="grid" style="grid-template-columns:repeat(4,1fr);">
+    <div class="swatch"><div class="chip" style="background:var(--lpt-paper)"></div><div class="meta"><b>Paper</b><span>#FFFFFF</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-cream)"></div><div class="meta"><b>Cream</b><span>#F8F4EB</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-cream-header)"></div><div class="meta"><b>Cream header</b><span>#FAF7F3</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-beige)"></div><div class="meta"><b>Beige</b><span>#EFE6D2</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-temoignage-bg)"></div><div class="meta"><b>Témoignage</b><span>#F2E4D4</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-guy-bg)"></div><div class="meta"><b>Guy</b><span>#F6ECDD</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-gray)"></div><div class="meta"><b>Gray</b><span>#6B655D</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--lpt-border)"></div><div class="meta"><b>Border</b><span>#E5DDC9</span></div></div>
+  </div>
+
+  <!-- TYPE -->
+  <div class="ds-h">Typographie</div>
+  <div class="card-panel stack">
+    <div class="type-row"><span class="tok">Display · Cabinet 800 · 48</span><span style="font-family:var(--font-display); font-weight:800; font-size:48px; letter-spacing:-0.025em; line-height:1.04;">Le digital, c'est pas <em class="lpt-em" style="font-size:1em;">réservé aux autres.</em></span></div>
+    <div class="type-row"><span class="tok">H2 · Cabinet 800 · 44</span><span style="font-family:var(--font-display); font-weight:800; font-size:44px; letter-spacing:-0.025em;">3 étapes pour <em class="lpt-em">passer.</em></span></div>
+    <div class="type-row"><span class="tok">Serif italic · Instrument · 24</span><span class="lpt-serif-italic" style="font-size:28px; color:var(--text-strong);">en 5 minutes.</span></div>
+    <div class="type-row"><span class="tok">H3 · Cabinet 700 · 19</span><span style="font-family:var(--font-display); font-weight:700; font-size:19px;">Fais ton bilan gratuit</span></div>
+    <div class="type-row"><span class="tok">Body · DM Sans · 15/1.65</span><span style="font-size:15px; color:var(--text-body); max-width:520px;">Métiers, formations, financements — tout ce que j'aurais aimé savoir avant de me reconvertir.</span></div>
+    <div class="type-row"><span class="tok">Mono · JetBrains · 11</span><span class="lpt-mono" style="font-size:12px; color:var(--text-muted);">// finançable via : · step_01 · en_ligne</span></div>
+    <div class="type-row"><span class="tok">Eyebrow · DM 600 · 11</span><span class="lpt-eyebrow">Comment ça marche</span></div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="ds-h">Boutons</div>
+  <div class="card-panel">
+    <div class="row">
+      <a class="lpt-btn lpt-btn--primary">Faire mon diagnostic gratuit <span class="lpt-btn__arrow">→</span></a>
+      <a class="lpt-btn lpt-btn--cta">Faire mon bilan →</a>
+      <a class="lpt-btn lpt-btn--accent">Recevoir le guide →</a>
+      <a class="lpt-btn lpt-btn--outline">Guide gratuit · 20 pages</a>
+    </div>
+  </div>
+
+  <!-- PILLS / TAGS / STATUS -->
+  <div class="ds-h">Pills · Tags · Statut</div>
+  <div class="card-panel">
+    <div class="row" style="margin-bottom:18px;">
+      <span class="lpt-pill"><b>5 min</b> · 100% gratuit</span>
+      <span class="lpt-pill"><b>CPF</b> financé à 100%</span>
+      <span class="lpt-pill lpt-pill--mono">POEI</span>
+      <span class="lpt-status"><span class="lpt-status__dot"></span> PassBot · en ligne</span>
+    </div>
+    <div class="row">
+      <span class="lpt-tag">Reconversion</span>
+      <span class="lpt-tag">Métiers</span>
+      <span class="lpt-tag">Financement</span>
+      <span class="lpt-tag">Droit travail</span>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="ds-h">Cartes</div>
+  <div class="grid" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="lpt-card lpt-card--raised">
+      <div class="lpt-eyebrow" style="margin-bottom:8px;">Sophie · 38 ans</div>
+      <div style="font-family:var(--font-display); font-weight:700; font-size:18px; line-height:1.28; color:var(--text-strong);">Suis-je trop vieille pour me reconvertir ?</div>
+    </div>
+    <div class="lpt-article-card">
+      <span class="lpt-tag" style="align-self:flex-start;">Reconversion</span>
+      <div class="lpt-article-card__title">16 ans en marketing : comment j'ai basculé dans la tech à 40 ans</div>
+      <div class="lpt-article-card__meta">7 min · 4 mars 2026</div>
+    </div>
+    <div class="lpt-card lpt-card--flat">
+      <div style="display:flex; gap:18px; align-items:center;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:30px; color:var(--accent-strong);">100%</div>
+        <div style="font-size:13px; color:var(--text-body);"><b style="display:block; color:var(--text-strong); font-weight:600;">Financé via POEI</b>CDI garanti avant la formation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUTS -->
+  <div class="ds-h">Champs</div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;">
+    <div class="card-panel"><div class="label">Sur fond clair</div><input class="lpt-input" placeholder="Ton email" /></div>
+    <div class="card-panel" style="background:var(--surface-dark);"><div class="label" style="color:var(--text-faint)">Sur fond sombre</div><input class="lpt-input lpt-input--on-dark" placeholder="Ton email" /></div>
+  </div>
+
+  <!-- SPACING -->
+  <div class="ds-h">Espacement & rayons</div>
+  <div class="card-panel">
+    <div class="label">Échelle d'espacement (4px base)</div>
+    <div class="row" style="align-items:flex-end; margin-bottom:24px;">
+      <div style="text-align:center"><div style="width:8px;height:8px;background:var(--accent)"></div><div class="tok" style="font-family:var(--font-mono);font-size:10px;margin-top:6px;color:var(--text-muted)">8</div></div>
+      <div style="text-align:center"><div style="width:16px;height:16px;background:var(--accent)"></div><div class="tok" style="font-family:var(--font-mono);font-size:10px;margin-top:6px;color:var(--text-muted)">16</div></div>
+      <div style="text-align:center"><div style="width:24px;height:24px;background:var(--accent)"></div><div class="tok" style="font-family:var(--font-mono);font-size:10px;margin-top:6px;color:var(--text-muted)">24</div></div>
+      <div style="text-align:center"><div style="width:32px;height:32px;background:var(--accent)"></div><div class="tok" style="font-family:var(--font-mono);font-size:10px;margin-top:6px;color:var(--text-muted)">32</div></div>
+      <div style="text-align:center"><div style="width:64px;height:64px;background:var(--accent)"></div><div class="tok" style="font-family:var(--font-mono);font-size:10px;margin-top:6px;color:var(--text-muted)">64</div></div>
+      <div style="text-align:center"><div style="width:80px;height:80px;background:var(--accent)"></div><div class="tok" style="font-family:var(--font-mono);font-size:10px;margin-top:6px;color:var(--text-muted)">80 · section</div></div>
+    </div>
+    <div class="label">Rayons</div>
+    <div class="row">
+      <div style="width:80px;height:48px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">6</div>
+      <div style="width:80px;height:48px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">8</div>
+      <div style="width:80px;height:48px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">10</div>
+      <div style="width:80px;height:48px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-2xl);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">18</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

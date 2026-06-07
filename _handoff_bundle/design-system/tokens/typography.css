@@ -1,0 +1,39 @@
+/* TYPOGRAPHY — LaPasseTech */
+:root {
+  /* Families */
+  --font-display: "Cabinet Grotesk", "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body:    "DM Sans", system-ui, sans-serif;
+  --font-serif:   "Instrument Serif", Georgia, "Times New Roman", serif; /* italic flourishes, step numbers */
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, monospace; /* tech micro-copy */
+
+  /* Weights */
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+  --fw-black:   800;
+
+  /* Type scale (px) — display uses tight tracking ≈ -0.025em */
+  --fs-display:   48px;  /* hero H1 */
+  --fs-h2:        44px;  /* section titles (44–46) */
+  --fs-h2-lg:     50px;  /* "3 étapes" / newsletter-adjacent */
+  --fs-stat:      56px;  /* big step numbers */
+  --fs-quote:     24px;  /* serif blockquote */
+  --fs-h3:        19px;  /* card titles */
+  --fs-lead:      16px;  /* hero/body lead */
+  --fs-body:      15px;  /* default body */
+  --fs-body-sm:   14px;  /* dense body, list items */
+  --fs-meta:      12.5px;
+  --fs-eyebrow:   11px;  /* eyebrows, status labels */
+  --fs-foot:      12px;
+
+  /* Line-heights */
+  --lh-tight:   1.04;  /* large display */
+  --lh-snug:    1.25;  /* card titles */
+  --lh-body:    1.65;  /* paragraphs */
+  --lh-loose:   1.75;
+
+  /* Tracking */
+  --tracking-display: -0.025em;
+  --tracking-eyebrow:  0.14em;  /* uppercase eyebrows */
+}
