@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# design handoff / maquettes — référence locale, ne pas déployer
+_handoff_bundle/
+*.zip

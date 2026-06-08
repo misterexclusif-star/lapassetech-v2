@@ -1,0 +1,11 @@
+/* LaPasseTech — Design System · point d'entrée unique
+   Importé UNE seule fois dans BaseLayout.astro.
+   Charge : fonts + tous les tokens + base + composants + patterns de contenu. */
+@import "./tokens/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/radius.css";
+@import "./base.css";
+@import "./components.css";
+@import "./content.css";
