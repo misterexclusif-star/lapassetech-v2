@@ -2,9 +2,19 @@
 /**
  * HomepageHero — 2 colonnes.
  * Gauche : eyebrow + titre + sous-titre + 2 CTA + pills.
- * Droite : photo du fondateur (badge + caption) + bloc "À lire maintenant" (01/02/03).
+ * Droite : photo fondateur (paysage, badge + caption) + bloc "À lire maintenant"
+ *          (01/02/03, chaque article avec vignette paysage).
+ *
+ * NB Phase 2 : photos Unsplash temporaires (validées par le client) en attendant
+ * les visuels définitifs ; remplaçables par les images Keystatic plus tard.
  */
 import Button from "../components/Button.astro";
+
+const UNSPLASH = (id: string, w = 200, h = 132) =>
+  `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&crop=faces&q=80`;
+
+const founderImg =
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=720&h=440&fit=crop&crop=faces&q=80";
 
 const reads = [
   {
@@ -13,6 +23,8 @@ const reads = [
     title: "16 ans en marketing : comment j'ai basculé dans la tech à 40 ans",
     meta: "4 mars 2026 · 7 min",
     href: "/articles/exemple-reconversion-40-ans",
+    img: UNSPLASH("1531427186611-ecfd6d936c79"), // homme ~40 ans
+    alt: "Un homme d'une quarantaine d'années",
   },
   {
     n: "02",
@@ -20,6 +32,8 @@ const reads = [
     title: "POEI, CPF, Transitions Pro : lequel choisir pour ta reconversion ?",
     meta: "18 fév. 2026 · 6 min",
     href: "/articles",
+    img: UNSPLASH("1521737604893-d14cc237f11d"), // réunion professionnelle
+    alt: "Une réunion professionnelle autour d'un ordinateur",
   },
   {
     n: "03",
@@ -27,6 +41,8 @@ const reads = [
     title: "Les 5 familles de métiers du digital : trouve celle qui te correspond",
     meta: "27 fév. 2026 · 5 min",
     href: "/articles",
+    img: UNSPLASH("1494790108377-be9c29b29330"), // femme devant son ordinateur
+    alt: "Une femme travaillant devant son ordinateur",
   },
 ];
 ---
@@ -55,9 +71,9 @@ const reads = [
 
     <div class="hero__col hero__media">
       <figure class="hero__portrait">
-        <div class="hero__photo" role="img" aria-label="Portrait de Guy, fondateur de LaPasseTech">
+        <div class="hero__photo">
+          <img src={founderImg} alt="Portrait de Guy, fondateur de LaPasseTech" loading="eager" />
           <span class="hero__badge">Le fondateur</span>
-          <span class="lpt-mono hero__photo-label">photo · Guy</span>
         </div>
         <figcaption class="hero__caption">
           Guy · 16 ans marketing → <strong>Business Analyst Salesforce</strong>
@@ -71,6 +87,9 @@ const reads = [
             reads.map((r) => (
               <li class="hero__read">
                 <span class="hero__read-num">{r.n}</span>
+                <a class="hero__read-thumb" href={r.href}>
+                  <img src={r.img} alt={r.alt} loading="lazy" />
+                </a>
                 <div class="hero__read-body">
                   <span class="hero__read-cat">{r.cat}</span>
                   <a class="hero__read-title" href={r.href}>{r.title}</a>
@@ -88,13 +107,13 @@ const reads = [
 <style>
   .hero__grid {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: 1.05fr 1fr;
     gap: 56px;
     align-items: start;
   }
   h1 {
     margin-top: 24px;
-    font-size: 60px;
+    font-size: 56px;
   }
   .hero__lead {
     font-size: var(--fs-lead);
@@ -120,7 +139,7 @@ const reads = [
   .hero__media {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 26px;
   }
   .hero__portrait {
     margin: 0;
@@ -128,17 +147,17 @@ const reads = [
   .hero__photo {
     position: relative;
     width: 100%;
-    aspect-ratio: 5 / 4;
-    background: var(--lpt-beige);
-    border: 1px solid var(--border);
+    aspect-ratio: 16 / 10; /* paysage */
     border-radius: var(--radius-2xl);
-    display: grid;
-    place-items: center;
     overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--lpt-beige);
   }
-  .hero__photo-label {
-    color: var(--text-muted);
-    font-size: 12px;
+  .hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   .hero__badge {
     position: absolute;
@@ -153,11 +172,12 @@ const reads = [
     text-transform: uppercase;
     padding: 6px 12px;
     border-radius: var(--radius-pill);
+    box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.4);
   }
   .hero__caption {
     font-size: 13px;
     color: var(--text-body);
-    margin-top: 14px;
+    margin-top: 12px;
     line-height: 1.5;
   }
   .hero__caption strong {
@@ -174,35 +194,51 @@ const reads = [
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
   }
   .hero__read {
     display: grid;
-    grid-template-columns: 40px 1fr;
-    gap: 16px;
-    padding: 18px 0;
+    grid-template-columns: 28px 92px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 0;
     border-bottom: 1px solid var(--border);
   }
   .hero__read:last-child {
     border-bottom: 0;
+    padding-bottom: 0;
   }
   .hero__read-num {
     font-family: var(--font-display);
-    font-weight: var(--fw-black);
+    font-weight: 800;
     font-size: 22px;
-    color: var(--accent);
-    letter-spacing: var(--tracking-display);
-    line-height: 1.1;
+    color: var(--lpt-caramel);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .hero__read-thumb {
+    display: block;
+    width: 92px;
+    height: 60px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--lpt-beige);
+  }
+  .hero__read-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   .hero__read-body {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
+    min-width: 0;
   }
   .hero__read-cat {
     font-family: var(--font-body);
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: var(--fw-bold);
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -211,8 +247,8 @@ const reads = [
   .hero__read-title {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: 15.5px;
-    line-height: 1.3;
+    font-size: 14.5px;
+    line-height: 1.28;
     color: var(--text-strong);
     transition: color 0.15s ease;
   }
@@ -220,7 +256,7 @@ const reads = [
     color: var(--accent-strong);
   }
   .hero__read-meta {
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text-muted);
   }
 
