@@ -1,17 +1,31 @@
 ---
-
+/**
+ * Accueil — assemble les 9 sections de la homepage dans l'ordre de la maquette.
+ * Le chrome (Ticker + Header + Footer) est fourni par BaseLayout.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomepageHero from "../sections/HomepageHero.astro";
+import HomepageFreins from "../sections/HomepageFreins.astro";
+import HomepageBilan from "../sections/HomepageBilan.astro";
+import HomepageContent from "../sections/HomepageContent.astro";
+import HomepageEtapes from "../sections/HomepageEtapes.astro";
+import HomepageLeadMagnet from "../sections/HomepageLeadMagnet.astro";
+import HomepageTemoignages from "../sections/HomepageTemoignages.astro";
+import HomepageGuy from "../sections/HomepageGuy.astro";
+import HomepageNewsletter from "../sections/HomepageNewsletter.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="LaPasseTech — Reconversion vers les métiers du digital"
+  description="Métiers du digital, formations financées à 100 %, parcours qui te ressemblent. Sans bullshit, sans jargon, sans complexe."
+>
+  <HomepageHero />
+  <HomepageFreins />
+  <HomepageBilan />
+  <HomepageContent />
+  <HomepageEtapes />
+  <HomepageLeadMagnet />
+  <HomepageTemoignages />
+  <HomepageGuy />
+  <HomepageNewsletter />
+</BaseLayout>
