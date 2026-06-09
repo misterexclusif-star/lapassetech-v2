@@ -1,73 +1,78 @@
 ---
 /**
- * HomepageEtapes — "3 étapes pour passer."
- * 3 blocs horizontaux 01 / 02 / 03.
+ * HomepageEtapes — "3 étapes pour passer." (aligné maquette MJ v4).
+ * 3 cartes : label mono step_0X + badge état + grand numéro + titre + desc.
+ * L'étape 02 est l'étape "en cours" → traitement vert (barre + numéro + badge).
+ * Barre "finançable via" sous la grille.
  */
 const steps = [
   {
     n: "01",
-    t: "Fais ton bilan",
-    d: "8 questions, 10 minutes. PassBot identifie les métiers du digital qui collent à ton profil et t'envoie un plan d'action par email.",
-    tag: "Gratuit",
+    state: "todo",
+    t: "Fais ton bilan gratuit",
+    d: "PassBot pose 5 questions pour identifier les métiers du digital qui collent à ton profil.",
   },
   {
     n: "02",
-    t: "Explore ce qui te concerne",
-    d: "Articles, ressources, fiches métiers — classés par financement et par niveau. Tu lis seulement ce qui te sert.",
-    tag: "Sans jargon",
+    state: "active",
+    t: "Explore articles & ressources",
+    d: "Comprends les métiers, les formations, les financements. Monte en compétences maintenant.",
   },
   {
     n: "03",
-    t: "Avance chaque semaine",
-    d: "Deux emails par semaine : un article qui t'éclaire, une ressource que tu peux utiliser le soir-même.",
-    tag: "Concret",
+    state: "todo",
+    t: "Continue à avancer chaque semaine",
+    d: "Ton diagnostic arrive par email avec tes métiers compatibles. Ensuite, 2× par semaine : un article + une ressource pour progresser.",
   },
 ];
+
+const financements = ["CPF", "France Travail", "POEI", "OPCO", "Transitions Pro", "Mon Compte Formation"];
 ---
 
 <section class="lpt-section etapes" id="etapes">
   <div class="lpt-container">
     <div class="etapes__head">
-      <div>
-        <div class="lpt-eyebrow">Comment ça marche</div>
-        <h2>3 étapes pour <em class="lpt-em">passer.</em></h2>
-      </div>
-      <p class="etapes__aside">Tu n'as rien à signer. Tu peux tout faire seul·e, à ton rythme.</p>
+      <h2>3 étapes pour <em class="lpt-em">passer.</em></h2>
+      <p class="etapes__sub">Un chemin clair, gratuit, sans engagement. Tu avances à ton rythme.</p>
     </div>
 
     <ol class="etapes__grid">
       {
         steps.map((s) => (
-          <li class="etape">
+          <li class="etape" data-state={s.state}>
             <div class="etape__top">
-              <span class="etape__num">{s.n}</span>
-              <span class="lpt-pill etape__tag">{s.tag}</span>
+              <span class="lpt-mono etape__label">step_{s.n}</span>
+              {s.state === "active" ? (
+                <span class="etape__badge etape__badge--active"><span class="etape__dot" /> en cours</span>
+              ) : (
+                <span class="etape__badge">à faire</span>
+              )}
             </div>
+            <span class="etape__num">{s.n}</span>
             <h3 class="etape__title">{s.t}</h3>
             <p class="etape__desc">{s.d}</p>
           </li>
         ))
       }
     </ol>
+
+    <div class="etapes__finance">
+      <span class="lpt-mono etapes__finance-label">// finançable via :</span>
+      <div class="etapes__finance-pills">
+        {financements.map((f) => <span class="lpt-pill lpt-pill--mono">{f}</span>)}
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
   .etapes__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 32px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
   }
-  .etapes__head h2 {
-    margin-top: 16px;
-  }
-  .etapes__aside {
-    font-size: 14px;
-    color: var(--text-muted);
-    max-width: 260px;
-    text-align: right;
+  .etapes__sub {
+    font-size: var(--fs-lead);
+    color: var(--text-body);
+    margin-top: 14px;
   }
   .etapes__grid {
     list-style: none;
@@ -75,34 +80,75 @@ const steps = [
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     overflow: hidden;
     background: var(--surface-card);
   }
   .etape {
-    padding: 36px 32px;
+    position: relative;
+    padding: 32px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     border-left: 1px solid var(--border);
   }
   .etape:first-child {
     border-left: 0;
+  }
+  /* étape active : barre verte en haut */
+  .etape[data-state="active"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--tech);
   }
   .etape__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+  .etape__label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .etape__badge {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: var(--fw-semi);
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    color: var(--text-body);
+    background: var(--accent-soft);
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+  }
+  .etape__badge--active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--lpt-green-soft);
+    color: var(--lpt-green-deep);
+  }
+  .etape__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--tech);
+  }
   .etape__num {
     font-family: var(--font-display);
     font-weight: var(--fw-black);
-    font-size: 44px;
+    font-size: 52px;
     line-height: 1;
-    color: var(--accent);
     letter-spacing: var(--tracking-display);
+    color: var(--lpt-caramel);
+  }
+  .etape[data-state="active"] .etape__num {
+    color: var(--lpt-green-deep);
   }
   .etape__title {
     font-size: 22px;
@@ -113,14 +159,27 @@ const steps = [
     line-height: 1.55;
   }
 
+  /* Barre finançable via */
+  .etapes__finance {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .etapes__finance-label {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .etapes__finance-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
   @media (max-width: 980px) {
-    .etapes__head {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .etapes__aside {
-      text-align: left;
-    }
     .etapes__grid {
       grid-template-columns: 1fr;
     }
@@ -130,6 +189,12 @@ const steps = [
     }
     .etape:first-child {
       border-top: 0;
+    }
+    .etape[data-state="active"]::before {
+      width: 3px;
+      height: auto;
+      bottom: 0;
+      right: auto;
     }
   }
 </style>

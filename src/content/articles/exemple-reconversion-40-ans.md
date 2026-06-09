@@ -4,6 +4,7 @@ description: "J'avais un bon poste, un bon salaire — et l'impression que la te
 tag: "Reconversion"
 date: 2026-03-04
 readingTime: "7 min"
+cover: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=1200&h=560&fit=crop&crop=faces&q=80"
 draft: false
 ---
 

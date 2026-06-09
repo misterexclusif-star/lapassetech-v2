@@ -1,48 +1,42 @@
 ---
 /**
- * HomepageHero — 2 colonnes.
- * Gauche : eyebrow + titre + sous-titre + 2 CTA + pills.
- * Droite : photo fondateur (paysage, badge + caption) + bloc "À lire maintenant"
- *          (01/02/03, chaque article avec vignette paysage).
+ * HomepageHero — 2 colonnes (aligné maquette MJ v4).
+ * Gauche : eyebrow mono + titre (mark caramel) + lead + 2 CTA + 3 pills.
+ * Droite : grande photo de couverture DYNAMIQUE (défilement auto + survol d'un
+ *          article = sa photo) + liste "À lire maintenant" 01/02/03.
  *
- * NB Phase 2 : photos Unsplash temporaires (validées par le client) en attendant
- * les visuels définitifs ; remplaçables par les images Keystatic plus tard.
+ * Les `cover` sont partagés avec les pages article correspondantes (Phase 2 :
+ * Unsplash temporaires, validés client).
  */
 import Button from "../components/Button.astro";
-
-const UNSPLASH = (id: string, w = 200, h = 132) =>
-  `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&crop=faces&q=80`;
-
-const founderImg =
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=720&h=440&fit=crop&crop=faces&q=80";
 
 const reads = [
   {
     n: "01",
     cat: "Reconversion",
     title: "16 ans en marketing : comment j'ai basculé dans la tech à 40 ans",
-    meta: "4 mars 2026 · 7 min",
+    meta: "4 mars 2026 · Témoignage",
     href: "/articles/exemple-reconversion-40-ans",
-    img: UNSPLASH("1531427186611-ecfd6d936c79"), // homme ~40 ans
+    cover: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=760&h=520&fit=crop&crop=faces&q=80",
     alt: "Un homme d'une quarantaine d'années",
   },
   {
     n: "02",
     cat: "Financement",
     title: "POEI, CPF, Transitions Pro : lequel choisir pour ta reconversion ?",
-    meta: "18 fév. 2026 · 6 min",
+    meta: "18 fév. 2026 · Guide",
     href: "/articles",
-    img: UNSPLASH("1521737604893-d14cc237f11d"), // réunion professionnelle
-    alt: "Une réunion professionnelle autour d'un ordinateur",
+    cover: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=760&h=520&fit=crop&q=80",
+    alt: "Une réunion professionnelle",
   },
   {
     n: "03",
     cat: "Métiers du digital",
-    title: "Les 5 familles de métiers du digital : trouve celle qui te correspond",
-    meta: "27 fév. 2026 · 5 min",
+    title: "Business Analyst Salesforce : le métier que personne ne t'a expliqué",
+    meta: "27 fév. 2026 · Fiche métier",
     href: "/articles",
-    img: UNSPLASH("1494790108377-be9c29b29330"), // femme devant son ordinateur
-    alt: "Une femme travaillant devant son ordinateur",
+    cover: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=760&h=520&fit=crop&crop=faces&q=80",
+    alt: "Une professionnelle devant son ordinateur",
   },
 ];
 ---
@@ -50,46 +44,45 @@ const reads = [
 <section class="lpt-section lpt-section--cream hero">
   <div class="lpt-container hero__grid">
     <div class="hero__col">
-      <div class="lpt-eyebrow">Reconversion vers le digital</div>
+      <div class="lpt-eyebrow lpt-eyebrow--mono">// reconversion sans bullshit · mai 2026</div>
       <h1>
-        Le digital, c'est pas
-        <em class="lpt-em">réservé aux autres.</em>
+        Le digital, c'est pas <span class="lpt-mark">réservé aux autres.</span>
       </h1>
       <p class="hero__lead">
-        Métiers, formations financées à 100 %, parcours qui te ressemblent.
-        Expliqué simplement — par quelqu'un qui a fait le chemin.
+        Métiers, formations, financements — tout ce que j'aurais aimé savoir
+        avant de me reconvertir. <strong>Par quelqu'un qui l'a vraiment vécu.</strong>
       </p>
       <div class="hero__cta">
-        <Button variant="primary" href="/bilan" label="Faire mon bilan gratuit" />
-        <Button variant="outline" href="#etapes" label="Comment ça marche" arrow={false} />
+        <Button variant="primary" href="/bilan" label="Faire mon diagnostic gratuit" />
+        <Button variant="outline" href="/ressources" label="Guide gratuit · 20 pages" arrow={false} />
       </div>
       <div class="hero__pills">
         <span class="lpt-pill"><b>5 min</b> · 100 % gratuit</span>
         <span class="lpt-pill"><b>CPF</b> financé à 100 %</span>
+        <span class="lpt-pill"><b>POEI</b> · CDI avant la formation</span>
       </div>
     </div>
 
     <div class="hero__col hero__media">
-      <figure class="hero__portrait">
-        <div class="hero__photo">
-          <img src={founderImg} alt="Portrait de Guy, fondateur de LaPasseTech" loading="eager" />
-          <span class="hero__badge">Le fondateur</span>
-        </div>
-        <figcaption class="hero__caption">
-          Guy · 16 ans marketing → <strong>Business Analyst Salesforce</strong>
-        </figcaption>
-      </figure>
+      <div class="hero__cover" data-cover>
+        {
+          reads.map((r, i) => (
+            <a class="hero__slide" href={r.href} data-slide={i} aria-hidden={i !== 0 ? "true" : "false"}>
+              <img src={r.cover} alt={r.alt} loading={i === 0 ? "eager" : "lazy"} />
+              <span class="hero__slide-cat">{r.cat}</span>
+              <span class="hero__slide-title">{r.title}</span>
+            </a>
+          ))
+        }
+      </div>
 
       <div class="hero__reads">
         <div class="lpt-eyebrow hero__reads-head">À lire maintenant</div>
         <ol class="hero__reads-list">
           {
-            reads.map((r) => (
-              <li class="hero__read">
+            reads.map((r, i) => (
+              <li class="hero__read" data-target={i}>
                 <span class="hero__read-num">{r.n}</span>
-                <a class="hero__read-thumb" href={r.href}>
-                  <img src={r.img} alt={r.alt} loading="lazy" />
-                </a>
                 <div class="hero__read-body">
                   <span class="hero__read-cat">{r.cat}</span>
                   <a class="hero__read-title" href={r.href}>{r.title}</a>
@@ -104,6 +97,39 @@ const reads = [
   </div>
 </section>
 
+<script>
+  // Cover dynamique : défilement auto + survol d'un article = sa photo.
+  const cover = document.querySelector<HTMLElement>("[data-cover]");
+  const items = Array.from(document.querySelectorAll<HTMLElement>(".hero__read[data-target]"));
+  if (cover) {
+    const slides = Array.from(cover.querySelectorAll<HTMLElement>(".hero__slide"));
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let idx = 0;
+    let timer: number | undefined;
+
+    const show = (i: number) => {
+      idx = i;
+      slides.forEach((s, k) => {
+        s.style.opacity = k === i ? "1" : "0";
+        s.setAttribute("aria-hidden", k === i ? "false" : "true");
+      });
+      items.forEach((it, k) => it.classList.toggle("is-active", k === i));
+    };
+    const start = () => {
+      if (reduce) return;
+      timer = window.setInterval(() => show((idx + 1) % slides.length), 4000);
+    };
+    const stop = () => { if (timer) window.clearInterval(timer); };
+
+    items.forEach((it, k) => {
+      it.addEventListener("mouseenter", () => { stop(); show(k); });
+      it.addEventListener("mouseleave", () => start());
+    });
+    show(0);
+    start();
+  }
+</script>
+
 <style>
   .hero__grid {
     display: grid;
@@ -112,15 +138,22 @@ const reads = [
     align-items: start;
   }
   h1 {
-    margin-top: 24px;
+    margin-top: 22px;
     font-size: 56px;
+  }
+  h1 .lpt-mark {
+    line-height: 1.25;
   }
   .hero__lead {
     font-size: var(--fs-lead);
     color: var(--text-body);
     line-height: 1.55;
     max-width: 520px;
-    margin-top: 24px;
+    margin-top: 26px;
+  }
+  .hero__lead strong {
+    color: var(--text-strong);
+    font-weight: var(--fw-semi);
   }
   .hero__cta {
     display: flex;
@@ -135,54 +168,66 @@ const reads = [
     flex-wrap: wrap;
   }
 
-  /* ── Colonne droite ── */
+  /* ── Cover dynamique ── */
   .hero__media {
     display: flex;
     flex-direction: column;
-    gap: 26px;
+    gap: 24px;
   }
-  .hero__portrait {
-    margin: 0;
-  }
-  .hero__photo {
+  .hero__cover {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 10; /* paysage */
+    aspect-ratio: 16 / 11;
     border-radius: var(--radius-2xl);
     overflow: hidden;
     border: 1px solid var(--border);
     background: var(--lpt-beige);
   }
-  .hero__photo img {
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    display: block;
+  }
+  .hero__slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
-  .hero__badge {
+  /* dégradé bas pour lisibilité du titre */
+  .hero__slide::after {
+    content: "";
     position: absolute;
-    top: 14px;
-    right: 14px;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(26, 23, 20, 0) 38%, rgba(26, 23, 20, 0.82) 100%);
+  }
+  .hero__slide-cat {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
     background: var(--accent);
     color: #fff;
-    font-family: var(--font-body);
     font-size: 10px;
     font-weight: var(--fw-bold);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     padding: 6px 12px;
     border-radius: var(--radius-pill);
-    box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.4);
   }
-  .hero__caption {
-    font-size: 13px;
-    color: var(--text-body);
-    margin-top: 12px;
-    line-height: 1.5;
-  }
-  .hero__caption strong {
-    color: var(--text-strong);
-    font-weight: var(--fw-semi);
+  .hero__slide-title {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 16px;
+    z-index: 2;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 18px;
+    line-height: 1.25;
   }
 
   /* ── À lire maintenant ── */
@@ -197,38 +242,27 @@ const reads = [
   }
   .hero__read {
     display: grid;
-    grid-template-columns: 28px 92px 1fr;
+    grid-template-columns: 34px 1fr;
     gap: 14px;
-    align-items: center;
-    padding: 16px 0;
+    padding: 15px 12px 15px 0;
     border-bottom: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: background 0.15s ease;
   }
   .hero__read:last-child {
     border-bottom: 0;
-    padding-bottom: 0;
+  }
+  .hero__read.is-active {
+    background: rgba(156, 90, 44, 0.06);
   }
   .hero__read-num {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--lpt-caramel);
     letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .hero__read-thumb {
-    display: block;
-    width: 92px;
-    height: 60px;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    background: var(--lpt-beige);
-  }
-  .hero__read-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    line-height: 1.2;
+    padding-left: 8px;
   }
   .hero__read-body {
     display: flex;
@@ -247,12 +281,12 @@ const reads = [
   .hero__read-title {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: 14.5px;
+    font-size: 15px;
     line-height: 1.28;
     color: var(--text-strong);
     transition: color 0.15s ease;
   }
-  .hero__read-title:hover {
+  .hero__read:hover .hero__read-title {
     color: var(--accent-strong);
   }
   .hero__read-meta {

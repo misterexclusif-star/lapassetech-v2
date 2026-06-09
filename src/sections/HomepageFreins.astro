@@ -1,23 +1,27 @@
 ---
 /**
  * HomepageFreins — "Tu te poses la même question ?"
- * 4 cartes persona avec photo ronde + question.
+ * 4 cartes persona (avatars 3D) — données alignées maquette MJ v4.
+ *
+ * Avatars : déposer les 4 fichiers dans public/images/personas/ :
+ *   sophie.png · malik.png · aicha.png · thomas.png
+ * Repli automatique sur l'initiale si le fichier est absent.
  */
 const personas = [
-  { name: "Sophie", age: "38 ans", q: "Suis-je trop vieille pour me reconvertir ?" },
-  { name: "Karim", age: "29 ans", q: "Faut-il vraiment savoir coder pour bosser dans la tech ?" },
-  { name: "Nadia", age: "34 ans", q: "Qui va financer ma formation si je quitte mon job ?" },
-  { name: "Thomas", age: "45 ans", q: "Et si je me plante encore une fois ?" },
+  { name: "Sophie", age: "38 ans", job: "Commerciale · 16 ans", q: "Suis-je trop vieille pour me reconvertir ?", img: "/images/personas/sophie.png" },
+  { name: "Malik", age: "42 ans", job: "Gestionnaire de stock", q: "Puis-je entrer dans la tech sans diplôme ?", img: "/images/personas/malik.png" },
+  { name: "Aïcha", age: "34 ans", job: "Assistante · 8 ans", q: "Comment financer ma formation sans me ruiner ?", img: "/images/personas/aicha.png" },
+  { name: "Thomas", age: "45 ans", job: "Prof · 18 ans", q: "Suis-je capable d'apprendre à coder à mon âge ?", img: "/images/personas/thomas.png" },
 ];
 ---
 
 <section class="lpt-section freins">
   <div class="lpt-container">
     <div class="freins__head">
-      <div class="lpt-eyebrow">Les vrais freins</div>
-      <h2>Tu te poses la <em class="lpt-em">même question ?</em></h2>
+      <span class="lpt-eyebrow freins__kicker">Pour qui</span>
+      <h2>Tu te poses <em class="lpt-serif-italic" style="color:var(--accent)">la même question ?</em></h2>
       <p class="freins__intro">
-        Ce sont les doutes qu'on entend le plus. Spoiler : aucun n'est un mur.
+        Quatre doutes que tout le monde garde pour soi. Tu vas trouver une réponse à chacun ici.
       </p>
     </div>
 
@@ -25,10 +29,12 @@ const personas = [
       {
         personas.map((p) => (
           <article class="lpt-card lpt-card--raised frein">
-            <div class="frein__photo" role="img" aria-label={`Portrait de ${p.name}`}>
-              <span class="lpt-mono">{p.name[0]}</span>
+            <div class="frein__avatar">
+              <span class="frein__avatar-fallback">{p.name[0]}</span>
+              <img src={p.img} alt={`Portrait de ${p.name}`} loading="lazy" onerror="this.style.display='none'" />
             </div>
-            <div class="lpt-eyebrow">{p.name} · {p.age}</div>
+            <div class="lpt-eyebrow frein__id">{p.name} · {p.age}</div>
+            <div class="frein__job">{p.job}</div>
             <p class="frein__q">{p.q}</p>
           </article>
         ))
@@ -39,11 +45,17 @@ const personas = [
 
 <style>
   .freins__head {
-    max-width: 640px;
+    max-width: 680px;
     margin-bottom: 48px;
   }
   .freins__head h2 {
     margin-top: 16px;
+  }
+  .freins__kicker {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
   }
   .freins__intro {
     font-size: var(--fs-lead);
@@ -58,26 +70,52 @@ const personas = [
   .frein {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding-top: 32px;
   }
-  .frein__photo {
-    width: 64px;
-    height: 64px;
+  .frein__avatar {
+    position: relative;
+    width: 104px;
+    height: 104px;
     border-radius: 50%;
+    overflow: hidden;
     background: var(--lpt-beige);
     border: 1px solid var(--border);
+  }
+  .frein__avatar-fallback {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
-    color: var(--text-muted);
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-black);
+    font-size: 34px;
+    color: var(--text-muted);
+  }
+  .frein__avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .frein__id {
+    margin-top: 4px;
+  }
+  .frein__job {
+    font-size: 13px;
+    color: var(--text-body);
+    margin-top: -6px;
   }
   .frein__q {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: 18px;
+    font-size: 19px;
     line-height: 1.28;
     color: var(--text-strong);
+    margin-top: 8px;
   }
 
   @media (max-width: 980px) {
