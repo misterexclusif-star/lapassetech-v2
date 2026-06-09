@@ -1,0 +1,126 @@
+---
+/**
+ * HomepageBilan — fond caramel.
+ * Gauche : texte + CTA. Droite : iframe PassBot (Typebot).
+ */
+import Button from "../components/Button.astro";
+
+const PASSBOT_URL = "https://typebot.co/pass-bot-la-passe-tech-05k4p4j";
+---
+
+<section class="lpt-section lpt-section--accent bilan">
+  <div class="lpt-container bilan__grid">
+    <div class="bilan__col">
+      <div class="lpt-eyebrow bilan__eyebrow">Le bilan PassBot</div>
+      <h2 class="bilan__title">Ton bilan <em class="bilan__accent">en 10 minutes.</em></h2>
+      <p class="bilan__sub">
+        PassBot te pose 8 questions et t'envoie un plan d'action personnalisé.
+        Gratuit. Sans engagement. Sans jugement.
+      </p>
+      <ul class="bilan__points">
+        <li>Les métiers du digital qui collent à ton profil</li>
+        <li>Les financements auxquels tu as droit</li>
+        <li>Une première étape concrète, dès ce soir</li>
+      </ul>
+      <div class="bilan__cta">
+        <Button variant="cta" href="/bilan" label="Commencer mon bilan" />
+        <span class="bilan__note">Pas d'email obligatoire pour commencer.</span>
+      </div>
+    </div>
+
+    <div class="bilan__media">
+      <div class="bilan__frame">
+        <iframe
+          src={PASSBOT_URL}
+          title="PassBot — ton bilan gratuit"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bilan__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  /* Sur fond caramel, le texte est clair (hérité de .lpt-section--accent). */
+  .bilan__eyebrow {
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .bilan__title {
+    color: #fff;
+    margin-top: 16px;
+  }
+  .bilan__accent {
+    font-style: normal;
+    font-weight: var(--fw-black);
+    color: var(--lpt-yellow);
+  }
+  .bilan__sub {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    margin-top: 20px;
+    max-width: 480px;
+  }
+  .bilan__points {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bilan__points li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: #fff;
+    font-size: var(--fs-body-sm);
+  }
+  .bilan__points li::before {
+    content: "✓";
+    color: var(--lpt-yellow);
+    font-weight: var(--fw-black);
+    flex-shrink: 0;
+  }
+  .bilan__cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+  .bilan__note {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 220px;
+  }
+  .bilan__frame {
+    background: var(--surface-card);
+    border-radius: var(--radius-xl);
+    padding: 12px;
+    box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.4);
+  }
+  .bilan__frame iframe {
+    width: 100%;
+    height: 520px;
+    border: 0;
+    border-radius: var(--radius-lg);
+    display: block;
+  }
+
+  @media (max-width: 980px) {
+    .bilan__grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .bilan__frame iframe {
+      height: 460px;
+    }
+  }
+</style>

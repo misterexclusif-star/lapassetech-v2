@@ -1,0 +1,115 @@
+---
+/**
+ * HomepageGuy — le fondateur.
+ * Gauche : photo. Droite : bio + 4 stats + citation + CTA.
+ */
+import Button from "../components/Button.astro";
+
+const stats = [
+  { v: "16", k: "ans en marketing", d: "Avant la bascule" },
+  { v: "100 %", k: "financé", d: "Via la POEI" },
+  { v: "40", k: "ans au switch", d: "Il n'est jamais trop tard" },
+  { v: "BA", k: "Salesforce", d: "Son métier aujourd'hui" },
+];
+---
+
+<section class="lpt-section guy" style="background:var(--lpt-guy-bg);">
+  <div class="lpt-container guy__grid">
+    <div class="guy__media">
+      <div class="guy__photo" role="img" aria-label="Portrait de Guy, fondateur">
+        <span class="lpt-mono">photo · Guy</span>
+      </div>
+    </div>
+
+    <div class="guy__col">
+      <div class="lpt-eyebrow">À propos</div>
+      <h2>Guy — celui <em class="lpt-em">qui est passé.</em></h2>
+      <p class="guy__intro">
+        16 ans en marketing dans la presse, puis une formation Business Analyst
+        Salesforce financée à 100 % par la POEI. Aujourd'hui en poste — et
+        fondateur de LaPasseTech.
+      </p>
+
+      <div class="lpt-statgrid guy__stats">
+        {
+          stats.map((s) => (
+            <div class="lpt-stat">
+              <div class="lpt-stat__v">{s.v}</div>
+              <div class="lpt-stat__k">{s.k}</div>
+              <div class="lpt-stat__d">{s.d}</div>
+            </div>
+          ))
+        }
+      </div>
+
+      <blockquote class="guy__quote">
+        « J'ai fait cette reconversion seul, sans réseau dans la tech, depuis la
+        banlieue. Si j'avais eu LaPasseTech à l'époque, j'aurais gagné six mois. »
+      </blockquote>
+
+      <div class="guy__cta">
+        <Button variant="accent" href="/a-propos" label="Lire mon histoire" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .guy__grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .guy__photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: var(--lpt-beige);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    display: grid;
+    place-items: center;
+    color: var(--text-muted);
+    font-size: 12px;
+    position: sticky;
+    top: 24px;
+  }
+  .guy__col h2 {
+    margin-top: 16px;
+  }
+  .guy__intro {
+    font-size: var(--fs-lead);
+    color: var(--text-body);
+    line-height: 1.6;
+    margin-top: 20px;
+    max-width: 560px;
+  }
+  .guy__stats {
+    margin-top: 32px;
+  }
+  .guy__quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--fs-quote);
+    line-height: 1.4;
+    color: var(--text-strong);
+    margin: 36px 0 0;
+    padding-left: 24px;
+    border-left: 3px solid var(--accent);
+    max-width: 600px;
+  }
+  .guy__cta {
+    margin-top: 32px;
+  }
+
+  @media (max-width: 980px) {
+    .guy__grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .guy__photo {
+      position: static;
+      max-width: 320px;
+    }
+  }
+</style>

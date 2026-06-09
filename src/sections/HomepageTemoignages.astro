@@ -1,0 +1,141 @@
+---
+/**
+ * HomepageTemoignages — "Des parcours qui ressemblent au tien."
+ * 3 cartes témoignage : avatar rond + nom/âge + transition métier + citation.
+ */
+const items = [
+  { name: "Bilel", age: "32 ans", from: "Livreur", to: "Tech support", q: "Je croyais qu'il fallait coder. C'est faux." },
+  { name: "Issa", age: "28 ans", from: "Restauration", to: "Data analyst", q: "Formation payée à 100 %. Je ne savais pas que c'était possible." },
+  { name: "Aïcha", age: "41 ans", from: "Congé parental", to: "Marketing digital", q: "En 8 mois, j'étais en poste. Sans réseau." },
+];
+---
+
+<section class="lpt-section temoignages" style="background:var(--lpt-temoignage-bg);">
+  <div class="lpt-container">
+    <div class="temoignages__head">
+      <div>
+        <div class="lpt-eyebrow">Ils sont passés</div>
+        <h2>Des parcours qui <em class="lpt-em">ressemblent au tien.</em></h2>
+      </div>
+      <a class="temoignages__more" href="/a-propos">Voir tous les parcours →</a>
+    </div>
+
+    <div class="temoignages__grid">
+      {
+        items.map((it) => (
+          <article class="lpt-card temoignage">
+            <div class="temoignage__id">
+              <div class="temoignage__avatar" role="img" aria-label={`Portrait de ${it.name}`}>
+                <span>{it.name[0]}</span>
+              </div>
+              <div>
+                <div class="temoignage__name">{it.name}</div>
+                <div class="temoignage__age">{it.age}</div>
+              </div>
+            </div>
+            <div class="temoignage__path">
+              <span class="temoignage__from">{it.from}</span>
+              <span class="temoignage__arrow" aria-hidden="true">→</span>
+              <span class="temoignage__to">{it.to}</span>
+            </div>
+            <p class="temoignage__quote">« {it.q} »</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .temoignages__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+  .temoignages__head h2 {
+    margin-top: 16px;
+  }
+  .temoignages__more {
+    font-size: 14px;
+    font-weight: var(--fw-semi);
+    color: var(--text-strong);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--accent);
+    white-space: nowrap;
+  }
+  .temoignages__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .temoignage {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .temoignage__id {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .temoignage__avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--lpt-beige);
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .temoignage__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 18px;
+    color: var(--text-strong);
+  }
+  .temoignage__age {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .temoignage__path {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .temoignage__from {
+    color: var(--text-body);
+  }
+  .temoignage__arrow {
+    color: var(--accent);
+    font-weight: var(--fw-black);
+  }
+  .temoignage__to {
+    color: #fff;
+    font-weight: var(--fw-bold);
+    background: var(--accent);
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+  }
+  .temoignage__quote {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 19px;
+    line-height: 1.4;
+    color: var(--text-strong);
+  }
+
+  @media (max-width: 980px) {
+    .temoignages__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+/**
+ * HomepageLeadMagnet — "Le guide des métiers du digital".
+ * Gauche : bullets. Droite : formulaire email (stub statique, action="#").
+ * Les IDs MailerLite arrivent en Phase 4.
+ */
+const bullets = [
+  "Les 5 familles de métiers du digital, expliquées simplement",
+  "Pour chaque métier : salaire, accessibilité, compétences clés",
+  "Les formations finançables à 100 % (CPF, POEI…)",
+  "Le test honnête à faire avant d'investir ton CPF",
+];
+---
+
+<section class="lpt-section guide" style="background:var(--lpt-beige);">
+  <div class="lpt-container guide__grid">
+    <div class="guide__col">
+      <div class="lpt-eyebrow">Guide gratuit · 20 pages</div>
+      <h2>Le guide des <em class="lpt-em">métiers du digital.</em></h2>
+      <p class="guide__intro">
+        Tout ce que j'aurais aimé savoir avant de me reconvertir, réuni dans un PDF clair.
+      </p>
+      <ul class="guide__bullets">
+        {bullets.map((b) => <li class="lpt-check">{b}</li>)}
+      </ul>
+    </div>
+
+    <div class="guide__col guide__form-col">
+      <form action="#" class="guide__form">
+        <h3 class="guide__form-title">Recevoir le guide gratuitement</h3>
+        <p class="guide__form-sub">On t'envoie le PDF par email. Pas de spam, désabonnement en un clic.</p>
+        <label class="guide__label" for="guide-email">Ton email</label>
+        <input class="lpt-input" type="email" id="guide-email" name="email" placeholder="prenom@email.com" required />
+        <button type="submit" class="lpt-btn lpt-btn--accent guide__submit">
+          Recevoir le guide <span class="lpt-btn__arrow" aria-hidden="true">→</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .guide__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .guide__col h2 {
+    margin-top: 16px;
+  }
+  .guide__intro {
+    font-size: var(--fs-lead);
+    color: var(--text-body);
+    margin-top: 16px;
+    max-width: 460px;
+  }
+  .guide__bullets {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .guide__form {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .guide__form-title {
+    font-size: 20px;
+  }
+  .guide__form-sub {
+    font-size: 13.5px;
+    color: var(--text-body);
+  }
+  .guide__label {
+    font-size: 13px;
+    font-weight: var(--fw-semi);
+    color: var(--text-strong);
+    margin-top: 4px;
+  }
+  .guide__submit {
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  @media (max-width: 980px) {
+    .guide__grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>

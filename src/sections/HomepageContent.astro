@@ -1,0 +1,106 @@
+---
+/**
+ * HomepageContent — "S'informer. Agir."
+ * 2 colonnes : articles récents (gauche) + ressources (droite).
+ */
+const articles = [
+  { tag: "Reconversion", title: "16 ans en marketing : comment j'ai basculé dans la tech à 40 ans", meta: "7 min · 4 mars 2026" },
+  { tag: "Financement", title: "POEI, CPF, Transitions Pro : lequel choisir pour ta reconversion ?", meta: "6 min · 18 fév. 2026" },
+  { tag: "Métiers", title: "Les 5 familles de métiers du digital : trouve celle qui te correspond", meta: "5 min · 27 fév. 2026" },
+];
+
+const ressources = [
+  { level: "deb", levelLabel: "Débutant", title: "Utiliser Gemini pour préparer un entretien de reconversion", meta: "20 min" },
+  { level: "int", levelLabel: "Intermédiaire", title: "Construire ton premier site en no-code, étape par étape", meta: "45 min" },
+  { level: "deb", levelLabel: "Débutant", title: "Monter ton dossier CPF sans te perdre dans l'administratif", meta: "30 min" },
+];
+---
+
+<section class="lpt-section lpt-section--cream content">
+  <div class="lpt-container">
+    <div class="content__head">
+      <div class="lpt-eyebrow">Deux manières d'avancer</div>
+      <h2><em class="lpt-em">S'informer.</em> Agir.</h2>
+    </div>
+
+    <div class="content__grid">
+      <div class="content__col">
+        <div class="content__col-head">
+          <h3>Articles récents</h3>
+          <a class="content__more" href="/articles">Tous les articles →</a>
+        </div>
+        <div class="content__list">
+          {
+            articles.map((a) => (
+              <article class="lpt-article-card">
+                <span class="lpt-tag" style="align-self:flex-start;">{a.tag}</span>
+                <div class="lpt-article-card__title">{a.title}</div>
+                <div class="lpt-article-card__meta">{a.meta}</div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="content__col">
+        <div class="content__col-head">
+          <h3>Ressources à faire ce soir</h3>
+          <a class="content__more" href="/ressources">Toutes les ressources →</a>
+        </div>
+        <div class="content__list">
+          {
+            ressources.map((r) => (
+              <article class="lpt-article-card">
+                <span class={`lpt-level lpt-level--${r.level}`} style="align-self:flex-start;">
+                  <span class="lpt-level__dot"></span>{r.levelLabel}
+                </span>
+                <div class="lpt-article-card__title">{r.title}</div>
+                <div class="lpt-article-card__meta">{r.meta}</div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .content__head {
+    margin-bottom: 40px;
+  }
+  .content__head h2 {
+    margin-top: 16px;
+  }
+  .content__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .content__col-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .content__more {
+    font-size: 13.5px;
+    font-weight: var(--fw-bold);
+    color: var(--accent-strong);
+    white-space: nowrap;
+  }
+  .content__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  @media (max-width: 980px) {
+    .content__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

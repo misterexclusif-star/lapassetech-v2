@@ -1,0 +1,102 @@
+---
+/**
+ * HomepageNewsletter — fond noir.
+ * "2 fois par semaine" + formulaire email (stub statique, action="#").
+ * Les IDs MailerLite arrivent en Phase 4.
+ */
+---
+
+<section class="lpt-section lpt-section--dark newsletter">
+  <div class="lpt-container newsletter__inner">
+    <div class="newsletter__col">
+      <div class="lpt-eyebrow newsletter__eyebrow">La newsletter</div>
+      <h2 class="newsletter__title">
+        2 fois par semaine, <em class="newsletter__accent">un pas de plus.</em>
+      </h2>
+      <p class="newsletter__sub">
+        Un article qui t'éclaire, une ressource que tu peux utiliser le soir-même.
+        Sans bullshit, sans jargon. Désabonnement en un clic.
+      </p>
+    </div>
+
+    <form action="#" class="newsletter__form">
+      <label class="newsletter__label" for="nl-email">Ton email</label>
+      <div class="newsletter__row">
+        <input
+          class="lpt-input lpt-input--on-dark"
+          type="email"
+          id="nl-email"
+          name="email"
+          placeholder="prenom@email.com"
+          required
+        />
+        <button type="submit" class="lpt-btn lpt-btn--cta">
+          Je m'abonne <span class="lpt-btn__arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+      <p class="newsletter__note">Rejoins les reconverti·es qui avancent chaque semaine.</p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .newsletter__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .newsletter__eyebrow {
+    color: var(--text-faint);
+  }
+  .newsletter__title {
+    color: var(--text-on-dark);
+    margin-top: 16px;
+  }
+  .newsletter__accent {
+    font-style: normal;
+    font-weight: var(--fw-black);
+    color: var(--lpt-yellow);
+  }
+  .newsletter__sub {
+    color: var(--text-faint);
+    font-size: var(--fs-lead);
+    line-height: 1.6;
+    margin-top: 20px;
+    max-width: 480px;
+  }
+  .newsletter__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .newsletter__label {
+    font-size: 13px;
+    font-weight: var(--fw-semi);
+    color: var(--text-on-dark);
+  }
+  .newsletter__row {
+    display: flex;
+    gap: 10px;
+  }
+  .newsletter__row .lpt-input {
+    flex: 1;
+  }
+  .newsletter__note {
+    font-size: 12.5px;
+    color: var(--text-faint);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 980px) {
+    .newsletter__inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+  @media (max-width: 560px) {
+    .newsletter__row {
+      flex-direction: column;
+    }
+  }
+</style>

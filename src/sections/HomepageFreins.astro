@@ -1,0 +1,93 @@
+---
+/**
+ * HomepageFreins — "Tu te poses la même question ?"
+ * 4 cartes persona avec photo ronde + question.
+ */
+const personas = [
+  { name: "Sophie", age: "38 ans", q: "Suis-je trop vieille pour me reconvertir ?" },
+  { name: "Karim", age: "29 ans", q: "Faut-il vraiment savoir coder pour bosser dans la tech ?" },
+  { name: "Nadia", age: "34 ans", q: "Qui va financer ma formation si je quitte mon job ?" },
+  { name: "Thomas", age: "45 ans", q: "Et si je me plante encore une fois ?" },
+];
+---
+
+<section class="lpt-section freins">
+  <div class="lpt-container">
+    <div class="freins__head">
+      <div class="lpt-eyebrow">Les vrais freins</div>
+      <h2>Tu te poses la <em class="lpt-em">même question ?</em></h2>
+      <p class="freins__intro">
+        Ce sont les doutes qu'on entend le plus. Spoiler : aucun n'est un mur.
+      </p>
+    </div>
+
+    <div class="freins__grid">
+      {
+        personas.map((p) => (
+          <article class="lpt-card lpt-card--raised frein">
+            <div class="frein__photo" role="img" aria-label={`Portrait de ${p.name}`}>
+              <span class="lpt-mono">{p.name[0]}</span>
+            </div>
+            <div class="lpt-eyebrow">{p.name} · {p.age}</div>
+            <p class="frein__q">{p.q}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .freins__head {
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+  .freins__head h2 {
+    margin-top: 16px;
+  }
+  .freins__intro {
+    font-size: var(--fs-lead);
+    color: var(--text-body);
+    margin-top: 16px;
+  }
+  .freins__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .frein {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .frein__photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--lpt-beige);
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+  }
+  .frein__q {
+    font-family: var(--font-display);
+    font-weight: var(--fw-bold);
+    font-size: 18px;
+    line-height: 1.28;
+    color: var(--text-strong);
+  }
+
+  @media (max-width: 980px) {
+    .freins__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .freins__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
