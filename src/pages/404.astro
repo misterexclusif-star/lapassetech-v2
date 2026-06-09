@@ -1,0 +1,23 @@
+---
+/**
+ * Page 404 personnalisée.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+---
+
+<BaseLayout title="Page introuvable — LaPasseTech" description="Cette page n'existe pas (ou plus).">
+  <section class="lpt-section" style="text-align:center;">
+    <div class="lpt-container" style="max-width:640px;">
+      <div class="lpt-mono" style="color:var(--accent); font-size:13px;">// erreur_404</div>
+      <h1 style="margin-top:16px;">Cette page a pris <em class="lpt-em">une autre voie.</em></h1>
+      <p style="font-size:var(--fs-lead); color:var(--text-body); margin-top:16px;">
+        Le lien est cassé ou la page a déménagé. Pas grave — voilà par où repartir.
+      </p>
+      <div class="row" style="display:flex; gap:12px; justify-content:center; margin-top:28px; flex-wrap:wrap;">
+        <Button variant="primary" href="/" label="Retour à l'accueil" />
+        <Button variant="outline" href="/bilan" label="Faire mon bilan" arrow={false} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

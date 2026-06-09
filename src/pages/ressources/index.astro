@@ -1,0 +1,51 @@
+---
+/**
+ * Listing des ressources. Hero + filtres (stub) + grille avec badge niveau.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const ressources = await getCollection("ressources", ({ data }) => !data.draft);
+
+const levelLabels: Record<string, string> = { deb: "Débutant", int: "Intermédiaire", avance: "Avancé" };
+const filters = ["Toutes", "Outils IA", "No-code", "Financement", "Compétences"];
+---
+
+<BaseLayout title="Ressources — Passer à l'action · LaPasseTech" description="Des ressources pratiques à appliquer dès ce soir : outils IA, no-code, financement.">
+  <section class="lpt-listing-hero">
+    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Ressources</span></nav>
+    <h1 style="margin-top:14px;">Passer à <em class="lpt-serif-italic" style="color:var(--accent)">l'action.</em></h1>
+    <p>Des pas-à-pas concrets, classés par thème et par niveau. Tu peux les faire le soir-même, sur ton téléphone.</p>
+    <div class="lpt-listing-hero__count">{ressources.length} ressource{ressources.length > 1 ? "s" : ""}</div>
+  </section>
+
+  <div class="lpt-filterbar">
+    <input class="lpt-input lpt-search" placeholder="Rechercher une ressource…" />
+    <div class="lpt-filters">
+      {filters.map((f, i) => <button class="lpt-filter" data-active={i === 0 ? "" : undefined}>{f}</button>)}
+    </div>
+  </div>
+
+  <div class="lpt-grid-section">
+    <div class="lpt-card-grid">
+      {
+        ressources.map((r) => (
+          <article class="lpt-article-card">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span class={`lpt-level lpt-level--${r.data.level === "avance" ? "int" : r.data.level}`}>
+                <span class="lpt-level__dot"></span>{levelLabels[r.data.level]}
+              </span>
+              <span class="lpt-tag">{r.data.theme}</span>
+            </div>
+            <a class="lpt-article-card__title" href={`/ressources/${r.id}`}>{r.data.title}</a>
+            <p style="font-size:13.5px; color:var(--text-body); margin:0;">{r.data.description}</p>
+            <div class="lpt-article-card__foot">
+              {r.data.duration && <span>{r.data.duration}</span>}
+            </div>
+            <a class="lpt-article-card__link" href={`/ressources/${r.id}`}>Ouvrir la ressource →</a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

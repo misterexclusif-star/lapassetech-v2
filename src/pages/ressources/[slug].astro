@@ -1,0 +1,25 @@
+---
+/**
+ * Page ressource — RessourceLayout + contenu Markdown rendu.
+ */
+import { getCollection, render } from "astro:content";
+import RessourceLayout from "../../layouts/RessourceLayout.astro";
+
+export async function getStaticPaths() {
+  const ressources = await getCollection("ressources", ({ data }) => !data.draft);
+  return ressources.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<RessourceLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  level={entry.data.level}
+  theme={entry.data.theme}
+  duration={entry.data.duration}
+>
+  <Content />
+</RessourceLayout>

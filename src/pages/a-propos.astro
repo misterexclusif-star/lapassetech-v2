@@ -1,0 +1,62 @@
+---
+/**
+ * À propos — structure squelette (contenu final en Phase ultérieure).
+ * Hero portrait + mission + timeline + CTA, sur classes du design system.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Button from "../components/Button.astro";
+
+const timeline = [
+  { y: "2005–2021", t: "Responsable Marketing Digital", d: "Groupes de presse · 16 ans" },
+  { y: "2022", t: "Formation Business Analyst Salesforce", d: "POEI · financée à 100 %" },
+  { y: "Aujourd'hui", t: "BA Salesforce + fondateur LaPasseTech", d: "" },
+];
+---
+
+<BaseLayout title="À propos — LaPasseTech" description="L'histoire de Guy : 16 ans en marketing, une reconversion via la POEI, et la création de LaPasseTech.">
+  <section class="lpt-about-hero">
+    <div>
+      <div class="lpt-eyebrow">À propos</div>
+      <h1 style="margin-top:16px;">Guy — celui <em class="lpt-em">qui est passé.</em></h1>
+      <p style="font-size:var(--fs-lead); color:var(--text-body); line-height:1.6; margin-top:20px; max-width:520px;">
+        16 ans en marketing dans la presse, puis une formation Business Analyst Salesforce
+        financée à 100 % par la POEI. Aujourd'hui en poste — et fondateur de LaPasseTech.
+      </p>
+      <div style="margin-top:28px;">
+        <Button variant="accent" href="/bilan" label="Faire mon bilan" />
+      </div>
+    </div>
+    <div class="lpt-about-hero__img" role="img" aria-label="Portrait de Guy">
+      <span class="lpt-mono" style="display:grid; place-items:center; height:100%; color:var(--text-muted);">photo · Guy</span>
+    </div>
+  </section>
+
+  <section class="lpt-section">
+    <div class="lpt-container" style="max-width:920px;">
+      <div class="lpt-eyebrow">Le parcours</div>
+      <h2 style="margin-top:14px; margin-bottom:32px;">De la presse <em class="lpt-em">à la tech.</em></h2>
+      <ul class="lpt-timeline">
+        {
+          timeline.map((tl) => (
+            <li>
+              <span class="lpt-timeline__year">{tl.y}</span>
+              <span class="lpt-timeline__what">
+                <b>{tl.t}</b>
+                {tl.d && <span>{tl.d}</span>}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="lpt-cta-band">
+    <div class="lpt-eyebrow" style="margin-bottom:12px;">Toi aussi, tu peux passer</div>
+    <h2>Commence par ton bilan <em class="lpt-serif-italic" style="color:var(--accent)">gratuit.</em></h2>
+    <div class="row">
+      <Button variant="accent" href="/bilan" label="Faire mon bilan gratuit" />
+      <Button variant="outline" href="/articles" label="Lire les articles" arrow={false} />
+    </div>
+  </section>
+</BaseLayout>

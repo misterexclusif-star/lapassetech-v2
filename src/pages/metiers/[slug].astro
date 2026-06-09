@@ -1,0 +1,53 @@
+---
+/**
+ * Page fiche métier — structure simple sur BaseLayout (pas de layout dédié).
+ * Hero + stat grid + contenu Markdown rendu.
+ */
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Button from "../../components/Button.astro";
+
+export async function getStaticPaths() {
+  const metiers = await getCollection("metiers", ({ data }) => !data.draft);
+  return metiers.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, family, salary, accessibility } = entry.data;
+---
+
+<BaseLayout title={`${title} — Fiche métier · LaPasseTech`} description={description}>
+  <section class="lpt-page-hero">
+    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <a href="/metiers">Fiches métiers</a> → <span>{title}</span></nav>
+    <span class="lpt-tag" style="margin-top:14px; display:inline-block;">{family}</span>
+    <h1 class="lpt-page-hero__title">{title}</h1>
+
+    <div class="lpt-statgrid" style="margin-top:28px; max-width:760px;">
+      {salary && (
+        <div class="lpt-stat"><div class="lpt-stat__k">Salaire</div><div class="lpt-stat__v">{salary}</div><div class="lpt-stat__d">Fourchette indicative</div></div>
+      )}
+      {accessibility && (
+        <div class="lpt-stat"><div class="lpt-stat__k">Accessibilité</div><div class="lpt-stat__v" style="font-size:20px;">{accessibility}</div><div class="lpt-stat__d">Reconversion possible</div></div>
+      )}
+      <div class="lpt-stat"><div class="lpt-stat__k">Famille</div><div class="lpt-stat__v" style="font-size:20px;">{family}</div></div>
+    </div>
+  </section>
+
+  <div class="lpt-reading">
+    <article class="lpt-prose">
+      <Content />
+    </article>
+    <aside class="lpt-aside">
+      <div class="lpt-aside-card lpt-aside-card--brown">
+        <h4>Ce métier te parle ?</h4>
+        <p style="font-size:13.5px; line-height:1.55;">Vérifie s'il colle à ton profil avec le bilan PassBot.</p>
+        <Button variant="cta" href="/bilan" label="Faire mon bilan" class="lpt-aside-cta" />
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .lpt-aside-cta { margin-top: 14px; }
+</style>

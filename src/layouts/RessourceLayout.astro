@@ -1,0 +1,83 @@
+---
+/**
+ * RessourceLayout — gabarit page ressource (pas-à-pas).
+ * Hero + stepper de progression puis lecture 2 colonnes :
+ * prose (<slot/>) + aside sticky (récap + carte bilan).
+ */
+import BaseLayout from "./BaseLayout.astro";
+import Button from "../components/Button.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  level?: "deb" | "int" | "avance";
+  theme?: string;
+  duration?: string;
+}
+
+const { title, description, level = "deb", theme, duration } = Astro.props;
+
+const levelLabels: Record<string, string> = {
+  deb: "Débutant",
+  int: "Intermédiaire",
+  avance: "Avancé",
+};
+
+// Étapes génériques du gabarit (le détail réel vient du contenu).
+const steps = ["Comprendre", "Mettre en place", "Aller plus loin"];
+---
+
+<BaseLayout title={`${title} — LaPasseTech`} description={description}>
+  <section class="lpt-page-hero">
+    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <a href="/ressources">Ressources</a> → <span>{title}</span></nav>
+    <div class="lpt-page-hero__meta" style="margin-top:14px;">
+      {theme && <span class="lpt-tag">{theme}</span>}
+      <span class={`lpt-level lpt-level--${level === "avance" ? "int" : level}`}>
+        <span class="lpt-level__dot"></span>{levelLabels[level]}
+      </span>
+      {duration && <span>{duration}</span>}
+    </div>
+    <h1 class="lpt-page-hero__title">{title}</h1>
+
+    <div class="lpt-stepper" style="margin-top:24px; max-width:520px;">
+      {
+        steps.map((s, i) => (
+          <>
+            <div class="lpt-stepper__item" data-active={i === 0 ? "" : undefined}>
+              <span class="lpt-stepper__num">{i + 1}</span>
+              <span>{s}</span>
+            </div>
+            {i < steps.length - 1 && <span class="lpt-stepper__line" />}
+          </>
+        ))
+      }
+    </div>
+  </section>
+
+  <div class="lpt-reading">
+    <article class="lpt-prose">
+      <slot />
+    </article>
+
+    <aside class="lpt-aside">
+      <div class="lpt-aside-card lpt-aside-card--beige">
+        <h4>En résumé</h4>
+        <p style="font-size:13.5px; line-height:1.55;">Une ressource concrète à appliquer dès ce soir. Niveau {levelLabels[level].toLowerCase()}.</p>
+        <Button variant="accent" href="/bilan" label="Faire mon bilan" class="lpt-aside-cta" />
+      </div>
+      <div class="lpt-aside-card">
+        <h4>Continuer</h4>
+        <nav class="lpt-toc">
+          <a href="/ressources">Toutes les ressources</a>
+          <a href="/articles">Les articles de fond</a>
+        </nav>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .lpt-aside-cta {
+    margin-top: 14px;
+  }
+</style>

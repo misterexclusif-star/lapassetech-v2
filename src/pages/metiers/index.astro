@@ -1,0 +1,45 @@
+---
+/**
+ * Listing des fiches métiers. Hero + filtres (stub) + grille avec chips salaire/accès.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const metiers = await getCollection("metiers", ({ data }) => !data.draft);
+const filters = ["Toutes", "Data", "Marketing", "Dev", "Support", "Gestion de projet"];
+---
+
+<BaseLayout title="Fiches métiers — LaPasseTech" description="Les métiers du digital, fiche par fiche : salaire, accessibilité, compétences.">
+  <section class="lpt-listing-hero">
+    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Fiches métiers</span></nav>
+    <h1 style="margin-top:14px;">Les métiers, <em class="lpt-serif-italic" style="color:var(--accent)">sans flou.</em></h1>
+    <p>Pour chaque métier du digital : ce que c'est vraiment, le salaire, l'accessibilité et les compétences que tu as déjà.</p>
+    <div class="lpt-listing-hero__count">{metiers.length} fiche{metiers.length > 1 ? "s" : ""}</div>
+  </section>
+
+  <div class="lpt-filterbar">
+    <input class="lpt-input lpt-search" placeholder="Rechercher un métier…" />
+    <div class="lpt-filters">
+      {filters.map((f, i) => <button class="lpt-filter" data-active={i === 0 ? "" : undefined}>{f}</button>)}
+    </div>
+  </div>
+
+  <div class="lpt-grid-section">
+    <div class="lpt-card-grid">
+      {
+        metiers.map((m) => (
+          <article class="lpt-article-card">
+            <span class="lpt-tag" style="align-self:flex-start;">{m.data.family}</span>
+            <a class="lpt-article-card__title" href={`/metiers/${m.id}`}>{m.data.title}</a>
+            <p style="font-size:13.5px; color:var(--text-body); margin:0;">{m.data.description}</p>
+            <div class="lpt-metier-chips">
+              {m.data.salary && <span class="lpt-metier-chip"><b>{m.data.salary}</b></span>}
+              {m.data.accessibility && <span class="lpt-metier-chip">{m.data.accessibility}</span>}
+            </div>
+            <a class="lpt-article-card__link" href={`/metiers/${m.id}`}>Voir la fiche →</a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
