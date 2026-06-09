@@ -1,0 +1,31 @@
+---
+/**
+ * Button — bouton réutilisable du design system.
+ * Rend un <a> (lien) avec les classes .lpt-btn + variante.
+ * Props :
+ *   variant : "primary" | "cta" | "accent" | "outline"  (défaut: primary)
+ *   href    : destination du lien                         (défaut: "#")
+ *   label   : texte du bouton
+ *   arrow   : afficher la flèche "→" (défaut: true sauf outline)
+ */
+interface Props {
+  variant?: "primary" | "cta" | "accent" | "outline";
+  href?: string;
+  label: string;
+  arrow?: boolean;
+  class?: string;
+}
+
+const {
+  variant = "primary",
+  href = "#",
+  label,
+  arrow = variant !== "outline",
+  class: extraClass = "",
+} = Astro.props;
+---
+
+<a href={href} class={`lpt-btn lpt-btn--${variant} ${extraClass}`.trim()}>
+  {label}
+  {arrow && <span class="lpt-btn__arrow" aria-hidden="true">→</span>}
+</a>

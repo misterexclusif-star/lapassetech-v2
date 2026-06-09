@@ -1,0 +1,74 @@
+---
+/**
+ * Footer — 4 colonnes sur fond sombre (--lpt-black).
+ * Colonne marque + 3 colonnes de liens + ligne légale.
+ * Chrome (.lpt-footer*) défini dans le design system (content.css).
+ */
+const cols = [
+  {
+    h: "S'informer",
+    links: [
+      { label: "Tous les articles", href: "/articles" },
+      { label: "Reconversion", href: "/articles" },
+      { label: "CPF & POEI", href: "/articles" },
+      { label: "Métiers du digital", href: "/metiers" },
+    ],
+  },
+  {
+    h: "Passer à l'action",
+    links: [
+      { label: "Toutes les ressources", href: "/ressources" },
+      { label: "Outils IA", href: "/ressources" },
+      { label: "Compétences digitales", href: "/ressources" },
+      { label: "Télécharger le guide PDF", href: "/ressources", accent: true },
+    ],
+  },
+  {
+    h: "LaPasseTech",
+    links: [
+      { label: "Le bilan gratuit", href: "/bilan" },
+      { label: "À propos de Guy", href: "/a-propos" },
+      { label: "Écrire à Guy", href: "mailto:contact@lapassetech.fr" },
+      { label: "Mentions légales", href: "#" },
+    ],
+  },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="lpt-footer">
+  <div class="lpt-footer__grid">
+    <div>
+      <a class="lpt-header__brand" href="/" style="color:var(--text-on-dark); margin-bottom:14px; display:inline-block;">
+        LaPasse<span>Tech</span>
+      </a>
+      <p style="font-size:13.5px; color:var(--text-faint); line-height:1.65;">
+        Reconversion vers les métiers du digital.<br />
+        Sans bullshit, sans jargon, sans complexe.
+      </p>
+    </div>
+
+    {
+      cols.map((col) => (
+        <div>
+          <h4>{col.h}</h4>
+          <ul>
+            {col.links.map((l) => (
+              <li>
+                <a href={l.href} style={l.accent ? "color:var(--accent)" : undefined}>
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="lpt-footer__legal">
+    <span>© {year} LaPasseTech. Tous droits réservés.</span>
+    <span>Mentions légales · RGPD</span>
+  </div>
+</footer>
