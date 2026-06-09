@@ -131,6 +131,11 @@ const reads = [
 </script>
 
 <style>
+  /* hero compact : tient sur ~80% de la hauteur d'écran */
+  .hero {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
   .hero__grid {
     display: grid;
     grid-template-columns: 1.05fr 1fr;
@@ -138,18 +143,18 @@ const reads = [
     align-items: start;
   }
   h1 {
-    margin-top: 22px;
-    font-size: 56px;
+    margin-top: 16px;
+    font-size: 48px;
   }
   h1 .lpt-mark {
-    line-height: 1.25;
+    line-height: 1.22;
   }
   .hero__lead {
     font-size: var(--fs-lead);
     color: var(--text-body);
-    line-height: 1.55;
+    line-height: 1.5;
     max-width: 520px;
-    margin-top: 26px;
+    margin-top: 18px;
   }
   .hero__lead strong {
     color: var(--text-strong);
@@ -158,13 +163,13 @@ const reads = [
   .hero__cta {
     display: flex;
     gap: 14px;
-    margin-top: 32px;
+    margin-top: 24px;
     flex-wrap: wrap;
   }
   .hero__pills {
     display: flex;
     gap: 12px;
-    margin-top: 28px;
+    margin-top: 20px;
     flex-wrap: wrap;
   }
 
@@ -172,12 +177,14 @@ const reads = [
   .hero__media {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 14px;
   }
   .hero__cover {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 11;
+    /* hauteur calée pour que le bas de l'image s'aligne ~ avec les pills
+       de gauche et que le hero tienne sur ~80vh sans scroll */
+    height: clamp(280px, 38vh, 320px);
     border-radius: var(--radius-2xl);
     overflow: hidden;
     border: 1px solid var(--border);
@@ -232,7 +239,7 @@ const reads = [
 
   /* ── À lire maintenant ── */
   .hero__reads-head {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--border);
   }
   .hero__reads-list {
@@ -242,9 +249,9 @@ const reads = [
   }
   .hero__read {
     display: grid;
-    grid-template-columns: 34px 1fr;
-    gap: 14px;
-    padding: 15px 12px 15px 0;
+    grid-template-columns: 30px 1fr;
+    gap: 12px;
+    padding: 7px 12px 7px 0;
     border-bottom: 1px solid var(--border);
     border-radius: var(--radius-md);
     transition: background 0.15s ease;
@@ -267,7 +274,7 @@ const reads = [
   .hero__read-body {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     min-width: 0;
   }
   .hero__read-cat {
