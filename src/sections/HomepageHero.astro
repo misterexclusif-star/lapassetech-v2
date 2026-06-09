@@ -1,15 +1,33 @@
 ---
 /**
  * HomepageHero — 2 colonnes.
- * Gauche : eyebrow + titre + sous-titre + 2 CTA.
- * Droite : photo (placeholder) + 3 proof points.
+ * Gauche : eyebrow + titre + sous-titre + 2 CTA + pills.
+ * Droite : photo du fondateur (badge + caption) + bloc "À lire maintenant" (01/02/03).
  */
 import Button from "../components/Button.astro";
 
-const proofs = [
-  { k: "Bilan", v: "10 min" },
-  { k: "Coût", v: "0 €" },
-  { k: "Engagement", v: "Aucun" },
+const reads = [
+  {
+    n: "01",
+    cat: "Reconversion",
+    title: "16 ans en marketing : comment j'ai basculé dans la tech à 40 ans",
+    meta: "4 mars 2026 · 7 min",
+    href: "/articles/exemple-reconversion-40-ans",
+  },
+  {
+    n: "02",
+    cat: "Financement",
+    title: "POEI, CPF, Transitions Pro : lequel choisir pour ta reconversion ?",
+    meta: "18 fév. 2026 · 6 min",
+    href: "/articles",
+  },
+  {
+    n: "03",
+    cat: "Métiers du digital",
+    title: "Les 5 familles de métiers du digital : trouve celle qui te correspond",
+    meta: "27 fév. 2026 · 5 min",
+    href: "/articles",
+  },
 ];
 ---
 
@@ -36,19 +54,33 @@ const proofs = [
     </div>
 
     <div class="hero__col hero__media">
-      <div class="hero__photo" role="img" aria-label="Portrait de Guy, fondateur">
-        <span class="lpt-mono">photo · Guy</span>
+      <figure class="hero__portrait">
+        <div class="hero__photo" role="img" aria-label="Portrait de Guy, fondateur de LaPasseTech">
+          <span class="hero__badge">Le fondateur</span>
+          <span class="lpt-mono hero__photo-label">photo · Guy</span>
+        </div>
+        <figcaption class="hero__caption">
+          Guy · 16 ans marketing → <strong>Business Analyst Salesforce</strong>
+        </figcaption>
+      </figure>
+
+      <div class="hero__reads">
+        <div class="lpt-eyebrow hero__reads-head">À lire maintenant</div>
+        <ol class="hero__reads-list">
+          {
+            reads.map((r) => (
+              <li class="hero__read">
+                <span class="hero__read-num">{r.n}</span>
+                <div class="hero__read-body">
+                  <span class="hero__read-cat">{r.cat}</span>
+                  <a class="hero__read-title" href={r.href}>{r.title}</a>
+                  <div class="hero__read-meta">{r.meta}</div>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
       </div>
-      <ul class="hero__proofs">
-        {
-          proofs.map((p) => (
-            <li>
-              <span class="hero__proof-k lpt-eyebrow">{p.k}</span>
-              <span class="hero__proof-v">{p.v}</span>
-            </li>
-          ))
-        }
-      </ul>
     </div>
   </div>
 </section>
@@ -56,9 +88,9 @@ const proofs = [
 <style>
   .hero__grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 64px;
-    align-items: center;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 56px;
+    align-items: start;
   }
   h1 {
     margin-top: 24px;
@@ -83,44 +115,113 @@ const proofs = [
     margin-top: 28px;
     flex-wrap: wrap;
   }
+
+  /* ── Colonne droite ── */
   .hero__media {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 28px;
+  }
+  .hero__portrait {
+    margin: 0;
   }
   .hero__photo {
+    position: relative;
     width: 100%;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 5 / 4;
     background: var(--lpt-beige);
     border: 1px solid var(--border);
     border-radius: var(--radius-2xl);
     display: grid;
     place-items: center;
+    overflow: hidden;
+  }
+  .hero__photo-label {
     color: var(--text-muted);
     font-size: 12px;
   }
-  .hero__proofs {
+  .hero__badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+  }
+  .hero__caption {
+    font-size: 13px;
+    color: var(--text-body);
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  .hero__caption strong {
+    color: var(--text-strong);
+    font-weight: var(--fw-semi);
+  }
+
+  /* ── À lire maintenant ── */
+  .hero__reads-head {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero__reads-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-  }
-  .hero__proofs li {
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
   }
-  .hero__proof-v {
+  .hero__read {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero__read:last-child {
+    border-bottom: 0;
+  }
+  .hero__read-num {
+    font-family: var(--font-display);
+    font-weight: var(--fw-black);
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+  }
+  .hero__read-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .hero__read-cat {
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lpt-green-deep);
+  }
+  .hero__read-title {
     font-family: var(--font-display);
     font-weight: var(--fw-bold);
-    font-size: 22px;
+    font-size: 15.5px;
+    line-height: 1.3;
     color: var(--text-strong);
+    transition: color 0.15s ease;
+  }
+  .hero__read-title:hover {
+    color: var(--accent-strong);
+  }
+  .hero__read-meta {
+    font-size: 12px;
+    color: var(--text-muted);
   }
 
   @media (max-width: 980px) {
