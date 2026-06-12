@@ -1,6 +1,6 @@
 ---
 /**
- * Listing des articles. Hero + filtres (stub statique) + grille depuis la collection.
+ * Listing des articles. Hero + filtres actifs + recherche client-side.
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -12,7 +12,15 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft)).so
 const fmt = (d: Date) =>
   new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(d);
 
-const filters = ["Tous", "Reconversion", "CPF/POEI", "Métiers", "Droit travail", "Perso"];
+// label affiché → valeur réelle du champ `tag`
+const filters: { label: string; value: string }[] = [
+  { label: "Tous",          value: "*" },
+  { label: "Reconversion",  value: "Reconversion" },
+  { label: "CPF/POEI",      value: "Financement" },
+  { label: "Métiers",       value: "Métiers du digital" },
+  { label: "Droit travail", value: "Droit du travail" },
+  { label: "Perso",         value: "Témoignage" },
+];
 ---
 
 <BaseLayout title="Articles — S'informer · LaPasseTech" description="Des articles de fond sur la reconversion, le financement et les métiers du digital.">
@@ -20,21 +28,32 @@ const filters = ["Tous", "Reconversion", "CPF/POEI", "Métiers", "Droit travail"
     <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Articles</span></nav>
     <h1 style="margin-top:14px;">S'informer pour mieux <em class="lpt-serif-italic" style="color:var(--accent)">décider.</em></h1>
     <p>Des articles de fond sur la reconversion, le financement, les métiers du digital et tes droits — par quelqu'un qui a fait le chemin.</p>
-    <div class="lpt-listing-hero__count">{articles.length} article{articles.length > 1 ? "s" : ""} publié{articles.length > 1 ? "s" : ""}</div>
+    <div class="lpt-listing-hero__count" id="articles-count">{articles.length} article{articles.length > 1 ? "s" : ""} publié{articles.length > 1 ? "s" : ""}</div>
   </section>
 
   <div class="lpt-filterbar">
-    <input class="lpt-input lpt-search" placeholder="Rechercher un article…" />
+    <input id="articles-search" class="lpt-input lpt-search" placeholder="Rechercher un article…" type="search" autocomplete="off" />
     <div class="lpt-filters">
-      {filters.map((f, i) => <button class="lpt-filter" data-active={i === 0 ? "" : undefined}>{f}</button>)}
+      {filters.map((f, i) => (
+        <button
+          class="lpt-filter"
+          data-filter={f.value}
+          data-active={i === 0 ? "" : undefined}
+        >{f.label}</button>
+      ))}
     </div>
   </div>
 
   <div class="lpt-grid-section">
-    <div class="lpt-card-grid">
+    <div class="lpt-card-grid" id="articles-grid">
       {
         articles.map((a) => (
-          <article class="lpt-article-card">
+          <article
+            class="lpt-article-card"
+            data-tag={a.data.tag}
+            data-title={a.data.title.toLowerCase()}
+            data-desc={a.data.description.toLowerCase()}
+          >
             <span class="lpt-tag" style="align-self:flex-start;">{a.data.tag}</span>
             <a class="lpt-article-card__title" href={`/articles/${a.id}`}>{a.data.title}</a>
             <p style="font-size:13.5px; color:var(--text-body); margin:0;">{a.data.description}</p>
@@ -48,5 +67,56 @@ const filters = ["Tous", "Reconversion", "CPF/POEI", "Métiers", "Droit travail"
         ))
       }
     </div>
+    <p id="articles-empty" style="display:none; padding:40px 0; color:var(--text-muted); text-align:center;">Aucun article ne correspond à ta recherche.</p>
   </div>
 </BaseLayout>
+
+<script>
+  const grid    = document.getElementById("articles-grid")!;
+  const search  = document.getElementById("articles-search") as HTMLInputElement;
+  const countEl = document.getElementById("articles-count")!;
+  const emptyEl = document.getElementById("articles-empty")!;
+  const btns    = document.querySelectorAll<HTMLButtonElement>(".lpt-filters .lpt-filter");
+  const cards   = Array.from(grid.querySelectorAll<HTMLElement>("article.lpt-article-card"));
+
+  let activeFilter = "*";
+  let searchQuery  = "";
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach((card) => {
+      const tag   = card.dataset.tag  ?? "";
+      const title = card.dataset.title ?? "";
+      const desc  = card.dataset.desc  ?? "";
+
+      const matchFilter = activeFilter === "*" || tag === activeFilter;
+      const matchSearch = searchQuery === "" ||
+        title.includes(searchQuery) ||
+        desc.includes(searchQuery) ||
+        tag.toLowerCase().includes(searchQuery);
+
+      const show = matchFilter && matchSearch;
+      card.style.display = show ? "" : "none";
+      if (show) visible++;
+    });
+
+    emptyEl.style.display = visible === 0 ? "" : "none";
+    countEl.textContent = `${visible} article${visible > 1 ? "s" : ""} publié${visible > 1 ? "s" : ""}`;
+  }
+
+  // Filtres
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btns.forEach((b) => b.removeAttribute("data-active"));
+      btn.setAttribute("data-active", "");
+      activeFilter = btn.dataset.filter ?? "*";
+      applyFilters();
+    });
+  });
+
+  // Recherche
+  search.addEventListener("input", () => {
+    searchQuery = search.value.trim().toLowerCase();
+    applyFilters();
+  });
+</script>

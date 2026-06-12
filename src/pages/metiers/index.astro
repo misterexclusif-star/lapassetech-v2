@@ -1,12 +1,22 @@
 ---
 /**
- * Listing des fiches métiers. Hero + filtres (stub) + grille avec chips salaire/accès.
+ * Listing des fiches métiers. Hero + filtres actifs + recherche client-side.
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const metiers = await getCollection("metiers", ({ data }) => !data.draft);
-const filters = ["Toutes", "Data", "Marketing", "Dev", "Support", "Gestion de projet"];
+
+// label affiché → valeur réelle du champ `family`
+const filters: { label: string; value: string }[] = [
+  { label: "Toutes",           value: "*" },
+  { label: "Data",             value: "Data" },
+  { label: "Marketing",        value: "Marketing Digital" },
+  { label: "CRM / Salesforce", value: "CRM" },
+  { label: "Gestion de projet",value: "Gestion de projet" },
+  { label: "No-code",          value: "No-code" },
+  { label: "Support IT",       value: "Support IT" },
+];
 ---
 
 <BaseLayout title="Fiches métiers — LaPasseTech" description="Les métiers du digital, fiche par fiche : salaire, accessibilité, compétences.">
@@ -14,21 +24,32 @@ const filters = ["Toutes", "Data", "Marketing", "Dev", "Support", "Gestion de pr
     <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Fiches métiers</span></nav>
     <h1 style="margin-top:14px;">Les métiers, <em class="lpt-serif-italic" style="color:var(--accent)">sans flou.</em></h1>
     <p>Pour chaque métier du digital : ce que c'est vraiment, le salaire, l'accessibilité et les compétences que tu as déjà.</p>
-    <div class="lpt-listing-hero__count">{metiers.length} fiche{metiers.length > 1 ? "s" : ""}</div>
+    <div class="lpt-listing-hero__count" id="metiers-count">{metiers.length} fiche{metiers.length > 1 ? "s" : ""}</div>
   </section>
 
   <div class="lpt-filterbar">
-    <input class="lpt-input lpt-search" placeholder="Rechercher un métier…" />
+    <input id="metiers-search" class="lpt-input lpt-search" placeholder="Rechercher un métier…" type="search" autocomplete="off" />
     <div class="lpt-filters">
-      {filters.map((f, i) => <button class="lpt-filter" data-active={i === 0 ? "" : undefined}>{f}</button>)}
+      {filters.map((f, i) => (
+        <button
+          class="lpt-filter"
+          data-filter={f.value}
+          data-active={i === 0 ? "" : undefined}
+        >{f.label}</button>
+      ))}
     </div>
   </div>
 
   <div class="lpt-grid-section">
-    <div class="lpt-card-grid">
+    <div class="lpt-card-grid" id="metiers-grid">
       {
         metiers.map((m) => (
-          <article class="lpt-article-card">
+          <article
+            class="lpt-article-card"
+            data-family={m.data.family}
+            data-title={m.data.title.toLowerCase()}
+            data-desc={m.data.description.toLowerCase()}
+          >
             <span class="lpt-tag" style="align-self:flex-start;">{m.data.family}</span>
             <a class="lpt-article-card__title" href={`/metiers/${m.id}`}>{m.data.title}</a>
             <p style="font-size:13.5px; color:var(--text-body); margin:0;">{m.data.description}</p>
@@ -41,5 +62,54 @@ const filters = ["Toutes", "Data", "Marketing", "Dev", "Support", "Gestion de pr
         ))
       }
     </div>
+    <p id="metiers-empty" style="display:none; padding:40px 0; color:var(--text-muted); text-align:center;">Aucune fiche ne correspond à ta recherche.</p>
   </div>
 </BaseLayout>
+
+<script>
+  const grid    = document.getElementById("metiers-grid")!;
+  const search  = document.getElementById("metiers-search") as HTMLInputElement;
+  const countEl = document.getElementById("metiers-count")!;
+  const emptyEl = document.getElementById("metiers-empty")!;
+  const btns    = document.querySelectorAll<HTMLButtonElement>(".lpt-filters .lpt-filter");
+  const cards   = Array.from(grid.querySelectorAll<HTMLElement>("article.lpt-article-card"));
+
+  let activeFilter = "*";
+  let searchQuery  = "";
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach((card) => {
+      const family = card.dataset.family ?? "";
+      const title  = card.dataset.title  ?? "";
+      const desc   = card.dataset.desc   ?? "";
+
+      const matchFilter = activeFilter === "*" || family === activeFilter;
+      const matchSearch = searchQuery === "" ||
+        title.includes(searchQuery) ||
+        desc.includes(searchQuery) ||
+        family.toLowerCase().includes(searchQuery);
+
+      const show = matchFilter && matchSearch;
+      card.style.display = show ? "" : "none";
+      if (show) visible++;
+    });
+
+    emptyEl.style.display = visible === 0 ? "" : "none";
+    countEl.textContent = `${visible} fiche${visible > 1 ? "s" : ""}`;
+  }
+
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btns.forEach((b) => b.removeAttribute("data-active"));
+      btn.setAttribute("data-active", "");
+      activeFilter = btn.dataset.filter ?? "*";
+      applyFilters();
+    });
+  });
+
+  search.addEventListener("input", () => {
+    searchQuery = search.value.trim().toLowerCase();
+    applyFilters();
+  });
+</script>
