@@ -26,3 +26,4 @@ pnpm-debug.log*
 # design handoff / maquettes — référence locale, ne pas déployer
 _handoff_bundle/
 *.zip
+.vercel
