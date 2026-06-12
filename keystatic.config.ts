@@ -10,7 +10,7 @@ export default config({
     articles: collection({
       label: 'Articles',
       slugField: 'title',
-      path: 'src/content/articles/*.md',
+      path: 'src/content/articles/*',
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Titre' } }),
@@ -39,7 +39,7 @@ export default config({
     ressources: collection({
       label: 'Ressources',
       slugField: 'title',
-      path: 'src/content/ressources/*.md',
+      path: 'src/content/ressources/*',
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Titre' } }),
@@ -74,7 +74,7 @@ export default config({
     metiers: collection({
       label: 'Fiches Métiers',
       slugField: 'title',
-      path: 'src/content/metiers/*.md',
+      path: 'src/content/metiers/*',
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Nom du métier' } }),

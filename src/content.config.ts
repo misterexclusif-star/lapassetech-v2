@@ -8,7 +8,7 @@ import { glob } from "astro/loaders";
  */
 
 const articles = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/articles" }),
+  loader: glob({ pattern: "**/*.{md,mdoc}", base: "./src/content/articles" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -21,7 +21,7 @@ const articles = defineCollection({
 });
 
 const ressources = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/ressources" }),
+  loader: glob({ pattern: "**/*.{md,mdoc}", base: "./src/content/ressources" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -33,7 +33,7 @@ const ressources = defineCollection({
 });
 
 const metiers = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/metiers" }),
+  loader: glob({ pattern: "**/*.{md,mdoc}", base: "./src/content/metiers" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
