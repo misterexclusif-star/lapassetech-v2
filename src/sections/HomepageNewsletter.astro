@@ -1,8 +1,7 @@
 ---
 /**
  * HomepageNewsletter — fond noir.
- * "2 fois par semaine" + formulaire email (stub statique, action="#").
- * Les IDs MailerLite arrivent en Phase 4.
+ * Formulaire câblé sur POST /api/subscribe (type: newsletter → groupe MailerLite "Newsletter").
  */
 ---
 
@@ -19,7 +18,7 @@
       </p>
     </div>
 
-    <form action="#" class="newsletter__form">
+    <form id="nl-form" class="newsletter__form" novalidate>
       <label class="newsletter__label" for="nl-email">Ton email</label>
       <div class="newsletter__row">
         <input
@@ -29,12 +28,18 @@
           name="email"
           placeholder="prenom@email.com"
           required
+          autocomplete="email"
         />
-        <button type="submit" class="lpt-btn lpt-btn--cta">
-          Je m'abonne <span class="lpt-btn__arrow" aria-hidden="true">→</span>
+        <button type="submit" class="lpt-btn lpt-btn--cta" id="nl-btn">
+          <span class="nl-btn-label">Je m'abonne <span class="lpt-btn__arrow" aria-hidden="true">→</span></span>
+          <span class="nl-btn-loading" aria-hidden="true" style="display:none;">Envoi…</span>
         </button>
       </div>
-      <p class="newsletter__note">Rejoins les reconverti·es qui avancent chaque semaine.</p>
+      <p class="newsletter__error" id="nl-error" role="alert" aria-live="polite"></p>
+      <p class="newsletter__note" id="nl-note">Rejoins les reconverti·es qui avancent chaque semaine.</p>
+      <p class="newsletter__success" id="nl-success" role="status" style="display:none;">
+        ✅ <strong>Tu es inscrit·e !</strong> Vérifie ta boîte mail pour confirmer.
+      </p>
     </form>
   </div>
 </section>
@@ -87,6 +92,17 @@
     color: var(--text-faint);
     margin-top: 4px;
   }
+  .newsletter__error {
+    font-size: 13px;
+    color: #fca5a5;
+    min-height: 18px;
+    margin: 0;
+  }
+  .newsletter__success {
+    font-size: 14px;
+    color: var(--lpt-yellow);
+    margin-top: 4px;
+  }
 
   @media (max-width: 980px) {
     .newsletter__inner {
@@ -100,3 +116,57 @@
     }
   }
 </style>
+
+<script>
+  const form    = document.getElementById("nl-form") as HTMLFormElement;
+  const input   = document.getElementById("nl-email") as HTMLInputElement;
+  const btn     = document.getElementById("nl-btn") as HTMLButtonElement;
+  const errEl   = document.getElementById("nl-error")!;
+  const noteEl  = document.getElementById("nl-note")!;
+  const successEl = document.getElementById("nl-success")!;
+  const labelEl = btn.querySelector(".nl-btn-label") as HTMLElement;
+  const loadEl  = btn.querySelector(".nl-btn-loading") as HTMLElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errEl.textContent = "";
+
+    const email = input.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = "Saisis une adresse email valide.";
+      input.focus();
+      return;
+    }
+
+    // State: loading
+    btn.disabled = true;
+    labelEl.style.display = "none";
+    loadEl.style.display  = "";
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, type: "newsletter" }),
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        input.style.display = "none";
+        btn.style.display   = "none";
+        noteEl.style.display = "none";
+        successEl.style.display = "";
+      } else {
+        errEl.textContent = data.error ?? "Une erreur est survenue, réessaie.";
+        btn.disabled = false;
+        labelEl.style.display = "";
+        loadEl.style.display  = "none";
+      }
+    } catch {
+      errEl.textContent = "Erreur réseau, vérifie ta connexion et réessaie.";
+      btn.disabled = false;
+      labelEl.style.display = "";
+      loadEl.style.display  = "none";
+    }
+  });
+</script>
