@@ -412,61 +412,156 @@ def metier_page(story, badge_text, badge_color, title, metrics,
     story.append(pe_card)
     story.append(PageBreak())
 
+# ── Cover page (dessin natif canvas) ─────────────────────────────────────────
+def draw_cover(c):
+    """Couverture V3 — fond portrait simulé + filtre caramel (style carrousel)."""
+    import random
+
+    # ── 1. Fond de base chaud ─────────────────────────────────────────────────
+    c.setFillColor(HexColor('#C8A882'))
+    c.rect(0, 0, W, H, fill=1, stroke=0)
+
+    # ── 2. Formes organiques chaudes — scène portrait/intérieur ──────────────
+    c.saveState()
+    c.setFillColor(HexColor('#E8D0B0'))
+    c.ellipse(W * 0.55, H * 0.65, W * 1.1, H * 1.05, fill=1, stroke=0)
+    c.restoreState()
+
+    c.saveState()
+    c.setFillColor(HexColor('#8B6040'))
+    c.ellipse(W * 0.2, H * 0.15, W * 0.82, H * 0.88, fill=1, stroke=0)
+    c.restoreState()
+
+    c.saveState()
+    c.setFillColor(HexColor('#D4A870'))
+    c.ellipse(W * 0.28, H * 0.52, W * 0.74, H * 0.95, fill=1, stroke=0)
+    c.restoreState()
+
+    c.saveState()
+    c.setFillColor(HexColor('#5A3820'))
+    c.rect(0, 0, W * 0.22, H, fill=1, stroke=0)
+    c.restoreState()
+
+    c.saveState()
+    c.setFillColor(HexColor('#4A2E18'))
+    c.rect(0, 0, W, H * 0.18, fill=1, stroke=0)
+    c.restoreState()
+
+    c.saveState()
+    c.setFillColor(HexColor('#E8C898'))
+    c.ellipse(W * 0.38, H * 0.55, W * 0.65, H * 0.82, fill=1, stroke=0)
+    c.restoreState()
+
+    # ── 3. Filtre caramel semi-transparent ────────────────────────────────────
+    c.saveState()
+    c.setFillColor(C_CARAMEL)
+    c.setFillAlpha(0.58)
+    c.rect(0, 0, W, H, fill=1, stroke=0)
+    c.restoreState()
+
+    # ── 4. Grain photo ────────────────────────────────────────────────────────
+    c.saveState()
+    c.setFillColor(HexColor('#000000'))
+    random.seed(42)
+    c.setFillAlpha(0.03)
+    for _ in range(2200):
+        px = random.uniform(0, W)
+        py = random.uniform(0, H)
+        c.circle(px, py, 0.6, fill=1, stroke=0)
+    c.restoreState()
+
+    # ── 5. Vignette bas ───────────────────────────────────────────────────────
+    c.saveState()
+    n = 12
+    for i in range(n):
+        c.setFillColor(C_CARAMEL_DEEP)
+        c.setFillAlpha((i / n) * 0.65 * 0.7)
+        step_h = H * 0.38 / n
+        c.rect(0, (i / n) * H * 0.38, W, step_h + 1, fill=1, stroke=0)
+    c.restoreState()
+
+    # ── 6. Vignette haut ──────────────────────────────────────────────────────
+    c.saveState()
+    n = 8
+    for i in range(n):
+        c.setFillColor(C_CARAMEL_DEEP)
+        c.setFillAlpha(((n - i) / n) * 0.36)
+        y_top = H - (i / n) * H * 0.30
+        c.rect(0, y_top, W, H * 0.30 / n + 1, fill=1, stroke=0)
+    c.restoreState()
+
+    c.setFillAlpha(1.0)
+
+    # ── 7. Barre jaune top ────────────────────────────────────────────────────
+    c.setFillColor(C_YELLOW)
+    c.rect(0, H - 3.5 * mm, W, 3.5 * mm, fill=1, stroke=0)
+
+    # ── 8. Wordmark ───────────────────────────────────────────────────────────
+    c.setFillColor(C_CREAM)
+    c.setFont('Helvetica-Bold', 16)
+    c.drawString(MARGIN_H, H - MARGIN_V - 6, 'LaPasseTech')
+    c.setFillColor(HexColor('#F2E2CC'))
+    c.setFont('Helvetica', 9)
+    c.drawRightString(W - MARGIN_H, H - MARGIN_V - 6, 'GUIDE PDF  ·  2026')
+
+    # ── 9. Eyebrow tracking ───────────────────────────────────────────────────
+    c.setFillColor(C_CREAM)
+    c.setFont('Helvetica-Bold', 8.5)
+    eyebrow = 'RECONVERSION  SANS  BULLSHIT'
+    c.drawString(MARGIN_H, H * 0.71, eyebrow)
+    ew = len(eyebrow) * 5.2
+    c.setStrokeColor(C_YELLOW)
+    c.setLineWidth(1.5)
+    c.line(MARGIN_H, H * 0.71 - 5, MARGIN_H + ew, H * 0.71 - 5)
+
+    # ── 10. Barre verticale gauche accent jaune ───────────────────────────────
+    tx = MARGIN_H
+    ty = H * 0.44
+    c.setFillColor(C_YELLOW)
+    c.rect(tx - 4, ty - 66, 3, 150, fill=1, stroke=0)
+
+    # ── 11. Titre ─────────────────────────────────────────────────────────────
+    c.setFillColor(C_PAPER)
+    c.setFont('Helvetica-Bold', 58)
+    c.drawString(tx, ty + 44, 'Les 8')
+    c.setFont('Helvetica-Bold', 48)
+    c.drawString(tx, ty - 10, 'métiers du digital')
+
+    c.setFillColor(C_CARAMEL_SOFT)
+    c.setFont('Helvetica-BoldOblique', 30)
+    c.drawString(tx, ty - 48, 'accessibles sans coder.')
+
+    # ── 12. Sous-titre ────────────────────────────────────────────────────────
+    c.setFillColor(C_CARAMEL_SOFT)
+    c.setFont('Helvetica', 11.5)
+    c.drawString(tx, ty - 72,
+                 'Le guide honnête pour ta reconversion dans le digital')
+
+    # ── 13. Auteur ────────────────────────────────────────────────────────────
+    c.setFillColor(C_PAPER)
+    c.setFont('Helvetica-Bold', 13)
+    c.drawString(tx, H * 0.19 + 14, 'Guy')
+    c.setFillColor(C_CARAMEL_SOFT)
+    c.setFont('Helvetica', 10.5)
+    c.drawString(tx, H * 0.19, 'Business Analyst  ·  Fondateur de LaPasseTech')
+
+    # ── 14. Badge pill ────────────────────────────────────────────────────────
+    pill_w, pill_h = 164, 22
+    c.setFillColor(C_YELLOW)
+    c.roundRect(tx, H * 0.105, pill_w, pill_h, pill_h / 2, fill=1, stroke=0)
+    c.setFillColor(C_BLACK)
+    c.setFont('Helvetica-Bold', 9)
+    c.drawCentredString(tx + pill_w / 2, H * 0.105 + 7, 'Guide gratuit  ·  21 pages')
+
+
 # ── Build story ───────────────────────────────────────────────────────────────
 def build():
     story = []
     tpl = LPTPageTemplate(skip_pages=(1, 21))
 
     # ───────────────────────────────────────────────────────────────────────
-    # PAGE 1 — COUVERTURE
+    # PAGE 1 — COUVERTURE (dessinée via draw_cover() sur canvas)
     # ───────────────────────────────────────────────────────────────────────
-    # Full-page is drawn in on_first_page — we add a custom first page via canvas
-    # Instead we build it as flowables on a cream background
-
-    # Header bande noire simulée via dark card
-    story.append(dark_card([
-        Paragraph('<font color="#FAF8F5"><b>LaPasseTech</b></font>',
-                  S('CoverHeader', fontName='Helvetica-Bold', fontSize=20,
-                    textColor=C_CREAM, leading=24)),
-    ], bg=C_BLACK, radius=0))
-    story.append(sp(40))
-
-    # Badge
-    story.append(BadgePill('Guide gratuit · 20 pages', bg_color=C_CARAMEL_SOFT,
-                            fg_color=C_CARAMEL, font_size=9))
-    story.append(sp(20))
-
-    # Main title
-    cover_title = S('CoverMain', fontName='Helvetica-Bold', fontSize=36,
-                    leading=42, textColor=C_INK, letterSpacing=-0.5)
-    story.append(Paragraph('Les 8 métiers du digital', cover_title))
-    story.append(Paragraph(
-        '<font color="#9C5A2C"><i>accessibles sans coder.</i></font>',
-        S('CoverAccent', fontName='Helvetica-BoldOblique', fontSize=34,
-          leading=40, textColor=C_CARAMEL, letterSpacing=-0.3)))
-    story.append(sp(16))
-
-    story.append(Paragraph(
-        'Le guide honnête pour choisir ta reconversion dans le digital',
-        S('CoverSub2', fontName='Helvetica', fontSize=15, leading=22,
-          textColor=C_GRAY)))
-    story.append(sp(48))
-
-    # Divider
-    story.append(HRFlowable(width='100%', thickness=1, color=C_BORDER,
-                             spaceAfter=20, spaceBefore=0))
-
-    # Author
-    story.append(Paragraph(
-        'Par <b>Guy Gambo</b> · Fondateur de LaPasseTech',
-        S('CoverAuthor', fontName='Helvetica', fontSize=11, leading=16,
-          textColor=C_GRAY_LT)))
-    story.append(sp(6))
-    story.append(Paragraph(
-        'Business Analyst Salesforce — reconverti à 40 ans après 16 ans en marketing digital',
-        S('CoverAuthorSub', fontName='Helvetica', fontSize=10, leading=14,
-          textColor=C_GRAY_LIGHT)))
-
     story.append(PageBreak())
 
     # ───────────────────────────────────────────────────────────────────────
@@ -478,7 +573,7 @@ def build():
     story.append(sp(6))
     story.append(Paragraph(
         "J'ai passé 16 ans dans le marketing digital avant de me reconvertir dans "
-        "la tech à 40 ans. Sans réseau dans le secteur, sans diplôme informatique, "
+        "la tech à 38 ans. Sans réseau dans le secteur, sans diplôme informatique, "
         "avec beaucoup de questions sans réponse claire.",
         s_body))
     story.append(Paragraph(
@@ -1113,7 +1208,7 @@ def build():
             Paragraph('Fondateur, LaPasseTech', s_small),
             sp(4),
             Paragraph('Business Analyst Salesforce', s_small),
-            Paragraph('Reconverti a 40 ans apres 16 ans en marketing digital', s_small),
+            Paragraph('Business Analyst  ·  Reconverti a 38 ans', s_small),
         ],
     ]]
     intro_t = Table(photo_row, colWidths=[90, TEXT_W - 92])
@@ -1131,7 +1226,7 @@ def build():
 
     story.append(Paragraph(
         "Je suis Guy Gambo. Après 16 ans comme Responsable Marketing Digital et CRM "
-        "dans des groupes de presse parisiens, j'ai décidé de tout changer à 40 ans.",
+        "dans des groupes de presse parisiens, j'ai décidé de tout changer à 38 ans.",
         s_about_body))
     story.append(Paragraph(
         "J'ai découvert le métier de Business Analyst Salesforce par accident, "
@@ -1215,14 +1310,14 @@ def build():
                   S('FC1', fontName='Helvetica-Bold', fontSize=18,
                     textColor=C_CREAM, leading=22, alignment=TA_CENTER,
                     spaceAfter=6)),
-        Paragraph('<font color="#9A9388">Reconversion vers les métiers du digital.</font>',
+        Paragraph('<font color="#F2E2CC">Reconversion vers les métiers du digital.</font>',
                   S('FC2', fontName='Helvetica-Oblique', fontSize=11,
-                    textColor=C_GRAY_LT, leading=16, alignment=TA_CENTER,
+                    textColor=C_CARAMEL_SOFT, leading=16, alignment=TA_CENTER,
                     spaceAfter=3)),
-        Paragraph('<font color="#9A9388">Sans bullshit, sans jargon, sans complexe.</font>',
+        Paragraph('<font color="#F2E2CC">Sans bullshit, sans jargon, sans complexe.</font>',
                   S('FC3', fontName='Helvetica-Oblique', fontSize=11,
-                    textColor=C_GRAY_LT, leading=16, alignment=TA_CENTER)),
-    ], bg=C_BLACK, radius=10)
+                    textColor=C_CARAMEL_SOFT, leading=16, alignment=TA_CENTER)),
+    ], bg=C_CARAMEL, radius=10)
     story.append(final_card)
     story.append(PageBreak())
 
@@ -1234,30 +1329,30 @@ def build():
                   S('Back1', fontName='Helvetica-Bold', fontSize=26,
                     textColor=C_CREAM, leading=30, alignment=TA_CENTER,
                     spaceAfter=16)),
-        HRFlowable(width='80%', thickness=0.5, color=HexColor('#3A3530'),
+        HRFlowable(width='80%', thickness=0.5, color=HexColor('#7A4420'),
                    spaceAfter=16, spaceBefore=0),
-        Paragraph('<font color="#B5AE9F"><i>Reconversion vers les métiers du digital.</i></font>',
+        Paragraph('<font color="#F2E2CC"><i>Reconversion vers les métiers du digital.</i></font>',
                   S('Back2', fontName='Helvetica-Oblique', fontSize=14,
-                    textColor=C_GRAY_LIGHT, leading=20, alignment=TA_CENTER,
+                    textColor=C_CARAMEL_SOFT, leading=20, alignment=TA_CENTER,
                     spaceAfter=4)),
-        Paragraph('<font color="#B5AE9F"><i>Sans bullshit, sans jargon, sans complexe.</i></font>',
+        Paragraph('<font color="#F2E2CC"><i>Sans bullshit, sans jargon, sans complexe.</i></font>',
                   S('Back3', fontName='Helvetica-Oblique', fontSize=14,
-                    textColor=C_GRAY_LIGHT, leading=20, alignment=TA_CENTER,
+                    textColor=C_CARAMEL_SOFT, leading=20, alignment=TA_CENTER,
                     spaceAfter=32)),
-        HRFlowable(width='80%', thickness=0.5, color=HexColor('#3A3530'),
+        HRFlowable(width='80%', thickness=0.5, color=HexColor('#7A4420'),
                    spaceAfter=16, spaceBefore=0),
         Paragraph('<font color="#FAF8F5"><b>lapassetech.fr</b></font>',
                   S('BackURL', fontName='Helvetica-Bold', fontSize=13,
                     textColor=C_CREAM, leading=18, alignment=TA_CENTER,
                     spaceAfter=6)),
-        Paragraph('<font color="#6B655D">contact@lapassetech.fr</font>',
+        Paragraph('<font color="#F2E2CC">contact@lapassetech.fr</font>',
                   S('BackEmail', fontName='Helvetica', fontSize=11,
-                    textColor=C_GRAY, leading=16, alignment=TA_CENTER,
+                    textColor=C_CARAMEL_SOFT, leading=16, alignment=TA_CENTER,
                     spaceAfter=24)),
-        Paragraph('<font color="#3A3530">© 2026 LaPasseTech — Guide gratuit, diffusion libre</font>',
+        Paragraph('<font color="#D4A882">© 2026 LaPasseTech — Guide gratuit, diffusion libre</font>',
                   S('BackCopy', fontName='Helvetica', fontSize=9,
-                    textColor=HexColor('#3A3530'), leading=13, alignment=TA_CENTER)),
-    ], bg=C_BLACK, radius=0))
+                    textColor=HexColor('#D4A882'), leading=13, alignment=TA_CENTER)),
+    ], bg=C_CARAMEL, radius=0))
 
     # ── Build PDF ─────────────────────────────────────────────────────────
     doc = SimpleDocTemplate(
@@ -1272,8 +1367,12 @@ def build():
         subject='Guide reconversion digitale',
     )
 
+    def on_first_page(canv, doc):
+        draw_cover(canv)
+        # No footer on cover
+
     doc.build(story,
-              onFirstPage=tpl.on_page,
+              onFirstPage=on_first_page,
               onLaterPages=tpl.on_page)
 
     print(f'PDF généré : {OUTPUT_PATH}')
