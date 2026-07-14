@@ -1,0 +1,161 @@
+---
+/**
+ * HomepageFinancement — « Les 4 dispositifs de financement. » (v4.5, ancre #financement).
+ * Tickets perforés avec bloc « La vérité : » — le composant signature anti-bullshit.
+ * Destination de la carte-question n°1 (Aïcha).
+ */
+const tickets = [
+  {
+    label: "dispositif_01",
+    t: "POEI",
+    d: "Une entreprise s'engage à t'embaucher, la formation est financée avant ta prise de poste. C'est le chemin que j'ai pris.",
+    v: "engagement d'embauche — pas forcément un CDI, ça peut être un CDD.",
+  },
+  {
+    label: "dispositif_02",
+    t: "CPF",
+    d: "Ton compte formation, alimenté chaque année travaillée. Utilisable pour des formations certifiantes.",
+    v: "reste à charge de 150 € depuis avril 2026. Le plafond de 1 500 € ne concerne que le Répertoire Spécifique.",
+  },
+  {
+    label: "dispositif_03",
+    t: "Transitions Pro",
+    d: "Pour te former à un nouveau métier tout en gardant ton salaire pendant la formation. Dossier exigeant, mais puissant.",
+    v: "il faut un vrai projet argumenté — on t'aide à le construire.",
+  },
+  {
+    label: "dispositif_04",
+    t: "Période de reconversion",
+    d: "Te former vers un nouveau métier sans démissionner, en accord avec ton employeur.",
+    v: "encore méconnu — et c'est peut-être ta meilleure carte si tu es en CDI.",
+  },
+];
+---
+
+<section id="financement" class="finance">
+  <div class="wrap">
+    <span class="eyebrow rv">la vraie question</span>
+    <h2 class="rv d1">Les 4 dispositifs de <em class="s">financement.</em></h2>
+    <p class="sub rv d2">
+      Sans promesse gonflée : ce que chaque dispositif finance vraiment, et pour qui il est fait.
+    </p>
+    <div class="tickets">
+      {
+        tickets.map((tk, i) => (
+          <article class={`ticket rv d${i + 1}`}>
+            <span class="tk-label">{tk.label}</span>
+            <h3>{tk.t}</h3>
+            <p>{tk.d}</p>
+            <p class="tk-verite">
+              <b>La vérité :</b> {tk.v}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="finance-cta rv">
+      <a href="/ressources" class="btn btn-noir">Le comparatif complet, étape par étape →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .finance {
+    background: var(--caramel-10);
+    border-top: 2px solid var(--noir);
+    border-bottom: 2px solid var(--noir);
+    padding: 84px 0;
+  }
+  .finance h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .tickets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    margin-top: 48px;
+  }
+  .ticket {
+    background: var(--creme);
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    padding: 24px 20px;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ticket:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .ticket::before,
+  .ticket::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: var(--caramel-10);
+    border: 2px solid var(--noir);
+    border-radius: 50%;
+    top: 50%;
+    margin-top: -9px;
+  }
+  .ticket::before {
+    left: -11px;
+    border-right-color: transparent;
+    clip-path: inset(0 0 0 50%);
+  }
+  .ticket::after {
+    right: -11px;
+    border-left-color: transparent;
+    clip-path: inset(0 50% 0 0);
+  }
+  .tk-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: var(--fw-semi);
+    background: var(--noir);
+    color: var(--creme);
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 14px;
+  }
+  .ticket h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+  .ticket p {
+    font-size: 0.9rem;
+    color: rgba(26, 23, 20, 0.78);
+  }
+  .tk-verite {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px dashed rgba(156, 90, 44, 0.35);
+    font-size: 0.82rem;
+  }
+  .tk-verite b {
+    color: var(--caramel);
+  }
+  .finance-cta {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  @media (max-width: 980px) {
+    .tickets {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .tickets {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

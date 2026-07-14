@@ -1,0 +1,184 @@
+---
+/**
+ * HomepageMetiers — « 4 métiers tech accessibles. » (v4.5, ancre #metiers).
+ * Destination de la carte-question n°2 (Malik). Cartes : icône pivotée,
+ * fourchette salaire (jaune), tags. Contenu statique aligné maquette —
+ * les fiches détaillées vivent dans la collection metiers.
+ */
+const metiers = [
+  {
+    ico: "🧭",
+    icoClass: "ico-jaune",
+    t: "Business Analyst",
+    d: "Le traducteur entre le métier et la tech. Ton passé pro devient ta force : tu comprends les deux langues.",
+    tags: [
+      { label: "38–50 k€", cls: "sal" },
+      { label: "zéro code", cls: "nocode" },
+      { label: "mon métier actuel", cls: "" },
+    ],
+  },
+  {
+    ico: "⚙️",
+    icoClass: "ico-caramel",
+    t: "Admin Salesforce",
+    d: "Tu configures le CRM le plus utilisé au monde — par clics, pas par lignes de code. Très demandé.",
+    tags: [
+      { label: "35–45 k€", cls: "sal" },
+      { label: "zéro code", cls: "nocode" },
+      { label: "certifiable", cls: "" },
+    ],
+  },
+  {
+    ico: "📊",
+    icoClass: "ico-creme",
+    t: "Data Analyst",
+    d: "Tu fais parler les chiffres pour aider les décisions. Des outils accessibles, une logique qui s'apprend.",
+    tags: [
+      { label: "35–45 k€", cls: "sal" },
+      { label: "peu de code", cls: "" },
+    ],
+  },
+  {
+    ico: "🛟",
+    icoClass: "ico-noir",
+    t: "Support / Ops",
+    d: "La porte d'entrée la plus rapide vers la tech : tu résous des problèmes concrets, tu apprends sur le terrain.",
+    tags: [
+      { label: "28–38 k€", cls: "sal" },
+      { label: "zéro code", cls: "nocode" },
+      { label: "entrée rapide", cls: "" },
+    ],
+  },
+];
+---
+
+<section id="metiers" class="metiers">
+  <div class="wrap">
+    <span class="eyebrow rv">sans coder</span>
+    <h2 class="rv d1">4 métiers tech <em class="s">accessibles.</em></h2>
+    <p class="sub rv d2">
+      Des métiers qui recrutent, où ton expérience passée compte — fourchettes indicatives, du
+      premier poste au profil confirmé.
+    </p>
+    <div class="metiers-grid">
+      {
+        metiers.map((m, i) => (
+          <a href="/metiers" class={`metier rv d${i + 1}`}>
+            <span class={`metier-ico ${m.icoClass}`} aria-hidden="true">
+              {m.ico}
+            </span>
+            <div>
+              <h3>{m.t}</h3>
+              <p>{m.d}</p>
+              <div class="m-meta">
+                {m.tags.map((tag) => (
+                  <span class={`mtag ${tag.cls}`}>{tag.label}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+    <div class="metiers-cta rv">
+      <a href="/metiers" class="btn btn-ghost">Toutes les fiches métiers →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .metiers {
+    padding: 84px 0;
+  }
+  .metiers h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .metiers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 26px;
+    margin-top: 48px;
+  }
+  .metier {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 26px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .metier:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .metier-ico {
+    width: 58px;
+    height: 58px;
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transform: rotate(-4deg);
+  }
+  .ico-jaune { background: var(--jaune); }
+  .ico-caramel { background: var(--caramel); }
+  .ico-creme { background: var(--creme); }
+  .ico-noir { background: var(--noir); }
+  .metier h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.25rem;
+    margin-bottom: 6px;
+  }
+  .metier p {
+    font-size: 0.92rem;
+    color: rgba(26, 23, 20, 0.78);
+  }
+  .m-meta {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .mtag {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: var(--fw-semi);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+  }
+  .mtag.sal {
+    background: var(--jaune);
+  }
+  .mtag.nocode {
+    background: var(--caramel);
+    color: var(--creme);
+    border-color: var(--caramel);
+  }
+  .metiers-cta {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  @media (max-width: 980px) {
+    .metiers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .metier {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
