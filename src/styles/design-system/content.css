@@ -11,7 +11,7 @@
   border-bottom: 1.5px solid var(--lpt-black);
 }
 .lpt-header__brand { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -0.02em; color: var(--lpt-black); }
-.lpt-header__brand span { color: var(--accent); }
+/* v4.5 : le LogoMark gère ses propres couleurs */
 .lpt-header__nav { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
 .lpt-header__nav a { font-size: 14px; color: var(--text-body); }
 .lpt-header__nav a:hover { color: var(--text-strong); }
