@@ -1,118 +1,198 @@
 ---
 /**
- * Listing des ressources. Hero + filtres actifs + recherche client-side.
+ * Listing des ressources (v4.5). Cartes à bordure gauche colorée par thème,
+ * pastille de niveau (point jaune débutant / caramel intermédiaire), durée jaune.
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const ressources = await getCollection("ressources", ({ data }) => !data.draft);
 
-const levelLabels: Record<string, string> = { deb: "Débutant", int: "Intermédiaire", avance: "Avancé" };
+const levelLabels: Record<string, string> = {
+  deb: "débutant",
+  int: "intermédiaire",
+  avance: "avancé",
+};
+const themeCat = (theme: string) => {
+  const t = theme.toLowerCase();
+  if (t.includes("financement")) return "cat-fin";
+  if (t.includes("ia")) return "cat-reco";
+  if (t.includes("no-code")) return "cat-perso";
+  return "cat-met";
+};
+const borderClass = (theme: string) => {
+  const t = theme.toLowerCase();
+  if (t.includes("financement")) return "bl-jaune";
+  if (t.includes("ia")) return "bl-caramel";
+  if (t.includes("no-code")) return "bl-terracotta";
+  return "bl-noir";
+};
 
 const filters: { label: string; value: string }[] = [
-  { label: "Toutes",       value: "*" },
-  { label: "Outils IA",    value: "Outils IA" },
-  { label: "No-code",      value: "No-code" },
-  { label: "Financement",  value: "Financement" },
-  { label: "Compétences",  value: "Compétences" },
+  { label: "toutes", value: "*" },
+  { label: "outils IA", value: "Outils IA" },
+  { label: "no-code", value: "No-code" },
+  { label: "financement", value: "Financement" },
+  { label: "compétences", value: "Compétences" },
 ];
 ---
 
-<BaseLayout title="Ressources — Passer à l'action · LaPasseTech" description="Des ressources pratiques à appliquer dès ce soir : outils IA, no-code, financement.">
-  <section class="lpt-listing-hero">
-    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Ressources</span></nav>
-    <h1 style="margin-top:14px;">Passer à <em class="lpt-serif-italic" style="color:var(--accent)">l'action.</em></h1>
-    <p>Des pas-à-pas concrets, classés par thème et par niveau. Tu peux les faire le soir-même, sur ton téléphone.</p>
-    <div class="lpt-listing-hero__count" id="res-count">{ressources.length} ressource{ressources.length > 1 ? "s" : ""}</div>
-  </section>
-
-  <div class="lpt-filterbar">
-    <input id="res-search" class="lpt-input lpt-search" placeholder="Rechercher une ressource…" type="search" autocomplete="off" />
-    <div class="lpt-filters">
-      {filters.map((f, i) => (
-        <button
-          class="lpt-filter"
-          data-filter={f.value}
-          data-active={i === 0 ? "" : undefined}
-        >{f.label}</button>
-      ))}
+<BaseLayout
+  title="Ressources — Passer à l'action · LaPasseTech"
+  description="Des pas-à-pas concrets, classés par thème et par niveau. Tu peux les faire le soir-même, sur ton téléphone."
+>
+  <div class="wrap">
+    <nav class="crumb" aria-label="Fil d'ariane"><a href="/">accueil</a> → ressources</nav>
+    <div class="page-hero">
+      <span class="eyebrow rv">l'action</span>
+      <h1 class="rv d1">Passer à <em class="s">l'action.</em></h1>
+      <p class="sub rv d2">
+        Des pas-à-pas concrets, classés par thème et par niveau. Tu peux les faire le soir-même,
+        sur ton téléphone.
+      </p>
+      <span class="count rv d2" id="res-count">{ressources.length} ressources</span>
     </div>
-  </div>
 
-  <div class="lpt-grid-section">
-    <div class="lpt-card-grid" id="res-grid">
+    <div class="toolbar rv">
+      <input
+        id="res-search"
+        class="search"
+        placeholder="Rechercher une ressource…"
+        type="search"
+        autocomplete="off"
+        aria-label="Rechercher une ressource"
+      />
+      <div class="pills" role="group" aria-label="Filtrer par thème">
+        {
+          filters.map((f, i) => (
+            <button class="pill" data-filter={f.value} aria-pressed={i === 0 ? "true" : "false"}>
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="agrid" id="res-grid">
       {
         ressources.map((r) => (
-          <article
-            class="lpt-article-card"
-            data-theme={r.data.theme}
-            data-title={r.data.title.toLowerCase()}
-            data-desc={r.data.description.toLowerCase()}
+          <a
+            href={`/ressources/${r.id}`}
+            class={`acard rescard ${borderClass(r.data.theme)}`}
+            data-tag={r.data.theme}
+            data-search={`${r.data.title} ${r.data.description}`.toLowerCase()}
           >
-            <div style="display:flex; gap:8px; align-items:center;">
-              <span class={`lpt-level lpt-level--${r.data.level === "avance" ? "int" : r.data.level}`}>
-                <span class="lpt-level__dot"></span>{levelLabels[r.data.level]}
+            <div class="rtags">
+              <span class={`lvl ${r.data.level === "deb" ? "" : "inter"}`}>
+                {levelLabels[r.data.level] ?? r.data.level}
               </span>
-              <span class="lpt-tag">{r.data.theme}</span>
+              <span class={`acat ${themeCat(r.data.theme)}`}>{r.data.theme.toLowerCase()}</span>
             </div>
-            <a class="lpt-article-card__title" href={`/ressources/${r.id}`}>{r.data.title}</a>
-            <p style="font-size:13.5px; color:var(--text-body); margin:0;">{r.data.description}</p>
-            <div class="lpt-article-card__foot">
-              {r.data.duration && <span>{r.data.duration}</span>}
-            </div>
-            <a class="lpt-article-card__link" href={`/ressources/${r.id}`}>Ouvrir la ressource →</a>
-          </article>
+            <h2>{r.data.title}</h2>
+            <p>{r.data.description}</p>
+            {r.data.duration && <span class="res-time">{r.data.duration}</span>}
+            <span class="alire">Ouvrir la ressource</span>
+          </a>
         ))
       }
     </div>
-    <p id="res-empty" style="display:none; padding:40px 0; color:var(--text-muted); text-align:center;">Aucune ressource ne correspond à ta recherche.</p>
+    <p class="no-result" id="res-empty">
+      // aucune ressource ne correspond — essaie un autre mot-clé ou un autre thème
+    </p>
   </div>
+
+  <section class="page-cta">
+    <div class="wrap">
+      <h2>
+        Tu ne sais pas par quelle ressource commencer ? <em class="s">PassBot, lui, sait.</em>
+      </h2>
+      <a href="/bilan" class="btn btn-jaune">Faire mon bilan gratuit →</a>
+      <span class="mono">// 5 minutes · sans email obligatoire</span>
+    </div>
+  </section>
 </BaseLayout>
 
+<style>
+  .rescard {
+    border-left-width: 8px;
+    border-left-style: solid;
+  }
+  .rescard.bl-jaune { border-left-color: var(--jaune); }
+  .rescard.bl-caramel { border-left-color: var(--caramel); }
+  .rescard.bl-terracotta { border-left-color: var(--terracotta); }
+  .rescard.bl-noir { border-left-color: var(--noir); }
+  .rtags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .lvl {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    font-weight: var(--fw-semi);
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--noir);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    background: #fff;
+  }
+  .lvl::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--jaune);
+    border: 1px solid var(--noir);
+  }
+  .lvl.inter::before {
+    background: var(--caramel);
+  }
+  .res-time {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    background: var(--jaune);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    align-self: flex-start;
+  }
+</style>
+
 <script>
-  const grid    = document.getElementById("res-grid")!;
-  const search  = document.getElementById("res-search") as HTMLInputElement;
+  const search = document.getElementById("res-search") as HTMLInputElement;
   const countEl = document.getElementById("res-count")!;
   const emptyEl = document.getElementById("res-empty")!;
-  const btns    = document.querySelectorAll<HTMLButtonElement>(".lpt-filters .lpt-filter");
-  const cards   = Array.from(grid.querySelectorAll<HTMLElement>("article.lpt-article-card"));
+  const pills = document.querySelectorAll<HTMLButtonElement>(".pills .pill");
+  const cards = Array.from(document.querySelectorAll<HTMLElement>("#res-grid .acard"));
 
   let activeFilter = "*";
-  let searchQuery  = "";
+  let q = "";
 
-  function applyFilters() {
+  function apply() {
     let visible = 0;
     cards.forEach((card) => {
-      const theme = card.dataset.theme ?? "";
-      const title = card.dataset.title ?? "";
-      const desc  = card.dataset.desc  ?? "";
-
-      const matchFilter = activeFilter === "*" || theme === activeFilter;
-      const matchSearch = searchQuery === "" ||
-        title.includes(searchQuery) ||
-        desc.includes(searchQuery) ||
-        theme.toLowerCase().includes(searchQuery);
-
+      const matchFilter = activeFilter === "*" || card.dataset.tag === activeFilter;
+      const matchSearch = q === "" || (card.dataset.search ?? "").includes(q);
       const show = matchFilter && matchSearch;
       card.style.display = show ? "" : "none";
       if (show) visible++;
     });
-
-    emptyEl.style.display = visible === 0 ? "" : "none";
+    emptyEl.style.display = visible === 0 ? "block" : "none";
     countEl.textContent = `${visible} ressource${visible > 1 ? "s" : ""}`;
   }
 
-  btns.forEach((btn) => {
+  pills.forEach((btn) => {
     btn.addEventListener("click", () => {
-      btns.forEach((b) => b.removeAttribute("data-active"));
-      btn.setAttribute("data-active", "");
+      pills.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      btn.setAttribute("aria-pressed", "true");
       activeFilter = btn.dataset.filter ?? "*";
-      applyFilters();
+      apply();
     });
   });
-
   search.addEventListener("input", () => {
-    searchQuery = search.value.trim().toLowerCase();
-    applyFilters();
+    q = search.value.trim().toLowerCase();
+    apply();
   });
 </script>
