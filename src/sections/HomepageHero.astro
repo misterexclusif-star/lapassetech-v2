@@ -1,313 +1,388 @@
 ---
 /**
- * HomepageHero — 2 colonnes (aligné maquette MJ v4).
- * Gauche : eyebrow mono + titre (mark caramel) + lead + 2 CTA + 3 pills.
- * Droite : grande photo de couverture DYNAMIQUE (défilement auto + survol d'un
- *          article = sa photo) + liste "À lire maintenant" 01/02/03.
- *
- * Les `cover` sont partagés avec les pages article correspondantes (Phase 2 :
- * Unsplash temporaires, validés client).
+ * HomepageHero — v4.5.
+ * Gauche : promesse (surligneur jaune) + CTA jaune/ghost + badges.
+ * Droite : deck « à la une cette semaine » — 4 cartes-articles empilées,
+ * carrousel autoplay (pause hover/focus/reduced-motion), points de navigation.
+ * Alimenté par les articles `featured: true` (fallback : les 4 plus récents).
  */
-import Button from "../components/Button.astro";
+import { getCollection } from "astro:content";
 
-const reads = [
-  {
-    n: "01",
-    cat: "Reconversion",
-    title: "16 ans en marketing : comment j'ai basculé dans la tech à 38 ans",
-    meta: "4 mars 2026 · Témoignage",
-    href: "/articles/exemple-reconversion-40-ans",
-    cover: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=760&h=520&fit=crop&crop=faces&q=80",
-    alt: "Un homme d'une quarantaine d'années",
-  },
-  {
-    n: "02",
-    cat: "Financement",
-    title: "POEI, CPF, Transitions Pro : lequel choisir pour ta reconversion ?",
-    meta: "18 fév. 2026 · Guide",
-    href: "/articles",
-    cover: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=760&h=520&fit=crop&q=80",
-    alt: "Une réunion professionnelle",
-  },
-  {
-    n: "03",
-    cat: "Métiers du digital",
-    title: "Business Analyst Salesforce : le métier que personne ne t'a expliqué",
-    meta: "27 fév. 2026 · Fiche métier",
-    href: "/articles",
-    cover: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=760&h=520&fit=crop&crop=faces&q=80",
-    alt: "Une professionnelle devant son ordinateur",
-  },
-];
+const all = await getCollection("articles", ({ data }) => !data.draft);
+const byDate = [...all].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const featured = byDate.filter((a) => a.data.featured).slice(0, 4);
+const deck = featured.length >= 4 ? featured : byDate.slice(0, 4);
+
+/** Chip catégorie : mapping tag → classe couleur (mêmes teintes que la maquette). */
+const catClass = (tag: string) => {
+  const t = tag.toLowerCase();
+  if (t.includes("reconversion")) return "jaune";
+  if (t.includes("financement")) return "caramel";
+  if (t.includes("droit")) return "noir";
+  return "blanc";
+};
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
 ---
 
-<section class="lpt-section lpt-section--cream hero">
-  <div class="lpt-container hero__grid">
-    <div class="hero__col">
-      <div class="lpt-eyebrow lpt-eyebrow--mono">// reconversion sans bullshit · mai 2026</div>
-      <h1>
-        Le digital, c'est pas <span class="lpt-mark">réservé aux autres.</span>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow rv">reconversion sans bullshit · 2026</span>
+      <h1 class="rv d1">
+        Le digital, c'est pas <span class="hl">réservé</span> aux <em class="s">autres.</em>
       </h1>
-      <p class="hero__lead">
-        Métiers, formations, financements — tout ce que j'aurais aimé savoir
-        avant de me reconvertir. <strong>Par quelqu'un qui l'a vraiment vécu.</strong>
+      <p class="hero-lead rv d2">
+        Métiers, formations, financements — tout ce que j'aurais aimé savoir avant de me
+        reconvertir. <b
+          >Reconverti à 38 ans, après 16 ans de marketing, via une POEI, sans diplôme
+          informatique.</b
+        > Je suis passé. Toi aussi, tu peux.
       </p>
-      <div class="hero__cta">
-        <Button variant="primary" href="/bilan" label="Faire mon diagnostic gratuit" />
-        <Button variant="outline" href="/ressources" label="Guide gratuit · 20 pages" arrow={false} />
+      <div class="hero-ctas rv d3">
+        <a href="/bilan" class="btn btn-jaune">Faire mon diagnostic gratuit →</a>
+        <a href="#guide" class="btn btn-ghost">Guide gratuit · 20 pages</a>
       </div>
-      <div class="hero__pills">
-        <span class="lpt-pill"><b>5 min</b> · 100 % gratuit</span>
-        <span class="lpt-pill"><b>CPF</b> financé à 100 %</span>
-        <span class="lpt-pill"><b>POEI</b> · CDI avant la formation</span>
+      <div class="hero-badges rv d4">
+        <span class="badge j">100 % vécu · POEI</span>
+        <span class="badge c">financements à jour 2026</span>
+        <span class="badge">bilan 5 min · gratuit</span>
       </div>
     </div>
 
-    <div class="hero__col hero__media">
-      <div class="hero__cover" data-cover>
+    <div class="deck-zone rv d2">
+      <p class="deck-label">à la une cette semaine</p>
+      <div class="deck" id="deck" aria-roledescription="carrousel" aria-label="Articles à la une">
         {
-          reads.map((r, i) => (
-            <a class="hero__slide" href={r.href} data-slide={i} aria-hidden={i !== 0 ? "true" : "false"}>
-              <img src={r.cover} alt={r.alt} loading={i === 0 ? "eager" : "lazy"} />
-              <span class="hero__slide-cat">{r.cat}</span>
-              <span class="hero__slide-title">{r.title}</span>
+          deck.map((a, i) => (
+            <a href={`/articles/${a.id}`} class={`dcard p${i}`} data-i={i}>
+              <span class="tape" aria-hidden="true" />
+              <div class="dcover" aria-hidden="true">
+                {a.data.cover ? (
+                  <img
+                    src={a.data.cover}
+                    alt=""
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchpriority={i === 0 ? "high" : undefined}
+                  />
+                ) : (
+                  <div class={`cover-fb fb-${catClass(a.data.tag)}`}>
+                    <span>{a.data.title.slice(0, 2).toUpperCase()}</span>
+                  </div>
+                )}
+              </div>
+              <div class="dbody">
+                <span class={`dcat ${catClass(a.data.tag)}`}>{a.data.tag.toLowerCase()}</span>
+                <h3>{a.data.title}</h3>
+                <span class="ddate">{fmtDate(a.data.date)}</span>
+              </div>
             </a>
           ))
         }
       </div>
-
-      <div class="hero__reads">
-        <div class="lpt-eyebrow hero__reads-head">À lire maintenant</div>
-        <ol class="hero__reads-list">
-          {
-            reads.map((r, i) => (
-              <li class="hero__read" data-target={i}>
-                <span class="hero__read-num">{r.n}</span>
-                <div class="hero__read-body">
-                  <span class="hero__read-cat">{r.cat}</span>
-                  <a class="hero__read-title" href={r.href}>{r.title}</a>
-                  <div class="hero__read-meta">{r.meta}</div>
-                </div>
-              </li>
-            ))
-          }
-        </ol>
+      <div class="deck-dots" role="tablist" aria-label="Choisir l'article affiché">
+        {
+          deck.map((_, i) => (
+            <button
+              type="button"
+              data-goto={i}
+              aria-current={i === 0 ? "true" : "false"}
+              aria-label={`Article ${i + 1}`}
+            />
+          ))
+        }
       </div>
     </div>
   </div>
 </section>
 
-<script>
-  // Cover dynamique : défilement auto + survol d'un article = sa photo.
-  const cover = document.querySelector<HTMLElement>("[data-cover]");
-  const items = Array.from(document.querySelectorAll<HTMLElement>(".hero__read[data-target]"));
-  if (cover) {
-    const slides = Array.from(cover.querySelectorAll<HTMLElement>(".hero__slide"));
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let idx = 0;
-    let timer: number | undefined;
-
-    const show = (i: number) => {
-      idx = i;
-      slides.forEach((s, k) => {
-        s.style.opacity = k === i ? "1" : "0";
-        s.setAttribute("aria-hidden", k === i ? "false" : "true");
-      });
-      items.forEach((it, k) => it.classList.toggle("is-active", k === i));
-    };
-    const start = () => {
-      if (reduce) return;
-      timer = window.setInterval(() => show((idx + 1) % slides.length), 4000);
-    };
-    const stop = () => { if (timer) window.clearInterval(timer); };
-
-    items.forEach((it, k) => {
-      it.addEventListener("mouseenter", () => { stop(); show(k); });
-      it.addEventListener("mouseleave", () => start());
-    });
-    show(0);
-    start();
-  }
-</script>
-
 <style>
-  /* hero compact : tient sur ~80% de la hauteur d'écran */
   .hero {
-    padding-top: 44px;
-    padding-bottom: 44px;
+    padding: 72px 0 90px;
+    position: relative;
   }
-  .hero__grid {
+  .hero-grid {
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
+    grid-template-columns: 1.15fr 0.85fr;
     gap: 56px;
-    align-items: start;
+    align-items: center;
   }
-  h1 {
-    margin-top: 16px;
-    font-size: 48px;
+  .hero h1 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    font-size: clamp(2.5rem, 5.6vw, 4.3rem);
+    margin: 10px 0 20px;
   }
-  h1 .lpt-mark {
-    line-height: 1.22;
+  .hero h1 .hl {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    z-index: 0;
   }
-  .hero__lead {
-    font-size: var(--fs-lead);
-    color: var(--text-body);
-    line-height: 1.5;
+  .hero h1 .hl::after {
+    content: "";
+    position: absolute;
+    left: -2%;
+    right: -2%;
+    bottom: 0.06em;
+    height: 0.34em;
+    background: var(--jaune);
+    z-index: -1;
+    transform: rotate(-1deg);
+  }
+  .hero-lead {
+    font-size: 1.15rem;
     max-width: 520px;
-    margin-top: 18px;
+    color: rgba(26, 23, 20, 0.82);
   }
-  .hero__lead strong {
-    color: var(--text-strong);
-    font-weight: var(--fw-semi);
+  .hero-lead b {
+    color: var(--noir);
   }
-  .hero__cta {
+  .hero-ctas {
     display: flex;
-    gap: 14px;
-    margin-top: 24px;
+    gap: 16px;
+    margin-top: 30px;
     flex-wrap: wrap;
   }
-  .hero__pills {
+  .hero-badges {
     display: flex;
-    gap: 12px;
-    margin-top: 20px;
+    gap: 10px;
+    margin-top: 26px;
     flex-wrap: wrap;
   }
 
-  /* ── Cover dynamique ── */
-  .hero__media {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .hero__cover {
-    position: relative;
+  /* deck à la une */
+  .deck-zone {
+    max-width: 420px;
+    margin-left: auto;
     width: 100%;
-    /* hauteur calée pour que le bas de l'image s'aligne ~ avec les pills
-       de gauche et que le hero tienne sur ~80vh sans scroll */
-    height: clamp(280px, 38vh, 320px);
-    border-radius: var(--radius-2xl);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    background: var(--lpt-beige);
   }
-  .hero__slide {
+  .deck-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: var(--fw-semi);
+    color: var(--caramel);
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 14px;
+    justify-content: center;
+  }
+  .deck-label::before,
+  .deck-label::after {
+    content: "";
+    height: 1.5px;
+    background: var(--caramel-16);
+    flex: 1;
+  }
+  .deck {
+    position: relative;
+    height: 440px;
+  }
+  .dcard {
     position: absolute;
     inset: 0;
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    display: block;
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--noir);
+    box-shadow: var(--shadow-pop);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
+    will-change: transform;
   }
-  .hero__slide img {
+  .dcard .tape {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 104px;
+    height: 28px;
+    background: var(--caramel-16);
+    border: 1px dashed var(--caramel);
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .dcard.p0 {
+    transform: rotate(1.4deg);
+    z-index: 4;
+    opacity: 1;
+  }
+  .dcard.p0 .tape {
+    opacity: 1;
+  }
+  .dcard.p1 {
+    transform: rotate(-3.2deg) translate(-16px, 12px) scale(0.97);
+    z-index: 3;
+    opacity: 1;
+  }
+  .dcard.p2 {
+    transform: rotate(3.6deg) translate(14px, 20px) scale(0.94);
+    z-index: 2;
+    opacity: 0.88;
+  }
+  .dcard.p3 {
+    transform: rotate(-1.2deg) translateY(26px) scale(0.91);
+    z-index: 1;
+    opacity: 0.6;
+  }
+  .dcard.p0:hover {
+    transform: rotate(0) translateY(-4px);
+  }
+  .dcover {
+    height: 210px;
+    border: 2px solid var(--noir);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    flex: none;
+    background: var(--caramel-10);
+  }
+  .dcover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
-  /* dégradé bas pour lisibilité du titre */
-  .hero__slide::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(26, 23, 20, 0) 38%, rgba(26, 23, 20, 0.82) 100%);
+  .cover-fb {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 3rem;
+    letter-spacing: -0.03em;
   }
-  .hero__slide-cat {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 2;
-    background: var(--accent);
-    color: #fff;
-    font-size: 10px;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border-radius: var(--radius-pill);
-  }
-  .hero__slide-title {
-    position: absolute;
-    left: 18px;
-    right: 18px;
-    bottom: 16px;
-    z-index: 2;
-    color: #fff;
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: 18px;
-    line-height: 1.25;
-  }
-
-  /* ── À lire maintenant ── */
-  .hero__reads-head {
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .hero__reads-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .hero__read {
-    display: grid;
-    grid-template-columns: 30px 1fr;
-    gap: 12px;
-    padding: 7px 12px 7px 0;
-    border-bottom: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    transition: background 0.15s ease;
-  }
-  .hero__read:last-child {
-    border-bottom: 0;
-  }
-  .hero__read.is-active {
-    background: rgba(156, 90, 44, 0.06);
-  }
-  .hero__read-num {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 20px;
-    color: var(--lpt-caramel);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    padding-left: 8px;
-  }
-  .hero__read-body {
+  .fb-noir { background: var(--noir); color: var(--terracotta); }
+  .fb-jaune { background: var(--jaune); color: var(--noir); }
+  .fb-caramel { background: var(--caramel); color: var(--creme); }
+  .fb-blanc { background: var(--creme); color: var(--caramel); }
+  .dbody {
+    padding: 16px 8px 6px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    min-width: 0;
+    gap: 10px;
+    flex: 1;
   }
-  .hero__read-cat {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--lpt-green-deep);
+  .dcat {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    font-weight: var(--fw-semi);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 4px 11px;
+    align-self: flex-start;
   }
-  .hero__read-title {
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: 15px;
-    line-height: 1.28;
-    color: var(--text-strong);
-    transition: color 0.15s ease;
+  .dcat.jaune { background: var(--jaune); color: var(--noir); }
+  .dcat.caramel { background: var(--caramel); color: var(--creme); border-color: var(--caramel); }
+  .dcat.noir { background: var(--noir); color: var(--creme); }
+  .dcat.blanc { background: #fff; color: var(--noir); }
+  .dcard h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.12rem;
+    line-height: 1.22;
+    flex: 1;
   }
-  .hero__read:hover .hero__read-title {
-    color: var(--accent-strong);
+  .ddate {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    color: var(--caramel);
   }
-  .hero__read-meta {
-    font-size: 11.5px;
-    color: var(--text-muted);
+  .deck-dots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 26px;
+  }
+  .deck-dots button {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--noir);
+    background: var(--creme);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .deck-dots button[aria-current="true"] {
+    background: var(--jaune);
+    transform: scale(1.15);
+  }
+  .deck-dots button:hover {
+    background: var(--caramel-16);
   }
 
   @media (max-width: 980px) {
-    .hero__grid {
+    .hero-grid {
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 44px;
     }
-    h1 {
-      font-size: 44px;
+    .deck-zone {
+      margin: 30px auto 0;
+    }
+  }
+  @media (max-width: 640px) {
+    .deck {
+      height: 420px;
     }
   }
 </style>
+
+<script>
+  // Carrousel du deck : rotation auto 3.2s, pause hover/focus, désactivé en reduced-motion.
+  (function () {
+    const deck = document.getElementById("deck");
+    if (!deck) return;
+    const cards = [...deck.querySelectorAll<HTMLElement>(".dcard")];
+    const dots = [...document.querySelectorAll<HTMLButtonElement>(".deck-dots button")];
+    const n = cards.length;
+    let front = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function render() {
+      cards.forEach((c) => {
+        const i = Number(c.dataset.i);
+        const pos = (i - front + n) % n; // 0 = devant
+        c.className = "dcard p" + pos;
+        c.setAttribute("aria-hidden", pos === 0 ? "false" : "true");
+        c.tabIndex = pos === 0 ? 0 : -1;
+      });
+      dots.forEach((d, i) => d.setAttribute("aria-current", i === front ? "true" : "false"));
+    }
+    function next() {
+      front = (front + 1) % n;
+      render();
+    }
+    function play() {
+      if (!reduced && !timer) timer = setInterval(next, 3200);
+    }
+    function stop() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+    dots.forEach((d) =>
+      d.addEventListener("click", () => {
+        front = Number(d.dataset.goto);
+        render();
+        stop();
+        play();
+      }),
+    );
+    deck.addEventListener("mouseenter", stop);
+    deck.addEventListener("mouseleave", play);
+    deck.addEventListener("focusin", stop);
+    deck.addEventListener("focusout", play);
+    render();
+    play();
+  })();
+</script>

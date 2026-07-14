@@ -16,6 +16,8 @@ const articles = defineCollection({
     date: z.coerce.date(),
     readingTime: z.string().optional(), // ex: "7 min"
     cover: z.string().optional(),
+    updated: z.coerce.date().optional(), // badge « à jour · {mois} » (v4.5)
+    featured: z.boolean().default(false), // deck « à la une » du hero (v4.5)
     draft: z.boolean().default(false),
   }),
 });
