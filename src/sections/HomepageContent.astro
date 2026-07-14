@@ -1,73 +1,84 @@
 ---
 /**
- * HomepageContent — "S'informer. Agir." (aligné maquette MJ v4).
- * Fond illustré humain estompé. 2 espaces distincts :
- *   gauche  = Articles récents (liste numérotée, panneau blanc)
- *   droite  = Ressources actionnables (cartes, panneau caramel clair)
+ * HomepageContent — « S'informer. Agir. » (v4.5, module média).
+ * 2 colonnes : derniers articles publiés (liste numérotée) + ressources
+ * actionnables (cartes à bordure gauche colorée). Alimenté par les collections.
+ * Règle spec : cette liste = derniers publiés ; le deck du hero = sélection
+ * « à la une » — les deux ne doivent pas afficher la même chose.
  */
-const articles = [
-  { n: "01", cat: "Reconversion", title: "16 ans en marketing : comment j'ai basculé dans la tech à 38 ans", meta: "4 mars 2026", href: "/articles/exemple-reconversion-40-ans" },
-  { n: "02", cat: "Financement", title: "POEI, CPF, Transitions Pro : lequel choisir pour ta reconversion ?", meta: "18 fév. 2026", href: "/articles" },
-  { n: "03", cat: "Métiers", title: "Business Analyst Salesforce : le métier que personne ne t'a expliqué", meta: "27 fév. 2026", href: "/articles" },
-  { n: "04", cat: "Droit du travail", title: "Rupture conventionnelle : ce que tu peux vraiment négocier", meta: "12 fév. 2026", href: "/articles" },
-];
+import { getCollection } from "astro:content";
 
-const ressources = [
-  { theme: "Outils IA", level: "Débutant", duration: "15 min", title: "Utiliser Gemini pour booster ta recherche d'emploi", desc: "5 étapes concrètes avec prompts prêts à l'emploi", tags: ["YouTube", "Guide PDF"], href: "/ressources/exemple-gemini-entretien" },
-  { theme: "Financement", level: "Débutant", duration: "20 min", title: "Faire sa demande CPF en 20 minutes chrono", desc: "Étape par étape, de la connexion à la validation", tags: ["Guide PDF"], href: "/ressources" },
-  { theme: "Compétences", level: "Intermédiaire", duration: "30 min", title: "Construire ton premier site en no-code", desc: "De la page blanche à un site en ligne, sans coder", tags: ["Guide PDF"], href: "/ressources" },
-];
+const articles = (await getCollection("articles", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .filter((a) => !a.data.featured)
+  .slice(0, 4);
+
+const ressources = (await getCollection("ressources", ({ data }) => !data.draft)).slice(0, 3);
+
+const catClass = (tag: string) => {
+  const t = tag.toLowerCase();
+  if (t.includes("reconversion")) return "cat-reco";
+  if (t.includes("financement")) return "cat-fin";
+  if (t.includes("droit")) return "cat-droit";
+  if (t.includes("perso")) return "cat-perso";
+  return "cat-met";
+};
+const borderClass = (theme: string) => {
+  const t = theme.toLowerCase();
+  if (t.includes("financement")) return "bl-jaune";
+  if (t.includes("ia")) return "bl-caramel";
+  if (t.includes("no-code")) return "bl-terracotta";
+  return "bl-noir";
+};
+const levelLabel = { deb: "débutant", int: "intermédiaire", avance: "avancé" } as const;
+const fmtDate = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 ---
 
-<section class="lpt-section content">
-  <div class="lpt-container content__inner">
-    <div class="content__head">
-      <h2>S'informer. <em class="lpt-serif-italic" style="color:var(--accent)">Agir.</em></h2>
-      <p class="content__sub">
-        Articles de fond et ressources actionnables — <strong>deux espaces distincts</strong>
-        selon où tu en es.
-      </p>
-    </div>
-
-    <div class="content__grid">
-      <!-- Articles récents -->
-      <div class="content__panel content__panel--articles">
-        <div class="content__panel-head">
-          <span class="lpt-eyebrow">Articles récents</span>
-          <a class="content__more" href="/articles">Voir tous →</a>
+<section id="sinformer" class="sinformer">
+  <div class="wrap">
+    <span class="eyebrow rv">le contenu</span>
+    <h2 class="rv d1">S'informer. <em class="s">Agir.</em></h2>
+    <p class="sub rv d2">
+      Des articles de fond pour comprendre, des ressources actionnables pour avancer — deux
+      espaces distincts selon où tu en es.
+    </p>
+    <div class="media-grid rv d2">
+      <div>
+        <div class="media-col-head">
+          <h3>Articles récents</h3>
+          <a href="/articles">Voir tous →</a>
         </div>
-        <ol class="content__articles">
-          {
-            articles.map((a) => (
-              <li class="content__article">
-                <span class="content__article-num">{a.n}</span>
-                <div class="content__article-body">
-                  <span class="content__article-cat">{a.cat}</span>
-                  <a class="content__article-title" href={a.href}>{a.title}</a>
-                  <span class="content__article-meta">{a.meta}</span>
+        {
+          articles.map((a, i) => (
+            <a href={`/articles/${a.id}`} class="art-row">
+              <span class="art-num">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>{a.data.title}</h3>
+                <div class="art-meta">
+                  <span class={`acat ${catClass(a.data.tag)}`}>{a.data.tag.toLowerCase()}</span>
+                  <span class="art-date">{fmtDate(a.data.date)}</span>
                 </div>
-              </li>
-            ))
-          }
-        </ol>
+              </div>
+            </a>
+          ))
+        }
       </div>
-
-      <!-- Ressources actionnables -->
-      <div class="content__panel content__panel--ressources">
-        <div class="content__panel-head">
-          <span class="lpt-eyebrow">Ressources actionnables</span>
-          <a class="content__more" href="/ressources">Voir toutes →</a>
+      <div>
+        <div class="media-col-head">
+          <h3>Ressources actionnables</h3>
+          <a href="/ressources">Voir toutes →</a>
         </div>
-        <div class="content__ressources">
+        <div class="res-list">
           {
             ressources.map((r) => (
-              <a class="content__res-card" href={r.href}>
-                <span class="content__res-meta">{r.theme} · {r.level} · {r.duration}</span>
-                <span class="content__res-title">{r.title}</span>
-                <span class="content__res-desc">{r.desc}</span>
-                <div class="content__res-tags">
-                  {r.tags.map((t) => <span class="content__res-tag">{t}</span>)}
-                </div>
+              <a href={`/ressources/${r.id}`} class={`res-card ${borderClass(r.data.theme)}`}>
+                <span class="res-tag">
+                  {r.data.theme.toLowerCase()} ·{" "}
+                  {levelLabel[r.data.level] ?? r.data.level}
+                </span>
+                <h3>{r.data.title}</h3>
+                <p>{r.data.description}</p>
+                {r.data.duration && <span class="res-time">{r.data.duration}</span>}
               </a>
             ))
           }
@@ -78,187 +89,149 @@ const ressources = [
 </section>
 
 <style>
-  .content {
-    position: relative;
-    background: var(--surface-cream);
-    overflow: hidden;
+  .sinformer {
+    padding: 84px 0;
   }
-  /* fond illustré humain estompé */
-  .content::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1400&h=900&fit=crop&q=70");
-    background-size: cover;
-    background-position: center;
-    opacity: 0.08;
-    pointer-events: none;
+  .sinformer h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
   }
-  .content__inner {
-    position: relative;
-    z-index: 1;
-  }
-  .content__head {
-    margin-bottom: 40px;
-  }
-  .content__sub {
-    font-size: var(--fs-lead);
-    color: var(--text-body);
-    margin-top: 14px;
-    max-width: 560px;
-  }
-  .content__sub strong {
-    color: var(--text-strong);
-    font-weight: var(--fw-semi);
-  }
-  .content__grid {
+  .media-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 52px;
+    margin-top: 48px;
     align-items: start;
   }
-  .content__panel {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 28px;
-  }
-  .content__panel--articles {
-    background: var(--surface-card);
-  }
-  .content__panel--ressources {
-    background: rgba(156, 90, 44, 0.05);
-  }
-  .content__panel-head {
+  .media-col-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
-    padding-bottom: 16px;
-    margin-bottom: 8px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--noir);
+    padding-bottom: 12px;
+    margin-bottom: 4px;
   }
-  .content__more {
-    font-size: 13.5px;
-    font-weight: var(--fw-bold);
-    color: var(--accent-strong);
-    white-space: nowrap;
+  .media-col-head h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
-
-  /* Articles : liste numérotée */
-  .content__articles {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .media-col-head a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: var(--fw-semi);
+    color: var(--caramel);
+    text-decoration: none;
   }
-  .content__article {
+  .media-col-head a:hover {
+    text-decoration: underline;
+  }
+  .art-row {
     display: grid;
-    grid-template-columns: 38px 1fr;
-    gap: 14px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
+    grid-template-columns: 52px 1fr;
+    gap: 16px;
+    align-items: start;
+    padding: 20px 8px;
+    border-bottom: 2px solid var(--noir-08);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.18s, padding-left 0.18s;
   }
-  .content__article:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
+  .art-row:hover {
+    background: #fff;
+    padding-left: 16px;
   }
-  .content__article-num {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 26px;
-    color: var(--accent);
-    line-height: 1;
+  .art-num {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--caramel);
+    padding-top: 4px;
   }
-  .content__article-body {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    min-width: 0;
-  }
-  .content__article-cat {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--lpt-green-deep);
-  }
-  .content__article-title {
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: 16px;
-    line-height: 1.3;
-    color: var(--text-strong);
-    transition: color 0.15s ease;
-  }
-  .content__article-title:hover {
-    color: var(--accent-strong);
-  }
-  .content__article-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  /* Ressources : cartes */
-  .content__ressources {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 16px;
-  }
-  .content__res-card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--radius-md);
-    padding: 20px 22px;
-    transition: box-shadow 0.18s ease, transform 0.18s ease;
-  }
-  .content__res-card:hover {
-    box-shadow: var(--shadow-card);
-    transform: translateY(-2px);
-  }
-  .content__res-meta {
-    font-family: var(--font-body);
-    font-size: 10.5px;
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent-strong);
-  }
-  .content__res-title {
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: 17px;
+  .art-row h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.1rem;
     line-height: 1.25;
-    color: var(--text-strong);
+    transition: color 0.18s;
+    margin: 6px 0 8px;
   }
-  .content__res-desc {
-    font-size: 13.5px;
-    color: var(--text-body);
-    line-height: 1.5;
+  .art-row:hover h3 {
+    color: var(--caramel);
   }
-  .content__res-tags {
+  .art-meta {
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    align-items: center;
     flex-wrap: wrap;
-    margin-top: 2px;
   }
-  .content__res-tag {
-    font-family: var(--font-body);
-    font-size: 11.5px;
-    color: var(--text-body);
-    background: var(--surface-cream);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
+  .art-date {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: rgba(26, 23, 20, 0.6);
+  }
+  .res-list {
+    display: grid;
+    gap: 18px;
+    margin-top: 20px;
+  }
+  .res-card {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-left: 8px solid var(--caramel);
+    border-radius: 12px;
+    padding: 20px 22px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: block;
+  }
+  .res-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .res-card.bl-jaune { border-left-color: var(--jaune); }
+  .res-card.bl-caramel { border-left-color: var(--caramel); }
+  .res-card.bl-terracotta { border-left-color: var(--terracotta); }
+  .res-card.bl-noir { border-left-color: var(--noir); }
+  .res-card .res-tag {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    font-weight: var(--fw-semi);
+    color: var(--caramel);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .res-card h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .res-card p {
+    font-size: 0.88rem;
+    color: rgba(26, 23, 20, 0.75);
+  }
+  .res-card .res-time {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    background: var(--jaune);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+    display: inline-block;
+    margin-top: 12px;
   }
 
   @media (max-width: 980px) {
-    .content__grid {
+    .media-grid {
       grid-template-columns: 1fr;
+      gap: 44px;
     }
   }
 </style>
