@@ -1,146 +1,229 @@
 ---
 /**
- * HomepageLeadMagnet — "Le guide des métiers du digital".
- * Formulaire câblé sur POST /api/subscribe (type: guide → groupe MailerLite "Guide PDF").
+ * HomepageLeadMagnet — « Tout ce que j'aurais aimé savoir. » (v4.5, ancre #guide).
+ * Section caramel plein (écho des bandes brunes v2) : pdf-mock scotché +
+ * checklist crème, formulaire carte crème (ombre noire, bouton jaune).
+ * Formulaire câblé sur POST /api/subscribe (type: guide → MailerLite "Guide PDF").
+ * Seul bloc de capture email de la home (spec §6).
  */
 const bullets = [
-  "Les 5 familles de métiers du digital, expliquées simplement",
+  "Les 5 familles de métiers du digital, sans jargon",
   "Pour chaque métier : salaire, accessibilité, compétences clés",
-  "Les formations finançables à 100 % (CPF, POEI…)",
+  "Les vrais dispositifs de financement, conditions comprises",
   "Le test honnête à faire avant d'investir ton CPF",
 ];
 ---
 
-<section class="lpt-section guide" id="guide" style="background:var(--surface-page);">
-  <div class="lpt-container guide__grid">
-    <div class="guide__col">
-      <div class="lpt-eyebrow">Guide gratuit · 20 pages</div>
-      <h2>Le guide des <em class="lpt-em">métiers du digital.</em></h2>
-      <p class="guide__intro">
-        Tout ce que j'aurais aimé savoir avant de me reconvertir, réuni dans un PDF clair.
-      </p>
-      <ul class="guide__bullets">
-        {bullets.map((b) => <li class="lpt-check">{b}</li>)}
+<section class="guidev45" id="guide">
+  <div class="wrap guide-grid">
+    <div>
+      <div class="pdf-mock rv" aria-hidden="true">
+        <span class="mono pdf-kicker">// guide gratuit</span>
+        <h4>Les métiers du digital, expliqués simplement</h4>
+        <span class="pdf-pages">PDF · 20 pages</span>
+      </div>
+      <span class="eyebrow rv d1">le guide</span>
+      <h2 class="rv d2">Tout ce que j'aurais aimé <em class="s">savoir.</em></h2>
+      <ul class="checklist rv d3">
+        {
+          bullets.map((b) => (
+            <li>
+              <span class="tick">✓</span>
+              {b}
+            </li>
+          ))
+        }
       </ul>
     </div>
 
-    <div class="guide__col guide__form-col">
-      <form id="guide-form" class="guide__form" novalidate>
-        <h3 class="guide__form-title">Recevoir le guide gratuitement</h3>
-        <p class="guide__form-sub">On t'envoie le PDF par email. Pas de spam, désabonnement en un clic.</p>
-        <label class="guide__label" for="guide-email">Ton email</label>
-        <input
-          class="lpt-input"
-          type="email"
-          id="guide-email"
-          name="email"
-          placeholder="prenom@email.com"
-          required
-          autocomplete="email"
-        />
-        <p class="guide__error" id="guide-error" role="alert" aria-live="polite"></p>
-        <button type="submit" class="lpt-btn lpt-btn--accent guide__submit" id="guide-btn">
-          <span class="guide-btn-label">Recevoir le guide <span class="lpt-btn__arrow" aria-hidden="true">→</span></span>
-          <span class="guide-btn-loading" aria-hidden="true" style="display:none;">Envoi…</span>
-        </button>
-        <div class="guide__success" id="guide-success" role="status" style="display:none;">
-          <span class="guide__success-icon">✅</span>
-          <div>
-            <strong>C'est parti !</strong><br/>
-            Vérifie ta boîte mail — le guide est en route.
-          </div>
+    <div class="guide-form rv d2">
+      <form id="guide-form" novalidate>
+        <h3>Recevoir le guide gratuitement</h3>
+        <p class="form-sub">On t'envoie le PDF par email. Pas de spam, désabonnement en un clic.</p>
+        <label class="mono form-label" for="guide-email">ton email</label>
+        <div class="field">
+          <input
+            type="email"
+            id="guide-email"
+            name="email"
+            placeholder="prenom@email.fr"
+            required
+            autocomplete="email"
+          />
+          <button type="submit" class="btn btn-jaune" id="guide-btn">
+            <span class="guide-btn-label">Recevoir le guide →</span>
+            <span class="guide-btn-loading" aria-hidden="true" style="display:none;">Envoi…</span>
+          </button>
         </div>
+        <p class="form-error" id="guide-error" role="alert" aria-live="polite"></p>
+        <div class="form-ok" id="guide-success" role="status" style="display:none;">
+          ✅ <b>C'est parti !</b> Vérifie ta boîte mail — le guide est en route.
+        </div>
+        <span class="mono form-note">// et chaque semaine : un contenu actionnable dans ta boîte</span>
       </form>
     </div>
   </div>
 </section>
 
 <style>
-  .guide__grid {
+  .guidev45 {
+    background: var(--caramel);
+    color: var(--creme);
+    border-top: 2px solid var(--noir);
+    padding: 84px 0;
+  }
+  .guidev45 .eyebrow {
+    color: var(--jaune);
+  }
+  .guidev45 h2 {
+    color: var(--creme);
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .guide-grid {
     display: grid;
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 56px;
     align-items: center;
   }
-  .guide__col h2 {
-    margin-top: 16px;
+  .pdf-mock {
+    transform: rotate(-2deg);
+    background: #fff;
+    color: var(--noir);
+    border: 2px solid var(--noir);
+    border-radius: 10px;
+    padding: 26px;
+    max-width: 250px;
+    box-shadow: 6px 6px 0 var(--noir);
+    margin-bottom: 26px;
   }
-  .guide__intro {
-    font-size: var(--fs-lead);
-    color: var(--text-body);
-    margin-top: 16px;
-    max-width: 460px;
+  .pdf-kicker {
+    color: var(--caramel);
   }
-  .guide__bullets {
+  .pdf-mock h4 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.3rem;
+    line-height: 1.1;
+    margin: 10px 0;
+  }
+  .pdf-pages {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    background: var(--jaune);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    display: inline-block;
+    padding: 3px 10px;
+    color: var(--noir);
+  }
+  .checklist {
     list-style: none;
-    margin: 28px 0 0;
+    margin: 22px 0 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 14px;
+    color: var(--creme);
   }
-  .guide__form {
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 32px;
+  .checklist li {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .guide__form-title {
-    font-size: 20px;
-  }
-  .guide__form-sub {
-    font-size: 13.5px;
-    color: var(--text-body);
-  }
-  .guide__label {
-    font-size: 13px;
-    font-weight: var(--fw-semi);
-    color: var(--text-strong);
-    margin-top: 4px;
-  }
-  .guide__submit {
-    margin-top: 8px;
-    justify-content: center;
-  }
-  .guide__error {
-    font-size: 13px;
-    color: var(--lpt-red, #d93025);
-    min-height: 18px;
-    margin: 0;
-  }
-  .guide__success {
-    display: flex;
+    gap: 14px;
     align-items: flex-start;
-    gap: 12px;
-    background: var(--accent-soft);
-    border: 1px solid var(--accent);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    font-size: 14px;
-    color: var(--text-strong);
-    margin-top: 4px;
+    font-size: 1.05rem;
   }
-  .guide__success-icon { font-size: 20px; flex-shrink: 0; }
+  .checklist .tick {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-black);
+    font-size: 0.85rem;
+    color: var(--noir);
+    transform: rotate(3deg);
+  }
+  .guide-form {
+    background: var(--creme);
+    color: var(--noir);
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 34px;
+    box-shadow: 8px 8px 0 var(--noir);
+  }
+  .guide-form h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+  .form-sub {
+    font-size: 0.92rem;
+    color: rgba(26, 23, 20, 0.75);
+    margin-bottom: 22px;
+  }
+  .form-label {
+    display: block;
+    color: var(--caramel);
+    margin-bottom: 8px;
+  }
+  .field {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .field input {
+    flex: 1;
+    min-width: 200px;
+    font-family: var(--body);
+    font-size: 1rem;
+    padding: 14px 18px;
+    border: 2px solid var(--noir);
+    border-radius: var(--radius-pill);
+    background: #fff;
+  }
+  .form-error {
+    font-size: 0.82rem;
+    color: #a52815;
+    min-height: 18px;
+    margin: 8px 0 0;
+  }
+  .form-ok {
+    margin-top: 12px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-weight: var(--fw-medium);
+  }
+  .form-note {
+    display: block;
+    margin-top: 14px;
+    color: var(--caramel);
+  }
 
   @media (max-width: 980px) {
-    .guide__grid {
+    .guide-grid {
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 44px;
     }
   }
 </style>
 
 <script>
-  const form    = document.getElementById("guide-form") as HTMLFormElement;
-  const input   = document.getElementById("guide-email") as HTMLInputElement;
-  const btn     = document.getElementById("guide-btn") as HTMLButtonElement;
-  const errEl   = document.getElementById("guide-error")!;
+  const form = document.getElementById("guide-form") as HTMLFormElement;
+  const input = document.getElementById("guide-email") as HTMLInputElement;
+  const btn = document.getElementById("guide-btn") as HTMLButtonElement;
+  const errEl = document.getElementById("guide-error")!;
   const successEl = document.getElementById("guide-success")!;
   const labelEl = btn.querySelector(".guide-btn-label") as HTMLElement;
-  const loadEl  = btn.querySelector(".guide-btn-loading") as HTMLElement;
+  const loadEl = btn.querySelector(".guide-btn-loading") as HTMLElement;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -153,10 +236,9 @@ const bullets = [
       return;
     }
 
-    // State: loading
     btn.disabled = true;
     labelEl.style.display = "none";
-    loadEl.style.display  = "";
+    loadEl.style.display = "";
 
     try {
       const res = await fetch("/api/subscribe", {
@@ -167,19 +249,19 @@ const bullets = [
       const data = await res.json();
 
       if (data.ok) {
-        form.style.display = "none";
-        successEl.style.display = "flex";
+        form.querySelector(".field")!.setAttribute("style", "display:none");
+        successEl.style.display = "block";
       } else {
         errEl.textContent = data.error ?? "Une erreur est survenue, réessaie.";
         btn.disabled = false;
         labelEl.style.display = "";
-        loadEl.style.display  = "none";
+        loadEl.style.display = "none";
       }
     } catch {
       errEl.textContent = "Erreur réseau, vérifie ta connexion et réessaie.";
       btn.disabled = false;
       labelEl.style.display = "";
-      loadEl.style.display  = "none";
+      loadEl.style.display = "none";
     }
   });
 </script>
