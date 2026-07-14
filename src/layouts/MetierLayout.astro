@@ -1,0 +1,454 @@
+---
+/**
+ * MetierLayout — gabarit fiche métier v4.5.
+ * Hero icône tamponnée + tags + 4 facts, corps Markdown (journée type,
+ * vérités, compétences — dans le contenu), bloc « Formations & centres
+ * repérés » (frontmatter `formations`), citation Guy, métiers voisins.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  id?: string;
+  title: string;
+  description?: string;
+  family?: string;
+  icon?: string;
+  salary?: string;
+  salarySenior?: string;
+  reconversionTime?: string;
+  accessibility?: string;
+  tags?: string[];
+  formations?: { name: string; url: string; desc: string; tags: string[] }[];
+}
+
+const {
+  id,
+  title,
+  description,
+  family,
+  icon = "🧭",
+  salary,
+  salarySenior,
+  reconversionTime,
+  accessibility,
+  tags = [],
+  formations = [],
+} = Astro.props;
+
+const PORTRAIT =
+  "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=200&h=200&fit=crop&crop=faces&q=80";
+
+const voisins = (await getCollection("metiers", ({ data }) => !data.draft))
+  .filter((m) => m.id !== id)
+  .slice(0, 2);
+---
+
+<BaseLayout title={`${title} — Fiche métier · LaPasseTech`} description={description}>
+  <div class="wrap">
+    <nav class="crumb" aria-label="Fil d'ariane">
+      <a href="/">accueil</a> → <a href="/metiers">fiches métiers</a> → {title.toLowerCase()}
+    </nav>
+    <div class="fm-head">
+      <span class="fm-ico rv" aria-hidden="true">{icon}</span>
+      <div>
+        <span class="eyebrow rv">fiche métier{family && ` · ${family.toLowerCase()}`}</span>
+        <h1 class="rv d1">{title}</h1>
+        {description && <p class="sub rv d2">{description}</p>}
+        <div class="mtags rv d2">
+          {salary && <span class="mtag sal">{salary}</span>}
+          {tags.map((t) => (
+            <span class="mtag">{t}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="facts">
+      {salary && (
+        <div class="fact rv"><b>{salary}</b><span>premier poste</span></div>
+      )}
+      {reconversionTime && (
+        <div class="fact rv d1"><b>{reconversionTime}</b><span>de reconversion</span></div>
+      )}
+      <div class="fact rv d2"><b>0</b><span>ligne de code exigée</span></div>
+      {salarySenior && (
+        <div class="fact rv d3"><b>{salarySenior}</b><span>après 3 ans</span></div>
+      )}
+    </div>
+    {
+      accessibility && (
+        <p class="acces-line rv">// {accessibility}</p>
+      )
+    }
+
+    <article class="prose fm-prose">
+      <slot />
+    </article>
+
+    {
+      formations.length > 0 && (
+        <div class="fm-section">
+          <span class="eyebrow rv">où se former</span>
+          <h2 class="rv d1">Formations &amp; centres <em class="s">repérés.</em></h2>
+          <p class="sub rv d2">
+            Ce que chaque option vaut vraiment, et pour quel profil. Vérifie l'éligibilité à ton
+            dispositif avant de t'engager.
+          </p>
+          <div class="orgs">
+            {formations.map((o, i) => (
+              <a href={o.url} target="_blank" rel="noopener" class={`org rv d${i + 1}`}>
+                <div class="org-head">
+                  <h3>{o.name}</h3>
+                  <span class="ext" aria-hidden="true">↗</span>
+                </div>
+                <p>{o.desc}</p>
+                <div class="org-tags">
+                  {o.tags.map((t) => (
+                    <span class="mtag">{t}</span>
+                  ))}
+                </div>
+              </a>
+            ))}
+          </div>
+          <p class="org-note rv">
+            // sélection indicative — je ne touche aucune commission, sur rien.
+          </p>
+        </div>
+      )
+    }
+
+    <div class="fm-quote rv">
+      <blockquote>
+        On m'a dit que c'était trop tard à 38 ans. Mes 16 ans de marketing n'étaient pas un
+        handicap — c'était mon meilleur argument d'embauche. Ton passé compte double.
+      </blockquote>
+      <div class="qc-sig">
+        <img src={PORTRAIT} alt="Guy" loading="lazy" />
+        <div>
+          <b>Guy</b>
+          <span class="mono">business analyst salesforce · fondateur</span>
+        </div>
+      </div>
+    </div>
+
+    {
+      voisins.length > 0 && (
+        <>
+          <div class="rel-head rv">
+            <h2>Métiers voisins</h2>
+            <a href="/metiers">Toutes les fiches →</a>
+          </div>
+          <div class="agrid voisins-grid">
+            {voisins.map((m) => (
+              <a href={`/metiers/${m.id}`} class="acard rv">
+                <span class="acat cat-met">{m.data.family.toLowerCase()}</span>
+                <h2>{m.data.title}</h2>
+                <p>{m.data.description}</p>
+                <span class="ameta">{m.data.salary}</span>
+                <span class="alire">Voir la fiche</span>
+              </a>
+            ))}
+          </div>
+        </>
+      )
+    }
+  </div>
+
+  <section class="page-cta">
+    <div class="wrap">
+      <h2>Ce métier colle-t-il à <em class="s">ton</em> profil ? PassBot croise ça en 5 minutes.</h2>
+      <a href="/bilan" class="btn btn-jaune">Faire mon bilan gratuit →</a>
+      <span class="mono">// 5 minutes · sans email obligatoire</span>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .fm-head {
+    padding: 26px 0 34px;
+    border-bottom: 2px solid var(--noir);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 26px;
+    align-items: start;
+  }
+  .fm-ico {
+    width: 76px;
+    height: 76px;
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    transform: rotate(-4deg);
+    background: var(--jaune);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .fm-head h1 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(2rem, 4.2vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 6px 0 12px;
+  }
+  .mtags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .mtag {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: var(--fw-semi);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+  }
+  .mtag.sal {
+    background: var(--jaune);
+  }
+  .facts {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 34px 0 6px;
+  }
+  .fact {
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    padding: 16px 22px;
+    background: var(--creme);
+    text-align: center;
+    min-width: 150px;
+    flex: 1;
+  }
+  .fact b {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.5rem;
+    display: block;
+  }
+  .fact span {
+    font-size: 0.78rem;
+    color: rgba(26, 23, 20, 0.7);
+  }
+  .fact:nth-child(2) {
+    background: var(--jaune);
+  }
+  .acces-line {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--caramel);
+    margin-top: 12px;
+  }
+  .fm-prose {
+    max-width: 780px;
+    padding: 30px 0 10px;
+  }
+  .prose {
+    font-size: 1.02rem;
+    line-height: 1.75;
+    min-width: 0;
+  }
+  .prose :global(h2) {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.55rem;
+    margin: 40px 0 16px;
+    scroll-margin-top: 110px;
+    line-height: 1.15;
+  }
+  .prose :global(p) {
+    margin: 0 0 18px;
+    color: rgba(26, 23, 20, 0.85);
+  }
+  .prose :global(ul) {
+    margin: 0 0 18px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .prose :global(ul li) {
+    position: relative;
+    padding-left: 1.5em;
+  }
+  .prose :global(ul li)::before {
+    content: "→";
+    color: var(--caramel);
+    font-weight: var(--fw-black);
+    position: absolute;
+    left: 0;
+  }
+  .prose :global(blockquote) {
+    background: var(--caramel-10);
+    border: 2px dashed var(--caramel);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-size: 0.95rem;
+  }
+  .fm-section {
+    padding: 30px 0 6px;
+  }
+  .fm-section h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+  }
+  .orgs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 26px;
+  }
+  .org {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 22px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .org:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .org-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .org-head h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+  .org .ext {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--noir);
+    border-radius: 9px;
+    background: var(--jaune);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-black);
+    font-size: 0.9rem;
+    transform: rotate(-4deg);
+  }
+  .org p {
+    font-size: 0.85rem;
+    color: rgba(26, 23, 20, 0.75);
+    flex: 1;
+  }
+  .org-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .org-note {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--caramel);
+    margin-top: 18px;
+  }
+  .fm-quote {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 28px;
+    box-shadow: var(--shadow-pop);
+    max-width: 760px;
+    margin: 44px 0 40px;
+    position: relative;
+  }
+  .fm-quote::before {
+    content: "«";
+    position: absolute;
+    top: -30px;
+    left: 22px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 4rem;
+    color: var(--caramel);
+  }
+  .fm-quote blockquote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    margin: 0;
+  }
+  .qc-sig {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .qc-sig img {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 2px solid var(--noir);
+    object-fit: cover;
+    transform: rotate(-4deg);
+  }
+  .qc-sig b {
+    font-family: var(--disp);
+    display: block;
+    line-height: 1.1;
+  }
+  .qc-sig .mono {
+    color: var(--caramel);
+    font-size: 0.66rem;
+  }
+  .rel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--noir);
+    padding-bottom: 12px;
+  }
+  .rel-head h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .rel-head a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--caramel);
+    text-decoration: none;
+  }
+  .voisins-grid {
+    grid-template-columns: 1fr 1fr;
+    padding-top: 26px;
+  }
+
+  @media (max-width: 980px) {
+    .orgs {
+      grid-template-columns: 1fr;
+    }
+    .fm-head {
+      grid-template-columns: 1fr;
+    }
+    .voisins-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
