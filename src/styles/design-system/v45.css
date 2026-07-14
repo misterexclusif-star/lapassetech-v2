@@ -1,0 +1,416 @@
+/* ============================================================
+   v4.5 — composants partagés de la refonte (maquettes juillet 2026)
+   Classes nouvelles (pas de collision avec .lpt-*).
+   Réf. : ~/Downloads/lapassetech-*-v4-5.html + docs/specs/2026-07-14.
+   ============================================================ */
+
+/* ── utilitaires ─────────────────────────────────────────── */
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+em.s {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: var(--fw-regular);
+  letter-spacing: 0;
+}
+.mono {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: var(--fw-semi);
+  color: var(--caramel);
+  text-transform: lowercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 18px;
+}
+.eyebrow::before {
+  content: "//";
+}
+.sub {
+  font-size: 1.08rem;
+  max-width: 560px;
+  margin-top: 14px;
+  color: rgba(26, 23, 20, 0.78);
+}
+
+/* ── boutons ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--disp);
+  font-weight: var(--fw-bold);
+  font-size: 1rem;
+  padding: 15px 26px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  border: 2px solid var(--noir);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+}
+.btn-jaune {
+  background: var(--jaune);
+  color: var(--noir);
+  box-shadow: var(--shadow-pop-sm);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--noir);
+}
+.btn-noir {
+  background: var(--noir);
+  color: var(--creme);
+  box-shadow: 4px 4px 0 var(--caramel);
+}
+.btn:hover {
+  transform: translate(-2px, -2px);
+}
+.btn-jaune:hover {
+  box-shadow: 6px 6px 0 var(--noir);
+}
+.btn-noir:hover {
+  box-shadow: 6px 6px 0 var(--caramel);
+}
+.btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--noir);
+}
+
+/* ── badges / chips ──────────────────────────────────────── */
+.badge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: var(--fw-semi);
+  padding: 7px 13px;
+  border: 2px solid var(--noir);
+  border-radius: var(--radius-pill);
+  background: var(--creme);
+}
+.badge.j {
+  background: var(--jaune);
+}
+.badge.c {
+  background: var(--caramel);
+  color: var(--creme);
+  border-color: var(--caramel);
+}
+.acat {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: var(--fw-semi);
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--noir);
+  align-self: flex-start;
+}
+.cat-reco {
+  background: var(--jaune);
+}
+.cat-fin {
+  background: var(--caramel);
+  color: var(--creme);
+  border-color: var(--caramel);
+}
+.cat-met {
+  background: #fff;
+}
+.cat-droit {
+  background: var(--noir);
+  color: var(--creme);
+}
+.cat-perso {
+  background: var(--beige);
+}
+
+/* ── fil d'ariane + hero de page + toolbar ───────────────── */
+.crumb {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--caramel);
+  padding: 26px 0 0;
+}
+.crumb a {
+  text-decoration: none;
+  color: inherit;
+}
+.crumb a:hover {
+  text-decoration: underline;
+}
+.page-hero {
+  padding: 26px 0 40px;
+  border-bottom: 2px solid var(--noir);
+}
+.page-hero h1 {
+  font-size: clamp(2.3rem, 4.8vw, 3.6rem);
+  margin-top: 8px;
+  font-family: var(--disp);
+  font-weight: var(--fw-black);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.page-hero .count {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--caramel);
+  display: inline-block;
+  margin-top: 16px;
+}
+.toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 30px 0 8px;
+}
+.search {
+  flex: 1;
+  min-width: 220px;
+  max-width: 320px;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  padding: 12px 18px;
+  border: 2px solid var(--noir);
+  border-radius: var(--radius-pill);
+  background: #fff;
+}
+.pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.pill {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: var(--fw-semi);
+  padding: 8px 15px;
+  border: 2px solid var(--noir);
+  border-radius: var(--radius-pill);
+  background: var(--creme);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.pill:hover {
+  background: var(--caramel-16);
+}
+.pill[aria-pressed="true"] {
+  background: var(--caramel);
+  color: var(--creme);
+}
+
+/* ── cartes contenu (.acard) ─────────────────────────────── */
+.agrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  padding: 34px 0 70px;
+}
+.acard {
+  background: #fff;
+  border: 2px solid var(--noir);
+  border-radius: var(--r);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.acard:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-pop-sm);
+}
+.acard h2,
+.acard h3 {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  flex: 1;
+  font-family: var(--disp);
+  font-weight: var(--fw-black);
+}
+.acard p {
+  font-size: 0.88rem;
+  color: rgba(26, 23, 20, 0.75);
+}
+.ameta {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--caramel);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.alire {
+  font-family: var(--disp);
+  font-weight: var(--fw-bold);
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.alire::after {
+  content: "→";
+  transition: transform 0.2s;
+}
+.acard:hover .alire::after {
+  transform: translateX(5px);
+}
+.no-result {
+  display: none;
+  text-align: center;
+  padding: 60px 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--caramel);
+}
+
+/* ── liens externes (règle : en fin de page uniquement) ──── */
+.extlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: var(--fw-semi);
+  background: #fff;
+  border: 2px solid var(--noir);
+  border-radius: var(--radius-pill);
+  padding: 8px 15px;
+  text-decoration: none;
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.extlink::after {
+  content: "↗";
+  color: var(--caramel);
+  font-weight: var(--fw-black);
+}
+.extlink:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--noir);
+}
+.liens {
+  background: #fff;
+  border: 2px solid var(--noir);
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-shadow: var(--shadow-pop-sm);
+  margin: 26px 0 0;
+}
+.liens > .mono {
+  color: var(--caramel);
+  display: block;
+  margin-bottom: 6px;
+}
+.lien-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 4px;
+  border-bottom: 2px dashed var(--noir-08);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s, padding-left 0.15s;
+}
+.lien-row:last-child {
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+.lien-row:hover {
+  background: var(--creme);
+  padding-left: 12px;
+}
+.lien-row b {
+  font-family: var(--disp);
+  display: block;
+}
+.lien-row p {
+  font-size: 0.85rem;
+  color: rgba(26, 23, 20, 0.72);
+}
+.lien-row .ext {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--noir);
+  border-radius: 9px;
+  background: var(--jaune);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-black);
+  font-size: 0.9rem;
+  transform: rotate(-4deg);
+}
+
+/* ── bandeau conversion bas de page ──────────────────────── */
+.page-cta {
+  background: var(--beige);
+  border-top: 2px solid var(--noir);
+  padding: 56px 0;
+  text-align: center;
+}
+.page-cta h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 22px;
+  font-family: var(--disp);
+  font-weight: var(--fw-black);
+}
+.page-cta .mono {
+  display: block;
+  margin-top: 14px;
+  color: var(--caramel);
+}
+
+/* ── reveal au scroll ────────────────────────────────────── */
+.rv {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.rv.in {
+  opacity: 1;
+  transform: none;
+}
+.rv.d1 { transition-delay: 0.08s; }
+.rv.d2 { transition-delay: 0.16s; }
+.rv.d3 { transition-delay: 0.24s; }
+.rv.d4 { transition-delay: 0.32s; }
+@media (prefers-reduced-motion: reduce) {
+  .rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── responsive commun ───────────────────────────────────── */
+@media (max-width: 980px) {
+  .agrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pills {
+    margin-left: 0;
+  }
+}
+@media (max-width: 640px) {
+  .agrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── grain papier global (léger, hérite du fond existant) ── */
+body {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0 0.06 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}

@@ -41,5 +41,20 @@ const {
       <slot />
     </main>
     <Footer />
+    <script>
+      // v4.5 — reveal au scroll des éléments .rv (neutralisé en reduced-motion par le CSS)
+      const io = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document.querySelectorAll(".rv").forEach((el) => io.observe(el));
+    </script>
   </body>
 </html>
