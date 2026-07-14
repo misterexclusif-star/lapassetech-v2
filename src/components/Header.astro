@@ -5,6 +5,7 @@
  * Chrome (.lpt-header*) défini dans le design system (content.css).
  */
 import Button from "./Button.astro";
+import LogoMark from "./LogoMark.astro";
 
 const nav = [
   { label: "Articles", href: "/articles" },
@@ -21,7 +22,7 @@ const isActive = (href: string) =>
 ---
 
 <header class="lpt-header">
-  <a class="lpt-header__brand" href="/">LaPasse<span>Tech</span></a>
+  <a class="lpt-header__brand" href="/"><LogoMark /></a>
 
   <nav aria-label="Navigation principale">
     <ul class="lpt-header__nav">
