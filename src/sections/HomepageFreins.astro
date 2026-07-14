@@ -1,42 +1,71 @@
 ---
 /**
- * HomepageFreins — "Tu te poses la même question ?"
- * 4 cartes persona (avatars 3D) — données alignées maquette MJ v4.
- *
- * Avatars : déposer les 4 fichiers dans public/images/personas/ :
- *   sophie.webp · malik.webp · aicha.webp · thomas.webp
- * Repli automatique sur l'initiale si le fichier est absent.
+ * HomepageFreins — « Tu te poses laquelle ? » (v4.5, section signature).
+ * Fond marron foncé ; 4 cartes-questions pivotées et épinglées, chacune
+ * incarnée par un persona (photo + prénom · âge · métier) et ancrée vers
+ * la section de la home qui y répond (#financement #metiers #doutes #commencer).
+ * Avatars : public/images/personas/*.webp (repli : photo masquée si absente).
  */
-const personas = [
-  { name: "Sophie", age: "38 ans", job: "Commerciale · 16 ans", q: "Suis-je trop vieille pour me reconvertir ?", img: "/images/personas/sophie.webp" },
-  { name: "Malik", age: "42 ans", job: "Gestionnaire de stock", q: "Puis-je entrer dans la tech sans diplôme ?", img: "/images/personas/malik.webp" },
-  { name: "Aïcha", age: "34 ans", job: "Assistante · 8 ans", q: "Comment financer ma formation sans me ruiner ?", img: "/images/personas/aicha.webp" },
-  { name: "Thomas", age: "45 ans", job: "Prof · 18 ans", q: "Suis-je capable d'apprendre à coder à mon âge ?", img: "/images/personas/thomas.webp" },
+const cards = [
+  {
+    persona: "Aïcha · 34 ans",
+    job: "assistante RH",
+    img: "/images/personas/aicha.webp",
+    q: "« Comment je finance ma formation sans me ruiner ? »",
+    go: "Voir les 4 dispositifs",
+    href: "#financement",
+  },
+  {
+    persona: "Malik · 42 ans",
+    job: "gestionnaire de stock",
+    img: "/images/personas/malik.webp",
+    q: "« Quel métier de la tech, sans coder ? »",
+    go: "4 métiers accessibles",
+    href: "#metiers",
+  },
+  {
+    persona: "Sophie · 38 ans",
+    job: "commerciale",
+    img: "/images/personas/sophie.webp",
+    q: "« Suis-je trop vieille ? Sans diplôme ? »",
+    go: "La réponse d'un passé",
+    href: "#doutes",
+  },
+  {
+    persona: "Thomas · 45 ans",
+    job: "professeur",
+    img: "/images/personas/thomas.webp",
+    q: "« Concrètement, par où je commence ? »",
+    go: "Première étape ce soir",
+    href: "#commencer",
+  },
 ];
 ---
 
-<section class="lpt-section freins">
-  <div class="lpt-container">
-    <div class="freins__head">
-      <span class="lpt-eyebrow freins__kicker">Pour qui</span>
-      <h2>Tu te poses <em class="lpt-serif-italic" style="color:var(--accent)">la même question ?</em></h2>
-      <p class="freins__intro">
-        Quatre doutes que tout le monde garde pour soi. Tu vas trouver une réponse à chacun ici.
-      </p>
-    </div>
-
-    <div class="freins__grid">
+<section class="questions">
+  <div class="wrap">
+    <span class="eyebrow rv">pour qui</span>
+    <h2 class="rv d1">Tu te poses <em class="s">laquelle&nbsp;?</em></h2>
+    <p class="sub rv d2">
+      Quatre doutes que tout le monde garde pour soi. Ils se les sont posés aussi. Chaque carte
+      t'emmène directement à la réponse.
+    </p>
+    <div class="qgrid">
       {
-        personas.map((p) => (
-          <article class="lpt-card lpt-card--raised frein">
-            <div class="frein__avatar">
-              <span class="frein__avatar-fallback">{p.name[0]}</span>
-              <img src={p.img} alt={`Portrait de ${p.name}`} loading="lazy" onerror="this.style.display='none'" />
+        cards.map((c, i) => (
+          <a href={c.href} class={`qcard rv d${i + 1}`}>
+            <span class="pin" aria-hidden="true" />
+            <div class="qwho">
+              <img src={c.img} alt="" loading="lazy" onerror="this.style.display='none'" />
+              <span class="qname">
+                {c.persona}
+                <br />
+                {c.job}
+              </span>
             </div>
-            <div class="lpt-eyebrow frein__id">{p.name} · {p.age}</div>
-            <div class="frein__job">{p.job}</div>
-            <p class="frein__q">{p.q}</p>
-          </article>
+            <h3>{c.q}</h3>
+            <span class="qgo">{c.go}</span>
+          </a>
         ))
       }
     </div>
@@ -44,88 +73,139 @@ const personas = [
 </section>
 
 <style>
-  .freins__head {
-    max-width: 680px;
-    margin-bottom: 48px;
+  .questions {
+    background: var(--caramel-deep);
+    color: var(--creme);
+    position: relative;
+    overflow: hidden;
+    padding: 84px 0;
+    border-bottom: 2px solid var(--noir);
   }
-  .freins__head h2 {
-    margin-top: 16px;
+  .questions .eyebrow {
+    color: var(--jaune);
   }
-  .freins__kicker {
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    padding: 5px 12px;
-    border-radius: var(--radius-pill);
+  .questions h2 {
+    color: var(--creme);
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
   }
-  .freins__intro {
-    font-size: var(--fs-lead);
-    color: var(--text-body);
-    margin-top: 16px;
+  .questions .sub {
+    color: rgba(248, 244, 235, 0.72);
   }
-  .freins__grid {
+  .qgrid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 26px;
+    margin-top: 52px;
   }
-  .frein {
+  .qcard {
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 26px 22px 22px;
+    text-decoration: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 12px;
-    padding-top: 32px;
-  }
-  .frein__avatar {
+    gap: 14px;
+    min-height: 290px;
     position: relative;
-    width: 104px;
-    height: 104px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--lpt-beige);
-    border: 1px solid var(--border);
+    box-shadow: 6px 6px 0 rgba(248, 244, 235, 0.18);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
-  .frein__avatar-fallback {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-family: var(--font-display);
+  .qcard:nth-child(1) {
+    background: var(--jaune);
+    color: var(--noir);
+    transform: rotate(-1.6deg);
+  }
+  .qcard:nth-child(2) {
+    background: var(--creme);
+    color: var(--noir);
+    transform: rotate(1.2deg);
+  }
+  .qcard:nth-child(3) {
+    background: var(--caramel);
+    color: var(--creme);
+    transform: rotate(-1deg);
+  }
+  .qcard:nth-child(4) {
+    background: #fff;
+    color: var(--noir);
+    transform: rotate(1.6deg);
+  }
+  .qcard:hover {
+    transform: rotate(0) translateY(-6px);
+    box-shadow: 8px 10px 0 rgba(248, 244, 235, 0.28);
+  }
+  .qcard h3 {
+    font-family: var(--disp);
     font-weight: var(--fw-black);
-    font-size: 34px;
-    color: var(--text-muted);
+    font-size: 1.32rem;
+    line-height: 1.2;
+    flex: 1;
   }
-  .frein__avatar img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .frein__id {
-    margin-top: 4px;
-  }
-  .frein__job {
-    font-size: 13px;
-    color: var(--text-body);
-    margin-top: -6px;
-  }
-  .frein__q {
-    font-family: var(--font-display);
+  .qcard .qgo {
+    font-family: var(--disp);
     font-weight: var(--fw-bold);
-    font-size: 19px;
-    line-height: 1.28;
-    color: var(--text-strong);
-    margin-top: 8px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+  .qcard .qgo::after {
+    content: "→";
+    transition: transform 0.2s;
+  }
+  .qcard:hover .qgo::after {
+    transform: translateX(5px);
+  }
+  .qcard .pin {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--creme);
+    border: 2px solid var(--noir);
+  }
+  .qcard:nth-child(3) .pin {
+    background: var(--jaune);
+  }
+  .qwho {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .qwho img {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--noir);
+    object-fit: cover;
+    background: var(--creme);
+  }
+  .qwho .qname {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: var(--fw-semi);
+    line-height: 1.3;
+    opacity: 0.85;
   }
 
   @media (max-width: 980px) {
-    .freins__grid {
-      grid-template-columns: 1fr 1fr;
+    .qgrid {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
-  @media (max-width: 560px) {
-    .freins__grid {
+  @media (max-width: 640px) {
+    .qgrid {
       grid-template-columns: 1fr;
+    }
+    .qcard {
+      min-height: auto;
     }
   }
 </style>
