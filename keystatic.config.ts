@@ -1,8 +1,28 @@
-import { config, collection, fields } from '@keystatic/core'
+import { config, collection, singleton, fields } from '@keystatic/core'
 
 export default config({
   storage: { kind: 'cloud' },
   cloud: { project: 'lapassetech/lapassetech-v2' },
+
+  singletons: {
+    // ── Bandeau d'actus (ticker sous le header) ──────────────────────────────
+    ticker: singleton({
+      label: "Bandeau d'actus (ticker)",
+      path: 'src/data/ticker',
+      format: { data: 'json' },
+      schema: {
+        items: fields.array(
+          fields.text({
+            label: "Actu — mets **le passage clé** entre doubles astérisques pour le gras",
+          }),
+          {
+            label: 'Messages du bandeau (datés de préférence)',
+            itemLabel: (props) => props.value ?? 'Actu',
+          },
+        ),
+      },
+    }),
+  },
 
   collections: {
 

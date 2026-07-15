@@ -5,13 +5,15 @@
  * Marquee CSS pur ; prefers-reduced-motion → bandeau statique défilable.
  * Les items sont datés : c'est le module « site vivant » du feel média.
  */
-const items = [
-  "CPF · reste à charge <b>150&nbsp;€</b> depuis avril 2026",
-  "POEI · formation financée <b>avant</b> l'embauche",
-  "Transitions Pro · <b>salaire maintenu</b> pendant la formation",
-  "PassBot · ton bilan en <b>5 minutes</b>, gratuit",
-  "Guide 2026 · les métiers du digital <b>sans jargon</b>",
-];
+// Items édités dans Keystatic (singleton « Bandeau d'actus ») → src/data/ticker.json.
+// Syntaxe : **texte** = gras crème. Le HTML est échappé avant conversion.
+import tickerData from "../data/ticker.json";
+
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const toHtml = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+
+const items = (tickerData.items ?? []).map(toHtml);
 // Piste dupliquée pour un défilement sans couture (-50% = 1 cycle).
 const loop = [...items, ...items];
 ---
