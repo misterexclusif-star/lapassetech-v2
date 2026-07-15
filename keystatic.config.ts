@@ -28,8 +28,16 @@ export default config({
           defaultValue: 'Reconversion',
         }),
         date: fields.date({ label: 'Date de publication' }),
+        updated: fields.date({
+          label: 'Dernière mise à jour (badge « à jour · mois »)',
+          validation: { isRequired: false },
+        }),
         readingTime: fields.text({ label: 'Temps de lecture (ex : 7 min)', validation: { isRequired: false } }),
         cover: fields.text({ label: 'URL image de couverture (Unsplash…)', multiline: false }),
+        featured: fields.checkbox({
+          label: 'À la une (deck du hero — 4 max)',
+          defaultValue: false,
+        }),
         draft: fields.checkbox({ label: 'Brouillon (masqué en prod)', defaultValue: false }),
         content: fields.markdoc({ label: 'Contenu' }),
       },
@@ -65,6 +73,32 @@ export default config({
           defaultValue: 'Outils IA',
         }),
         duration: fields.text({ label: 'Durée estimée (ex : 20 min)', validation: { isRequired: false } }),
+        visual: fields.text({
+          label: 'URL du visuel du hero (polaroid)',
+          validation: { isRequired: false },
+        }),
+        prereqs: fields.array(fields.text({ label: 'Prérequis' }), {
+          label: '« Avant de commencer, prépare » (liste)',
+          itemLabel: (props) => props.value ?? 'Prérequis',
+        }),
+        doneWhen: fields.array(fields.text({ label: 'Critère' }), {
+          label: '« Tu as terminé quand » (liste)',
+          itemLabel: (props) => props.value ?? 'Critère',
+        }),
+        links: fields.array(
+          fields.object({
+            label: fields.text({ label: 'Nom du lien (ex : moncompteformation.gouv.fr)' }),
+            url: fields.url({ label: 'URL' }),
+            note: fields.text({
+              label: 'Note (à quelle étape il sert)',
+              validation: { isRequired: false },
+            }),
+          }),
+          {
+            label: 'Liens officiels (affichés UNIQUEMENT en fin de page)',
+            itemLabel: (props) => props.fields.label.value ?? 'Lien',
+          },
+        ),
         draft: fields.checkbox({ label: 'Brouillon (masqué en prod)', defaultValue: false }),
         content: fields.markdoc({ label: 'Contenu' }),
       },
@@ -91,8 +125,39 @@ export default config({
           ],
           defaultValue: 'Gestion de projet',
         }),
-        salary: fields.text({ label: 'Salaire moyen (ex : 38–48 k€)', validation: { isRequired: false } }),
+        salary: fields.text({ label: 'Salaire premier poste (ex : 38–42 k€)', validation: { isRequired: false } }),
+        salarySenior: fields.text({
+          label: 'Salaire après 3 ans (ex : 45–55 k€)',
+          validation: { isRequired: false },
+        }),
+        reconversionTime: fields.text({
+          label: 'Durée de reconversion (ex : 3–9 mois)',
+          validation: { isRequired: false },
+        }),
+        icon: fields.text({
+          label: 'Icône emoji de la fiche (ex : 🧭)',
+          validation: { isRequired: false },
+        }),
         accessibility: fields.text({ label: 'Accessibilité (ex : Sans diplôme tech)', validation: { isRequired: false } }),
+        tags: fields.array(fields.text({ label: 'Tag' }), {
+          label: 'Tags (ex : zéro code, certifiable)',
+          itemLabel: (props) => props.value ?? 'Tag',
+        }),
+        formations: fields.array(
+          fields.object({
+            name: fields.text({ label: 'Nom (ex : Trailhead — Salesforce)' }),
+            url: fields.url({ label: 'URL' }),
+            desc: fields.text({ label: 'Description honnête (format, pour qui)', multiline: true }),
+            tags: fields.array(fields.text({ label: 'Tag' }), {
+              label: 'Tags (durée, modalité, financement)',
+              itemLabel: (props) => props.value ?? 'Tag',
+            }),
+          }),
+          {
+            label: 'Formations & centres repérés',
+            itemLabel: (props) => props.fields.name.value ?? 'Formation',
+          },
+        ),
         draft: fields.checkbox({ label: 'Brouillon (masqué en prod)', defaultValue: false }),
         content: fields.markdoc({ label: 'Contenu' }),
       },
