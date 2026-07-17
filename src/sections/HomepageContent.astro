@@ -8,10 +8,21 @@
  */
 import { getCollection } from "astro:content";
 
-const articles = (await getCollection("articles", ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .filter((a) => !a.data.featured)
-  .slice(0, 4);
+// Une catégorie différente par ligne (pastilles colorées, comme la maquette).
+// Pour chaque catégorie : le plus récent HORS deck si possible, sinon celui
+// du deck (tant que le catalogue est majoritairement « Métiers du digital »).
+const all = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const byTag = new Map<string, (typeof all)[number]>();
+for (const a of all) {
+  const cur = byTag.get(a.data.tag);
+  if (!cur) byTag.set(a.data.tag, a);
+  else if (cur.data.featured && !a.data.featured) byTag.set(a.data.tag, a);
+}
+const diverse = [...byTag.values()];
+const rest = all.filter((a) => !diverse.includes(a) && !a.data.featured);
+const articles = [...diverse, ...rest].slice(0, 4);
 
 const ressources = (await getCollection("ressources", ({ data }) => !data.draft)).slice(0, 3);
 
@@ -216,6 +227,11 @@ const fmtDate = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year
   .res-card p {
     font-size: 0.88rem;
     color: rgba(26, 23, 20, 0.75);
+    /* chapô sur une seule ligne, comme la maquette */
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .res-card .res-time {
     font-family: var(--mono);
