@@ -6,40 +6,18 @@
  * la section de la home qui y répond (#financement #metiers #doutes #commencer).
  * Avatars : public/images/personas/*.webp (repli : photo masquée si absente).
  */
-const cards = [
-  {
-    persona: "Aïcha · 34 ans",
-    job: "assistante RH",
-    img: "/images/personas/aicha.webp",
-    q: "« Comment je finance ma formation sans me ruiner ? »",
-    go: "Voir les 4 dispositifs",
-    href: "#financement",
-  },
-  {
-    persona: "Malik · 42 ans",
-    job: "gestionnaire de stock",
-    img: "/images/personas/malik.webp",
-    q: "« Quel métier de la tech, sans coder ? »",
-    go: "4 métiers accessibles",
-    href: "#metiers",
-  },
-  {
-    persona: "Sophie · 38 ans",
-    job: "commerciale",
-    img: "/images/personas/sophie.webp",
-    q: "« Suis-je trop vieille ? Sans diplôme ? »",
-    go: "La réponse d'un passé",
-    href: "#doutes",
-  },
-  {
-    persona: "Thomas · 45 ans",
-    job: "professeur",
-    img: "/images/personas/thomas.webp",
-    q: "« Concrètement, par où je commence ? »",
-    go: "Première étape ce soir",
-    href: "#commencer",
-  },
-];
+// Contenu édité dans Keystatic (singleton « Cartes questions ») → src/data/questions.json.
+// Les couleurs/rotations des cartes restent fixées par position (design system).
+import questionsData from "../data/questions.json";
+
+const cards = questionsData.items.map((c) => ({
+  persona: c.persona,
+  job: c.job,
+  img: c.img,
+  q: c.question,
+  go: c.cta,
+  href: c.href,
+}));
 ---
 
 <section class="questions">

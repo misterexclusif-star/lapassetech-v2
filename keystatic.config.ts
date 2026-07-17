@@ -5,6 +5,40 @@ export default config({
   cloud: { project: 'lapassetech/lapassetech-v2' },
 
   singletons: {
+    // ── Cartes questions/personas de la home ─────────────────────────────────
+    questions: singleton({
+      label: 'Cartes questions (home)',
+      path: 'src/data/questions',
+      format: { data: 'json' },
+      schema: {
+        items: fields.array(
+          fields.object({
+            persona: fields.text({ label: 'Prénom · âge (ex : Sophie · 38 ans)' }),
+            job: fields.text({ label: 'Métier actuel (ex : commerciale)' }),
+            img: fields.text({
+              label: 'Photo (chemin, ex : /images/personas/sophie.webp)',
+            }),
+            question: fields.text({ label: 'La question, avec guillemets « … »' }),
+            cta: fields.text({ label: 'Texte du lien (ex : Guy est passé à 38 ans)' }),
+            href: fields.select({
+              label: 'Section de destination',
+              options: [
+                { label: 'Financement (4 dispositifs)', value: '#financement' },
+                { label: 'Métiers accessibles', value: '#metiers' },
+                { label: 'Doutes / réponse de Guy', value: '#doutes' },
+                { label: 'Bilan (par où commencer)', value: '#commencer' },
+              ],
+              defaultValue: '#financement',
+            }),
+          }),
+          {
+            label: 'Les 4 cartes (l’ordre = couleurs jaune, crème, caramel, blanc)',
+            itemLabel: (props) => props.fields.persona.value ?? 'Carte',
+          },
+        ),
+      },
+    }),
+
     // ── Bandeau d'actus (ticker sous le header) ──────────────────────────────
     ticker: singleton({
       label: "Bandeau d'actus (ticker)",

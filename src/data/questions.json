@@ -1,0 +1,36 @@
+{
+  "items": [
+    {
+      "persona": "Aïcha · 34 ans",
+      "job": "assistante RH",
+      "img": "/images/personas/aicha.webp",
+      "question": "« Comment je finance ma formation sans me ruiner ? »",
+      "cta": "Voir les 4 dispositifs",
+      "href": "#financement"
+    },
+    {
+      "persona": "Malik · 42 ans",
+      "job": "gestionnaire de stock",
+      "img": "/images/personas/malik.webp",
+      "question": "« Quel métier de la tech, sans coder ? »",
+      "cta": "4 métiers accessibles",
+      "href": "#metiers"
+    },
+    {
+      "persona": "Sophie · 38 ans",
+      "job": "commerciale",
+      "img": "/images/personas/sophie.webp",
+      "question": "« Suis-je trop vieille ? Sans diplôme ? »",
+      "cta": "Guy est passé à 38 ans",
+      "href": "#doutes"
+    },
+    {
+      "persona": "Thomas · 45 ans",
+      "job": "professeur",
+      "img": "/images/personas/thomas.webp",
+      "question": "« Concrètement, par où je commence ? »",
+      "cta": "Première étape ce soir",
+      "href": "#commencer"
+    }
+  ]
+}
