@@ -1,126 +1,169 @@
 ---
 /**
- * HomepageBilan — fond caramel.
- * Gauche : texte + CTA. Droite : iframe PassBot (Typebot).
+ * HomepageBilan — « Ton bilan en 5 minutes. » (v4.5, ancre #commencer).
+ * Gauche : checklist ticks jaunes + CTA jaune + note mono.
+ * Droite : chat PassBot mocké (léger, remplace l'iframe Typebot qui
+ * affichait une carte vide au chargement — le vrai bot vit sur /bilan).
  */
-import Button from "../components/Button.astro";
-
-const PASSBOT_URL = "https://typebot.co/pass-bot-la-passe-tech-05k4p4j";
 ---
 
-<section class="lpt-section lpt-section--accent bilan">
-  <div class="lpt-container bilan__grid">
-    <div class="bilan__col">
-      <div class="lpt-eyebrow bilan__eyebrow">Le bilan PassBot</div>
-      <h2 class="bilan__title">Ton bilan <em class="bilan__accent">en 5 minutes.</em></h2>
-      <p class="bilan__sub">
-        PassBot te pose 5 questions et t'envoie un plan d'action personnalisé.
-        Gratuit. Sans engagement. Sans jugement.
+<section id="commencer" class="bilan">
+  <div class="wrap bilan-grid">
+    <div>
+      <span class="eyebrow rv">par où commencer</span>
+      <h2 class="rv d1">Ton bilan en <em class="s">5 minutes.</em></h2>
+      <p class="sub rv d2">
+        PassBot te pose 5 questions et t'envoie un plan d'action personnalisé. Gratuit. Sans
+        engagement. Sans jugement.
       </p>
-      <ul class="bilan__points">
-        <li>Les métiers du digital qui collent à ton profil</li>
-        <li>Les financements auxquels tu as droit</li>
-        <li>Une première étape concrète, dès ce soir</li>
+      <ul class="checklist rv d3">
+        <li><span class="tick">✓</span>Les métiers du digital qui collent à ton profil</li>
+        <li><span class="tick">✓</span>Les financements auxquels tu as droit</li>
+        <li><span class="tick">✓</span>Une première étape concrète, dès ce soir</li>
       </ul>
-      <div class="bilan__cta">
-        <Button variant="cta" href="/bilan" label="Commencer mon bilan" />
-        <span class="bilan__note">Pas d'email obligatoire pour commencer.</span>
-      </div>
+      <a href="/bilan" class="btn btn-jaune rv d4">Commencer mon bilan →</a>
+      <p class="bilan-note rv d4">// pas d'email obligatoire pour commencer</p>
     </div>
-
-    <div class="bilan__media">
-      <div class="bilan__frame">
-        <iframe
-          src={PASSBOT_URL}
-          title="PassBot — ton bilan gratuit"
-          loading="lazy"
-        ></iframe>
+    <div class="chat-mock rv d2" aria-hidden="true">
+      <div class="chat-head">
+        <span class="chat-avatar" aria-hidden="true">
+          <svg viewBox="0 0 34 34" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 2v5" stroke="#1A1714" stroke-width="2.5" stroke-linecap="round"></path>
+            <circle cx="17" cy="3" r="2.6" fill="#9C5A2C" stroke="#1A1714" stroke-width="1.8"></circle>
+            <rect x="5" y="8" width="24" height="20" rx="7" fill="#F8F4EB" stroke="#1A1714" stroke-width="2.5"></rect>
+            <circle cx="13" cy="17" r="2.6" fill="#1A1714"></circle>
+            <circle cx="21" cy="17" r="2.6" fill="#1A1714"></circle>
+            <path d="M13 23q4 3 8 0" stroke="#1A1714" stroke-width="2.2" fill="none" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <b>PassBot</b>
+        <span class="mono chat-status">en ligne</span>
+      </div>
+      <div class="bubble bot">Salut ! Question 1/5 : aujourd'hui, tu travailles dans quel domaine ?</div>
+      <div class="bubble user">Commerce, depuis 14 ans.</div>
+      <div class="bubble bot">
+        Parfait — 14 ans de terrain, c'est une vraie base. On regarde ce que ça vaut dans la tech ?
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  .bilan__grid {
+  .bilan {
+    padding: 84px 0;
+  }
+  .bilan h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .bilan-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 56px;
     align-items: center;
   }
-  /* Sur fond caramel, le texte est clair (hérité de .lpt-section--accent). */
-  .bilan__eyebrow {
-    color: rgba(255, 255, 255, 0.75);
-  }
-  .bilan__title {
-    color: #fff;
-    margin-top: 16px;
-  }
-  .bilan__accent {
-    font-style: normal;
-    font-weight: var(--fw-black);
-    color: var(--lpt-yellow);
-  }
-  .bilan__sub {
-    color: rgba(255, 255, 255, 0.88);
-    font-size: var(--fs-lead);
-    line-height: 1.55;
-    margin-top: 20px;
-    max-width: 480px;
-  }
-  .bilan__points {
+  .checklist {
     list-style: none;
-    margin: 24px 0 0;
+    margin: 22px 0 30px;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    gap: 14px;
   }
-  .bilan__points li {
+  .checklist li {
     display: flex;
-    gap: 10px;
+    gap: 14px;
     align-items: flex-start;
-    color: #fff;
-    font-size: var(--fs-body-sm);
+    font-size: 1.05rem;
   }
-  .bilan__points li::before {
-    content: "✓";
-    color: var(--lpt-yellow);
-    font-weight: var(--fw-black);
-    flex-shrink: 0;
-  }
-  .bilan__cta {
+  .checklist .tick {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 7px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-top: 32px;
-    flex-wrap: wrap;
+    justify-content: center;
+    font-weight: var(--fw-black);
+    font-size: 0.85rem;
+    transform: rotate(-4deg);
   }
-  .bilan__note {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
-    max-width: 220px;
+  .bilan-note {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--caramel);
+    margin-top: 14px;
   }
-  .bilan__frame {
-    background: var(--surface-card);
-    border-radius: var(--radius-xl);
-    padding: 12px;
-    box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.4);
-  }
-  .bilan__frame iframe {
+  .chat-mock {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-pop);
+    padding: 22px;
+    max-width: 420px;
+    justify-self: end;
     width: 100%;
-    height: 520px;
-    border: 0;
-    border-radius: var(--radius-lg);
-    display: block;
+  }
+  .chat-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    border-bottom: 2px dashed var(--noir-08);
+    margin-bottom: 16px;
+  }
+  .chat-avatar {
+    width: 38px;
+    height: 38px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-4deg);
+  }
+  .chat-head b {
+    font-family: var(--disp);
+  }
+  .chat-status {
+    color: var(--vert);
+    background: var(--noir);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: 0.62rem;
+    margin-left: auto;
+  }
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.92rem;
+    max-width: 88%;
+    margin-bottom: 10px;
+  }
+  .bubble.bot {
+    background: var(--creme);
+    border: 1.5px solid var(--noir-08);
+  }
+  .bubble.user {
+    background: var(--jaune);
+    color: var(--noir);
+    border: 1.5px solid var(--noir);
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
   }
 
   @media (max-width: 980px) {
-    .bilan__grid {
+    .bilan-grid {
       grid-template-columns: 1fr;
-      gap: 40px;
+      gap: 44px;
     }
-    .bilan__frame iframe {
-      height: 460px;
+    .chat-mock {
+      justify-self: start;
     }
   }
 </style>

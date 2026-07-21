@@ -1,115 +1,216 @@
 ---
 /**
- * Listing des fiches métiers. Hero + filtres actifs + recherche client-side.
+ * Listing des fiches métiers (v4.5). Grille 2 colonnes : icône pivotée,
+ * salaire (jaune), tags, ligne d'accessibilité mono caramel.
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const metiers = await getCollection("metiers", ({ data }) => !data.draft);
 
-// label affiché → valeur réelle du champ `family`
+const familyIcon = (family: string) => {
+  const f = family.toLowerCase();
+  if (f.includes("data")) return { ico: "📊", cls: "ico-creme" };
+  if (f.includes("support")) return { ico: "🛟", cls: "ico-noir" };
+  if (f.includes("marketing")) return { ico: "📣", cls: "ico-caramel" };
+  if (f.includes("crm") || f.includes("salesforce")) return { ico: "⚙️", cls: "ico-caramel" };
+  return { ico: "🧭", cls: "ico-jaune" };
+};
+
 const filters: { label: string; value: string }[] = [
-  { label: "Toutes",           value: "*" },
-  { label: "Data",             value: "Data" },
-  { label: "Marketing",        value: "Marketing Digital" },
+  { label: "toutes", value: "*" },
   { label: "CRM / Salesforce", value: "CRM" },
-  { label: "Gestion de projet",value: "Gestion de projet" },
-  { label: "No-code",          value: "No-code" },
-  { label: "Support IT",       value: "Support IT" },
+  { label: "data", value: "Data" },
+  { label: "marketing", value: "Marketing Digital" },
+  { label: "gestion de projet", value: "Gestion de projet" },
+  { label: "support IT", value: "Support IT" },
 ];
 ---
 
-<BaseLayout title="Fiches métiers — LaPasseTech" description="Les métiers du digital, fiche par fiche : salaire, accessibilité, compétences.">
-  <section class="lpt-listing-hero">
-    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Fiches métiers</span></nav>
-    <h1 style="margin-top:14px;">Les métiers, <em class="lpt-serif-italic" style="color:var(--accent)">sans flou.</em></h1>
-    <p>Pour chaque métier du digital : ce que c'est vraiment, le salaire, l'accessibilité et les compétences que tu as déjà.</p>
-    <div class="lpt-listing-hero__count" id="metiers-count">{metiers.length} fiche{metiers.length > 1 ? "s" : ""}</div>
-  </section>
-
-  <div class="lpt-filterbar">
-    <input id="metiers-search" class="lpt-input lpt-search" placeholder="Rechercher un métier…" type="search" autocomplete="off" />
-    <div class="lpt-filters">
-      {filters.map((f, i) => (
-        <button
-          class="lpt-filter"
-          data-filter={f.value}
-          data-active={i === 0 ? "" : undefined}
-        >{f.label}</button>
-      ))}
+<BaseLayout
+  title="Fiches métiers — LaPasseTech"
+  description="Pour chaque métier du digital : ce que c'est vraiment, le salaire, l'accessibilité et les compétences que tu as déjà."
+>
+  <div class="wrap">
+    <nav class="crumb" aria-label="Fil d'ariane"><a href="/">accueil</a> → fiches métiers</nav>
+    <div class="page-hero">
+      <span class="eyebrow rv">sans coder</span>
+      <h1 class="rv d1">Les métiers, <em class="s">sans flou.</em></h1>
+      <p class="sub rv d2">
+        Pour chaque métier du digital : ce que c'est vraiment, le salaire, l'accessibilité et les
+        compétences que tu as déjà.
+      </p>
+      <span class="count rv d2" id="metiers-count">{metiers.length} fiches</span>
     </div>
-  </div>
 
-  <div class="lpt-grid-section">
-    <div class="lpt-card-grid" id="metiers-grid">
+    <div class="toolbar rv">
+      <input
+        id="metiers-search"
+        class="search"
+        placeholder="Rechercher un métier…"
+        type="search"
+        autocomplete="off"
+        aria-label="Rechercher un métier"
+      />
+      <div class="pills" role="group" aria-label="Filtrer par famille">
+        {
+          filters.map((f, i) => (
+            <button class="pill" data-filter={f.value} aria-pressed={i === 0 ? "true" : "false"}>
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="agrid metiers-grid" id="metiers-grid">
       {
-        metiers.map((m) => (
-          <article
-            class="lpt-article-card"
-            data-family={m.data.family}
-            data-title={m.data.title.toLowerCase()}
-            data-desc={m.data.description.toLowerCase()}
-          >
-            <span class="lpt-tag" style="align-self:flex-start;">{m.data.family}</span>
-            <a class="lpt-article-card__title" href={`/metiers/${m.id}`}>{m.data.title}</a>
-            <p style="font-size:13.5px; color:var(--text-body); margin:0;">{m.data.description}</p>
-            <div class="lpt-metier-chips">
-              {m.data.salary && <span class="lpt-metier-chip"><b>{m.data.salary}</b></span>}
-              {m.data.accessibility && <span class="lpt-metier-chip">{m.data.accessibility}</span>}
-            </div>
-            <a class="lpt-article-card__link" href={`/metiers/${m.id}`}>Voir la fiche →</a>
-          </article>
-        ))
+        metiers.map((m) => {
+          const icon = familyIcon(m.data.family);
+          return (
+            <a
+              href={`/metiers/${m.id}`}
+              class="acard mcard"
+              data-tag={m.data.family}
+              data-search={`${m.data.title} ${m.data.description}`.toLowerCase()}
+            >
+              <span class={`ico ${icon.cls}`} aria-hidden="true">
+                {icon.ico}
+              </span>
+              <div class="mbody">
+                <span class="acat cat-met">{m.data.family.toLowerCase()}</span>
+                <h2>{m.data.title}</h2>
+                <p>{m.data.description}</p>
+                <div class="mtags">
+                  {m.data.salary && <span class="mtag sal">{m.data.salary}</span>}
+                  <span class="mtag nocode">zéro code</span>
+                </div>
+                {m.data.accessibility && <span class="acces">// {m.data.accessibility}</span>}
+                <span class="alire">Voir la fiche</span>
+              </div>
+            </a>
+          );
+        })
       }
     </div>
-    <p id="metiers-empty" style="display:none; padding:40px 0; color:var(--text-muted); text-align:center;">Aucune fiche ne correspond à ta recherche.</p>
+    <p class="no-result" id="metiers-empty">
+      // aucun métier ne correspond — essaie un autre mot-clé ou une autre famille
+    </p>
   </div>
+
+  <section class="page-cta">
+    <div class="wrap">
+      <h2>Lequel colle à <em class="s">ton</em> profil ? PassBot croise ça en 5 minutes.</h2>
+      <a href="/bilan" class="btn btn-jaune">Faire mon bilan gratuit →</a>
+      <span class="mono">// 5 minutes · sans email obligatoire</span>
+    </div>
+  </section>
 </BaseLayout>
 
+<style>
+  .metiers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mcard {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+  }
+  .mcard .ico {
+    width: 58px;
+    height: 58px;
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transform: rotate(-4deg);
+  }
+  .ico-jaune { background: var(--jaune); }
+  .ico-caramel { background: var(--caramel); }
+  .ico-creme { background: var(--creme); }
+  .ico-noir { background: var(--noir); }
+  .mcard .mbody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mcard h2 {
+    font-size: 1.3rem;
+  }
+  .mtags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mtag {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: var(--fw-semi);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+  }
+  .mtag.sal { background: var(--jaune); }
+  .mtag.nocode {
+    background: var(--caramel);
+    color: var(--creme);
+    border-color: var(--caramel);
+  }
+  .acces {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--caramel);
+    border-top: 2px dashed rgba(156, 90, 44, 0.35);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  @media (max-width: 980px) {
+    .metiers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .mcard {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
 <script>
-  const grid    = document.getElementById("metiers-grid")!;
-  const search  = document.getElementById("metiers-search") as HTMLInputElement;
+  const search = document.getElementById("metiers-search") as HTMLInputElement;
   const countEl = document.getElementById("metiers-count")!;
   const emptyEl = document.getElementById("metiers-empty")!;
-  const btns    = document.querySelectorAll<HTMLButtonElement>(".lpt-filters .lpt-filter");
-  const cards   = Array.from(grid.querySelectorAll<HTMLElement>("article.lpt-article-card"));
+  const pills = document.querySelectorAll<HTMLButtonElement>(".pills .pill");
+  const cards = Array.from(document.querySelectorAll<HTMLElement>("#metiers-grid .acard"));
 
   let activeFilter = "*";
-  let searchQuery  = "";
+  let q = "";
 
-  function applyFilters() {
+  function apply() {
     let visible = 0;
     cards.forEach((card) => {
-      const family = card.dataset.family ?? "";
-      const title  = card.dataset.title  ?? "";
-      const desc   = card.dataset.desc   ?? "";
-
-      const matchFilter = activeFilter === "*" || family === activeFilter;
-      const matchSearch = searchQuery === "" ||
-        title.includes(searchQuery) ||
-        desc.includes(searchQuery) ||
-        family.toLowerCase().includes(searchQuery);
-
+      const matchFilter = activeFilter === "*" || card.dataset.tag === activeFilter;
+      const matchSearch = q === "" || (card.dataset.search ?? "").includes(q);
       const show = matchFilter && matchSearch;
       card.style.display = show ? "" : "none";
       if (show) visible++;
     });
-
-    emptyEl.style.display = visible === 0 ? "" : "none";
+    emptyEl.style.display = visible === 0 ? "block" : "none";
     countEl.textContent = `${visible} fiche${visible > 1 ? "s" : ""}`;
   }
 
-  btns.forEach((btn) => {
+  pills.forEach((btn) => {
     btn.addEventListener("click", () => {
-      btns.forEach((b) => b.removeAttribute("data-active"));
-      btn.setAttribute("data-active", "");
+      pills.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      btn.setAttribute("aria-pressed", "true");
       activeFilter = btn.dataset.filter ?? "*";
-      applyFilters();
+      apply();
     });
   });
-
   search.addEventListener("input", () => {
-    searchQuery = search.value.trim().toLowerCase();
-    applyFilters();
+    q = search.value.trim().toLowerCase();
+    apply();
   });
 </script>

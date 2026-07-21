@@ -8,6 +8,7 @@
   --radius-xl:  10px;  /* "3 étapes" grid container */
   --radius-2xl: 18px;  /* persona cards */
   --radius-pill: 999px;
+  --r: 18px; /* v4.5 alias — radius cartes maquette */
 
   /* Shadow */
   --shadow-card:  0 12px 32px -16px rgba(42,37,32,0.18);   /* persona / raised cards */

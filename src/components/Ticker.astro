@@ -1,29 +1,31 @@
 ---
 /**
- * Ticker — bandeau défilant sous le Header.
- * Fond caramel profond, texte crème en majuscules, marquee CSS pur (boucle).
- * Respecte prefers-reduced-motion (animation désactivée → bandeau statique).
+ * Ticker — bandeau d'actus financement/reconversion sous le Header (v4.5).
+ * Fond marron foncé, mono crème minuscule, séparateur « // » terracotta.
+ * Marquee CSS pur ; prefers-reduced-motion → bandeau statique défilable.
+ * Les items sont datés : c'est le module « site vivant » du feel média.
  */
-const items = [
-  "POEI",
-  "CDI garanti avant la formation",
-  "CPF jusqu'à 100% financé",
-  "PassBot · bilan en 5 minutes",
-  "Transitions Pro",
-  "Jusqu'à 24 mois finançables",
-];
+// Items édités dans Keystatic (singleton « Bandeau d'actus ») → src/data/ticker.json.
+// Syntaxe : **texte** = gras crème. Le HTML est échappé avant conversion.
+import tickerData from "../data/ticker.json";
+
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const toHtml = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+
+const items = (tickerData.items ?? []).map(toHtml);
 // Piste dupliquée pour un défilement sans couture (-50% = 1 cycle).
 const loop = [...items, ...items];
 ---
 
-<div class="lpt-ticker" role="complementary" aria-label="Atouts LaPasseTech">
+<div class="lpt-ticker" role="complementary" aria-label="Actualités financement et reconversion">
   <div class="lpt-ticker__viewport">
     <ul class="lpt-ticker__track">
       {
-        loop.map((label, i) => (
+        loop.map((html, i) => (
           <li class="lpt-ticker__item" aria-hidden={i >= items.length ? "true" : undefined}>
-            <span class="lpt-ticker__dot" aria-hidden="true">◆</span>
-            <span class="lpt-ticker__text">{label}</span>
+            <span class="lpt-ticker__text" set:html={html} />
+            <span class="lpt-ticker__sep" aria-hidden="true">//</span>
           </li>
         ))
       }
@@ -33,10 +35,11 @@ const loop = [...items, ...items];
 
 <style>
   .lpt-ticker {
-    background: var(--lpt-caramel-deep);
-    color: var(--lpt-cream);
+    background: var(--caramel-deep);
+    color: var(--creme);
     overflow: hidden;
-    height: 38px;
+    border-bottom: 2px solid var(--noir);
+    padding: 9px 0;
     display: flex;
     align-items: center;
   }
@@ -51,7 +54,7 @@ const loop = [...items, ...items];
     margin: 0;
     padding: 0;
     width: max-content;
-    animation: lpt-ticker-scroll 32s linear infinite;
+    animation: lpt-ticker-scroll 46s linear infinite;
   }
   .lpt-ticker:hover .lpt-ticker__track {
     animation-play-state: paused;
@@ -59,30 +62,43 @@ const loop = [...items, ...items];
   .lpt-ticker__item {
     display: inline-flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
     white-space: nowrap;
-    padding: 0 8px;
+    padding: 0 18px 0 0;
+  }
+  .lpt-ticker__item:first-child {
+    padding-left: 18px;
   }
   .lpt-ticker__text {
-    font-family: var(--font-body);
-    font-size: 11.5px;
-    font-weight: var(--fw-semi);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--lpt-cream);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: rgba(248, 244, 235, 0.82);
   }
-  .lpt-ticker__dot {
-    color: var(--lpt-yellow);
-    font-size: 7px;
+  .lpt-ticker__text :global(b) {
+    color: var(--creme);
+    font-weight: 600;
+  }
+  .lpt-ticker__sep {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--terracotta);
   }
 
   @keyframes lpt-ticker-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .lpt-ticker__viewport { overflow-x: auto; }
-    .lpt-ticker__track { animation: none; }
+    .lpt-ticker__viewport {
+      overflow-x: auto;
+    }
+    .lpt-ticker__track {
+      animation: none;
+    }
   }
 </style>

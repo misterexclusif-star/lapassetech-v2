@@ -4,7 +4,7 @@ description: "Le traducteur entre les besoins de l'entreprise et la plateforme S
 family: "Gestion de projet"
 salary: "38–48 k€"
 accessibility: "Sans diplôme tech"
-draft: false
+draft: true
 ---
 
 ## Le métier en bref

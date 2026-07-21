@@ -1,0 +1,61 @@
+---
+/**
+ * LogoMark — logo D6av (refonte v4.5).
+ * Pastille caramel pivotée + flèche crème, devant le wordmark La«Passe»Tech.
+ * variant="footer" : bord de pastille crème + « Passe » terracotta (fonds sombres).
+ */
+interface Props {
+  variant?: "footer";
+}
+const { variant } = Astro.props;
+---
+
+<span class:list={["lpt-logomark", variant && `lpt-logomark--${variant}`]}>
+  <span class="lpt-logomark__chip" aria-hidden="true">
+    <svg
+      width="14"
+      height="12"
+      viewBox="0 0 18 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M2 8h12"></path>
+      <path d="M9 2l6 6-6 6"></path>
+    </svg>
+  </span>La<b class="lpt-logomark__passe">Passe</b>Tech
+</span>
+
+<style>
+  .lpt-logomark {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+  }
+  .lpt-logomark__chip {
+    width: 24px;
+    height: 24px;
+    background: var(--caramel);
+    border: 2px solid var(--noir);
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-6deg);
+    margin-right: 0.38em;
+    color: var(--creme);
+    flex: none;
+  }
+  .lpt-logomark__passe {
+    color: var(--caramel);
+  }
+  .lpt-logomark--footer .lpt-logomark__chip {
+    border-color: var(--creme);
+  }
+  .lpt-logomark--footer .lpt-logomark__passe {
+    color: var(--terracotta);
+  }
+</style>

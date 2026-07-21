@@ -35,13 +35,14 @@ const cols = [
 ];
 
 const year = new Date().getFullYear();
+import LogoMark from "./LogoMark.astro";
 ---
 
 <footer class="lpt-footer">
   <div class="lpt-footer__grid">
     <div>
       <a class="lpt-header__brand" href="/" style="color:var(--text-on-dark); margin-bottom:14px; display:inline-block;">
-        LaPasse<span>Tech</span>
+        <LogoMark variant="footer" />
       </a>
       <p style="font-size:13.5px; color:var(--text-faint); line-height:1.65;">
         Reconversion vers les métiers du digital.<br />
@@ -56,7 +57,7 @@ const year = new Date().getFullYear();
           <ul>
             {col.links.map((l) => (
               <li>
-                <a href={l.href} style={l.accent ? "color:var(--accent)" : undefined}>
+                <a href={l.href} style={l.accent ? "color:var(--terracotta)" : undefined}>
                   {l.label}
                 </a>
               </li>

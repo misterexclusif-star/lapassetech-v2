@@ -1,122 +1,232 @@
 ---
 /**
- * Listing des articles. Hero + filtres actifs + recherche client-side.
+ * Listing des articles (v4.5). Hero éditorial + recherche + filtres pills +
+ * première carte « à la une » double largeur (cover) + grille .acard.
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 
 const fmt = (d: Date) =>
-  new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" }).format(d);
+  new Intl.DateTimeFormat("fr-FR", { month: "short", year: "numeric" }).format(d);
 
-// label affiché → valeur réelle du champ `tag`
+const catClass = (tag: string) => {
+  const t = tag.toLowerCase();
+  if (t.includes("reconversion")) return "cat-reco";
+  if (t.includes("financement")) return "cat-fin";
+  if (t.includes("droit")) return "cat-droit";
+  if (t.includes("témoignage") || t.includes("perso")) return "cat-perso";
+  return "cat-met";
+};
+
 const filters: { label: string; value: string }[] = [
-  { label: "Tous",          value: "*" },
-  { label: "Reconversion",  value: "Reconversion" },
-  { label: "CPF/POEI",      value: "Financement" },
-  { label: "Métiers",       value: "Métiers du digital" },
-  { label: "Droit travail", value: "Droit du travail" },
-  { label: "Perso",         value: "Témoignage" },
+  { label: "tous", value: "*" },
+  { label: "reconversion", value: "Reconversion" },
+  { label: "financement", value: "Financement" },
+  { label: "métiers", value: "Métiers du digital" },
+  { label: "droit du travail", value: "Droit du travail" },
 ];
+
+const [une, ...rest] = articles;
 ---
 
-<BaseLayout title="Articles — S'informer · LaPasseTech" description="Des articles de fond sur la reconversion, le financement et les métiers du digital.">
-  <section class="lpt-listing-hero">
-    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <span>Articles</span></nav>
-    <h1 style="margin-top:14px;">S'informer pour mieux <em class="lpt-serif-italic" style="color:var(--accent)">décider.</em></h1>
-    <p>Des articles de fond sur la reconversion, le financement, les métiers du digital et tes droits — par quelqu'un qui a fait le chemin.</p>
-    <div class="lpt-listing-hero__count" id="articles-count">{articles.length} article{articles.length > 1 ? "s" : ""} publié{articles.length > 1 ? "s" : ""}</div>
-  </section>
-
-  <div class="lpt-filterbar">
-    <input id="articles-search" class="lpt-input lpt-search" placeholder="Rechercher un article…" type="search" autocomplete="off" />
-    <div class="lpt-filters">
-      {filters.map((f, i) => (
-        <button
-          class="lpt-filter"
-          data-filter={f.value}
-          data-active={i === 0 ? "" : undefined}
-        >{f.label}</button>
-      ))}
+<BaseLayout
+  title="Articles — S'informer · LaPasseTech"
+  description="Des articles de fond sur la reconversion, le financement, les métiers du digital et tes droits — par quelqu'un qui a fait le chemin."
+>
+  <div class="wrap">
+    <nav class="crumb" aria-label="Fil d'ariane"><a href="/">accueil</a> → articles</nav>
+    <div class="page-hero">
+      <span class="eyebrow rv">le contenu</span>
+      <h1 class="rv d1">S'informer pour mieux <em class="s">décider.</em></h1>
+      <p class="sub rv d2">
+        Des articles de fond sur la reconversion, le financement, les métiers du digital et tes
+        droits — par quelqu'un qui a fait le chemin.
+      </p>
+      <span class="count rv d2" id="articles-count"
+        >{articles.length} articles publiés</span
+      >
     </div>
-  </div>
 
-  <div class="lpt-grid-section">
-    <div class="lpt-card-grid" id="articles-grid">
+    <div class="toolbar rv">
+      <input
+        id="articles-search"
+        class="search"
+        placeholder="Rechercher un article…"
+        type="search"
+        autocomplete="off"
+        aria-label="Rechercher un article"
+      />
+      <div class="pills" role="group" aria-label="Filtrer par catégorie">
+        {
+          filters.map((f, i) => (
+            <button class="pill" data-filter={f.value} aria-pressed={i === 0 ? "true" : "false"}>
+              {f.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="agrid" id="articles-grid">
       {
-        articles.map((a) => (
-          <article
-            class="lpt-article-card"
-            data-tag={a.data.tag}
-            data-title={a.data.title.toLowerCase()}
-            data-desc={a.data.description.toLowerCase()}
+        une && (
+          <a
+            href={`/articles/${une.id}`}
+            class="acard featured"
+            data-tag={une.data.tag}
+            data-search={`${une.data.title} ${une.data.description}`.toLowerCase()}
           >
-            <span class="lpt-tag" style="align-self:flex-start;">{a.data.tag}</span>
-            <a class="lpt-article-card__title" href={`/articles/${a.id}`}>{a.data.title}</a>
-            <p style="font-size:13.5px; color:var(--text-body); margin:0;">{a.data.description}</p>
-            <div class="lpt-article-card__foot">
-              {a.data.readingTime && <span>{a.data.readingTime}</span>}
-              {a.data.readingTime && <span>·</span>}
-              <span>{fmt(a.data.date)}</span>
+            <div class="fcov" aria-hidden="true">
+              {une.data.cover && <img src={une.data.cover} alt="" loading="eager" />}
+              <span class="une">à la une</span>
             </div>
-            <a class="lpt-article-card__link" href={`/articles/${a.id}`}>Lire l'article →</a>
-          </article>
+            <div class="fbody">
+              <span class={`acat ${catClass(une.data.tag)}`}>{une.data.tag.toLowerCase()}</span>
+              <h2>{une.data.title}</h2>
+              <p>{une.data.description}</p>
+              <span class="ameta">
+                {une.data.readingTime && `${une.data.readingTime} · `}
+                {fmt(une.data.date)}
+              </span>
+              <span class="alire">Lire l'article</span>
+            </div>
+          </a>
+        )
+      }
+      {
+        rest.map((a) => (
+          <a
+            href={`/articles/${a.id}`}
+            class="acard"
+            data-tag={a.data.tag}
+            data-search={`${a.data.title} ${a.data.description}`.toLowerCase()}
+          >
+            <span class={`acat ${catClass(a.data.tag)}`}>{a.data.tag.toLowerCase()}</span>
+            <h2>{a.data.title}</h2>
+            <p>{a.data.description}</p>
+            <span class="ameta">
+              {a.data.readingTime && `${a.data.readingTime} · `}
+              {fmt(a.data.date)}
+            </span>
+            <span class="alire">Lire l'article</span>
+          </a>
         ))
       }
     </div>
-    <p id="articles-empty" style="display:none; padding:40px 0; color:var(--text-muted); text-align:center;">Aucun article ne correspond à ta recherche.</p>
+    <p class="no-result" id="articles-empty">
+      // aucun article ne correspond — essaie un autre mot-clé ou une autre catégorie
+    </p>
   </div>
+
+  <section class="page-cta">
+    <div class="wrap">
+      <h2>Tu lis, tu lis… et si on regardait <em class="s">ton</em> cas ?</h2>
+      <a href="/bilan" class="btn btn-jaune">Faire mon bilan gratuit →</a>
+      <span class="mono">// 5 minutes · sans email obligatoire</span>
+    </div>
+  </section>
 </BaseLayout>
 
+<style>
+  .acard.featured {
+    grid-column: span 2;
+    flex-direction: row;
+    gap: 24px;
+    align-items: stretch;
+    padding: 18px;
+  }
+  .acard.featured .fcov {
+    flex: 0 0 44%;
+    border: 2px solid var(--noir);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--caramel-10);
+    position: relative;
+  }
+  .acard.featured .fcov img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .acard.featured .fcov .une {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    font-weight: var(--fw-semi);
+    background: var(--jaune);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 4px 10px;
+    transform: rotate(-2deg);
+  }
+  .acard.featured .fbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 4px;
+  }
+  .acard.featured h2 {
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+  @media (max-width: 980px) {
+    .acard.featured {
+      grid-column: span 2;
+      flex-direction: column;
+    }
+    .acard.featured .fcov {
+      flex: none;
+      height: 200px;
+    }
+  }
+  @media (max-width: 640px) {
+    .acard.featured {
+      grid-column: span 1;
+    }
+  }
+</style>
+
 <script>
-  const grid    = document.getElementById("articles-grid")!;
-  const search  = document.getElementById("articles-search") as HTMLInputElement;
+  const search = document.getElementById("articles-search") as HTMLInputElement;
   const countEl = document.getElementById("articles-count")!;
   const emptyEl = document.getElementById("articles-empty")!;
-  const btns    = document.querySelectorAll<HTMLButtonElement>(".lpt-filters .lpt-filter");
-  const cards   = Array.from(grid.querySelectorAll<HTMLElement>("article.lpt-article-card"));
+  const pills = document.querySelectorAll<HTMLButtonElement>(".pills .pill");
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>("#articles-grid .acard"),
+  );
 
   let activeFilter = "*";
-  let searchQuery  = "";
+  let q = "";
 
-  function applyFilters() {
+  function apply() {
     let visible = 0;
     cards.forEach((card) => {
-      const tag   = card.dataset.tag  ?? "";
-      const title = card.dataset.title ?? "";
-      const desc  = card.dataset.desc  ?? "";
-
-      const matchFilter = activeFilter === "*" || tag === activeFilter;
-      const matchSearch = searchQuery === "" ||
-        title.includes(searchQuery) ||
-        desc.includes(searchQuery) ||
-        tag.toLowerCase().includes(searchQuery);
-
+      const matchFilter = activeFilter === "*" || card.dataset.tag === activeFilter;
+      const matchSearch = q === "" || (card.dataset.search ?? "").includes(q);
       const show = matchFilter && matchSearch;
       card.style.display = show ? "" : "none";
       if (show) visible++;
     });
-
-    emptyEl.style.display = visible === 0 ? "" : "none";
+    emptyEl.style.display = visible === 0 ? "block" : "none";
     countEl.textContent = `${visible} article${visible > 1 ? "s" : ""} publié${visible > 1 ? "s" : ""}`;
   }
 
-  // Filtres
-  btns.forEach((btn) => {
+  pills.forEach((btn) => {
     btn.addEventListener("click", () => {
-      btns.forEach((b) => b.removeAttribute("data-active"));
-      btn.setAttribute("data-active", "");
+      pills.forEach((b) => b.setAttribute("aria-pressed", "false"));
+      btn.setAttribute("aria-pressed", "true");
       activeFilter = btn.dataset.filter ?? "*";
-      applyFilters();
+      apply();
     });
   });
-
-  // Recherche
   search.addEventListener("input", () => {
-    searchQuery = search.value.trim().toLowerCase();
-    applyFilters();
+    q = search.value.trim().toLowerCase();
+    apply();
   });
 </script>

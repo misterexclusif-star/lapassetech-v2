@@ -1,10 +1,11 @@
 ---
 /**
- * Header — navigation principale.
- * Marque + 5 onglets + indicateur de statut PassBot + CTA "Faire mon bilan".
- * Chrome (.lpt-header*) défini dans le design system (content.css).
+ * Header — navigation principale (v4.5, markup maquette).
+ * Logo D6av + 5 onglets (souligné caramel au hover/actif) + chip statut
+ * PassBot (noir, point vert pulsé) + CTA jaune pilule ombrée.
+ * Sticky, fond crème translucide, bordure basse noire 2px.
  */
-import Button from "./Button.astro";
+import LogoMark from "./LogoMark.astro";
 
 const nav = [
   { label: "Articles", href: "/articles" },
@@ -14,57 +15,146 @@ const nav = [
   { label: "À propos", href: "/a-propos" },
 ];
 
-// Onglet actif d'après l'URL courante (préfixe).
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? path === "/" : path.startsWith(href);
 ---
 
-<header class="lpt-header">
-  <a class="lpt-header__brand" href="/">LaPasse<span>Tech</span></a>
+<header class="v45-header">
+  <div class="wrap nav">
+    <a class="logo-link" href="/" aria-label="LaPasseTech — accueil"><LogoMark /></a>
 
-  <nav aria-label="Navigation principale">
-    <ul class="lpt-header__nav">
-      {
-        nav.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              aria-current={isActive(item.href) ? "page" : undefined}
-              class={isActive(item.href) ? "is-active" : undefined}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
+    <nav aria-label="Navigation principale">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
 
-  <div class="lpt-header__actions">
-    <span class="lpt-status" title="PassBot est disponible">
-      <span class="lpt-status__dot"></span> PassBot · en ligne
+    <span class="passbot-chip" title="PassBot est disponible">
+      <span class="dot" aria-hidden="true"></span>PassBot · en ligne
     </span>
-    <Button variant="cta" href="/bilan" label="Faire mon bilan" />
+    <a href="/bilan" class="btn btn-jaune header-cta">Faire mon bilan</a>
   </div>
 </header>
 
 <style>
-  .lpt-header__actions {
+  .v45-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(248, 244, 235, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--noir);
+  }
+  .nav {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 28px;
+    height: 72px;
   }
-  /* Onglet actif : couleur forte + soulignement caramel discret */
-  .lpt-header__nav a.is-active {
-    color: var(--text-strong);
+  .logo-link {
+    text-decoration: none;
+    color: var(--noir);
+    font-size: 1.35rem;
+  }
+  nav ul {
+    display: flex;
+    gap: 22px;
+    list-style: none;
+    margin: 0 0 0 auto;
+    padding: 0;
+  }
+  nav ul a {
+    text-decoration: none;
+    color: var(--noir);
+    font-weight: var(--fw-medium);
+    font-size: 0.95rem;
+    position: relative;
+    padding: 4px 0;
+  }
+  nav ul a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background: var(--caramel);
+    transition: width 0.2s;
+  }
+  nav ul a:hover::after,
+  nav ul a[aria-current="page"]::after {
+    width: 100%;
+  }
+  nav ul a[aria-current="page"] {
+    font-weight: var(--fw-bold);
+  }
+  .passbot-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    font-family: var(--mono);
+    font-size: 0.72rem;
     font-weight: var(--fw-semi);
+    background: var(--noir);
+    color: var(--creme);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+  .passbot-chip .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--vert);
+    animation: passbot-pulse 2s infinite;
+  }
+  @keyframes passbot-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+  .header-cta {
+    padding: 11px 20px;
+    font-size: 0.92rem;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .passbot-chip .dot {
+      animation: none;
+    }
   }
   @media (max-width: 980px) {
-    /* .lpt-header__nav est masqué par le design system < 980px ;
-       on garde statut + CTA visibles. */
-    .lpt-status {
+    nav ul {
       display: none;
+    }
+    .passbot-chip {
+      margin-left: auto;
+    }
+  }
+  @media (max-width: 640px) {
+    .passbot-chip {
+      display: none;
+    }
+    .header-cta {
+      margin-left: auto;
+    }
+    .nav {
+      gap: 14px;
     }
   }
 </style>

@@ -66,3 +66,20 @@
   --btn-accent-bg:      var(--lpt-caramel); /* guide / guy / newsletter */
   --btn-accent-fg:      #FFFFFF;
 }
+
+/* ── v4.5 aliases (noms maquette → tokens lpt) ─────────────────── */
+:root {
+  --creme: var(--lpt-cream);
+  --noir: var(--lpt-black);
+  --caramel: var(--lpt-caramel);
+  --caramel-deep: var(--lpt-caramel-deep);
+  --terracotta: #C97C4A;
+  --jaune: var(--lpt-yellow);
+  --vert: var(--lpt-green);
+  --beige: var(--lpt-temoignage-bg);
+  --caramel-10: rgba(156, 90, 44, .10);
+  --caramel-16: rgba(156, 90, 44, .16);
+  --noir-08: rgba(26, 23, 20, .08);
+  --shadow-pop: 6px 6px 0 var(--noir);
+  --shadow-pop-sm: 4px 4px 0 var(--noir);
+}

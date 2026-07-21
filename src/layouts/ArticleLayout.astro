@@ -1,82 +1,442 @@
 ---
 /**
- * ArticleLayout — gabarit page article.
- * Hero (breadcrumb + tag + titre + meta) puis lecture 2 colonnes :
- * prose (<slot/>) + aside sticky (sommaire stub + carte bilan).
+ * ArticleLayout — gabarit article v4.5.
+ * Barre de progression de lecture, chip catégorie, standfirst, ligne auteur
+ * (photo + badge « à jour »), grande couverture, corps 2 colonnes
+ * (prose + sommaire sticky + carte bilan), boîte auteur, « à lire ensuite ».
  */
+import { getCollection } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
-import Button from "../components/Button.astro";
 
 interface Props {
+  id?: string;
   title: string;
   description?: string;
   tag?: string;
   date?: Date;
+  updated?: Date;
   readingTime?: string;
   cover?: string;
+  headings?: { depth: number; slug: string; text: string }[];
 }
 
-const { title, description, tag, date, readingTime, cover } = Astro.props;
-const dateStr = date
-  ? new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(date)
-  : undefined;
+const { id, title, description, tag, date, updated, readingTime, cover, headings = [] } =
+  Astro.props;
+
+const PORTRAIT =
+  "/images/guy.jpg";
+
+const fmtLong = (d: Date) =>
+  new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" }).format(d);
+
+const catClass = (t?: string) => {
+  const s = (t ?? "").toLowerCase();
+  if (s.includes("reconversion")) return "cat-reco";
+  if (s.includes("financement")) return "cat-fin";
+  if (s.includes("droit")) return "cat-droit";
+  if (s.includes("témoignage") || s.includes("perso")) return "cat-perso";
+  return "cat-met";
+};
+
+const toc = headings.filter((h) => h.depth === 2).slice(0, 6);
+
+// « À lire ensuite » : 3 articles du même tag (sinon les plus récents), hors article courant.
+const others = (await getCollection("articles", ({ data }) => !data.draft))
+  .filter((a) => a.id !== id)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const related = [
+  ...others.filter((a) => a.data.tag === tag),
+  ...others.filter((a) => a.data.tag !== tag),
+].slice(0, 3);
+
+const fmtShort = (d: Date) =>
+  new Intl.DateTimeFormat("fr-FR", { month: "short", year: "numeric" }).format(d);
 ---
 
 <BaseLayout title={`${title} — LaPasseTech`} description={description}>
-  <section class="lpt-page-hero">
-    <nav class="lpt-breadcrumb"><a href="/">Accueil</a> → <a href="/articles">Articles</a> → <span>{title}</span></nav>
-    {tag && <span class="lpt-tag" style="margin-top:14px; display:inline-block;">{tag}</span>}
-    <h1 class="lpt-page-hero__title">{title}</h1>
-    <div class="lpt-page-hero__meta">
-      {readingTime && <span>{readingTime}</span>}
-      {readingTime && dateStr && <span>·</span>}
-      {dateStr && <span>{dateStr}</span>}
+  <div class="progress" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="crumb" aria-label="Fil d'ariane">
+      <a href="/">accueil</a> → <a href="/articles">articles</a>
+      {tag && <> → {tag.toLowerCase()}</>}
+    </nav>
+    <div class="art-head">
+      {tag && <span class={`acat ${catClass(tag)}`}>{tag.toLowerCase()}</span>}
+      <h1>{title}</h1>
+      {description && <p class="standfirst">{description}</p>}
+      <div class="meta-row">
+        <a href="/a-propos" class="author-chip">
+          <img src={PORTRAIT} alt="Guy" loading="lazy" />
+          <span class="who"><b>Guy</b><span>business analyst salesforce · fondateur</span></span>
+        </a>
+        <span class="mmeta">
+          {readingTime && `${readingTime} de lecture · `}
+          {date && `publié en ${fmtLong(date)}`}
+        </span>
+        {updated && <span class="upd">à jour · {fmtLong(updated)}</span>}
+      </div>
+      {
+        cover && (
+          <figure class="art-cover">
+            <img src={cover} alt={`Illustration : ${title}`} loading="eager" />
+          </figure>
+        )
+      }
+    </div>
+
+    <div class="art-layout">
+      <article class="prose">
+        <slot />
+
+        <div class="author-box rv">
+          <img src={PORTRAIT} alt="Guy, fondateur de LaPasseTech" loading="lazy" />
+          <div>
+            <span class="mono ab-kicker">// écrit par</span>
+            <h3>Guy — celui qui est passé</h3>
+            <p>
+              16 ans de marketing, reconverti business analyst Salesforce à 38 ans via une POEI.
+              LaPasseTech, c'est tout ce qu'il aurait aimé savoir avant.
+              <a href="/a-propos">Lire son parcours →</a>
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <aside class="toc">
+        {
+          toc.length > 0 && (
+            <div class="toc-card rv">
+              <span class="mono">// dans cet article</span>
+              <ol>
+                {toc.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )
+        }
+        <div class="side-cta rv d1">
+          <h3>Pas encore sûr de ta direction&nbsp;?</h3>
+          <p>PassBot croise ta situation et les 4 dispositifs en 5 minutes.</p>
+          <a href="/bilan" class="btn btn-jaune side-btn">Faire mon bilan →</a>
+        </div>
+      </aside>
+    </div>
+
+    {
+      related.length > 0 && (
+        <>
+          <div class="rel-head rv">
+            <h2>À lire ensuite</h2>
+            <a href="/articles">Tous les articles →</a>
+          </div>
+          <div class="agrid rel-grid">
+            {related.map((a) => (
+              <a href={`/articles/${a.id}`} class="acard rv">
+                <span class={`acat ${catClass(a.data.tag)}`}>{a.data.tag.toLowerCase()}</span>
+                <h2>{a.data.title}</h2>
+                <p>{a.data.description}</p>
+                <span class="ameta">
+                  {a.data.readingTime && `${a.data.readingTime} · `}
+                  {fmtShort(a.data.date)}
+                </span>
+                <span class="alire">Lire l'article</span>
+              </a>
+            ))}
+          </div>
+        </>
+      )
+    }
+  </div>
+
+  <section class="page-cta">
+    <div class="wrap">
+      <h2>Et si on regardait <em class="s">ton</em> cas ?</h2>
+      <a href="/bilan" class="btn btn-jaune">Faire mon bilan gratuit →</a>
+      <span class="mono">// 5 minutes · sans email obligatoire</span>
     </div>
   </section>
-
-  {cover && (
-    <div class="article-cover">
-      <img src={cover} alt={`Illustration : ${title}`} loading="eager" />
-    </div>
-  )}
-
-  <div class="lpt-reading">
-    <article class="lpt-prose">
-      <slot />
-    </article>
-
-    <aside class="lpt-aside">
-      <div class="lpt-aside-card lpt-aside-card--brown">
-        <h4>Pas encore sûr de ta direction ?</h4>
-        <p style="font-size:13.5px; line-height:1.55;">Fais ton bilan PassBot en 5 minutes — gratuit, sans engagement.</p>
-        <Button variant="cta" href="/bilan" label="Faire mon bilan" class="lpt-aside-cta" />
-      </div>
-      <div class="lpt-aside-card">
-        <h4>Sur le même thème</h4>
-        <nav class="lpt-toc">
-          <a href="/articles">Tous les articles</a>
-          <a href="/ressources">Les ressources pratiques</a>
-          <a href="/metiers">Les fiches métiers</a>
-        </nav>
-      </div>
-    </aside>
-  </div>
 </BaseLayout>
 
 <style>
-  .lpt-aside-cta {
-    margin-top: 14px;
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: var(--caramel);
+    z-index: 100;
+    width: 0;
   }
-  .article-cover {
-    max-width: var(--content-max);
-    margin-inline: auto;
-    padding: 24px var(--section-pad-x) 0;
+  .art-head {
+    padding: 26px 0 6px;
   }
-  .article-cover img {
-    width: 100%;
-    height: clamp(260px, 38vw, 460px);
+  .art-head h1 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(2rem, 4.2vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 14px 0 16px;
+  }
+  .standfirst {
+    font-size: 1.18rem;
+    color: rgba(26, 23, 20, 0.8);
+    max-width: 680px;
+  }
+  .meta-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 22px 0 8px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--noir);
+  }
+  .author-chip {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+  .author-chip img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid var(--noir);
     object-fit: cover;
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--border);
+    transform: rotate(-3deg);
+  }
+  .author-chip .who b {
+    font-family: var(--disp);
+    display: block;
+    line-height: 1.1;
+  }
+  .author-chip .who span {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    color: var(--caramel);
+  }
+  .mmeta {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: rgba(26, 23, 20, 0.6);
+  }
+  .upd {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    background: var(--jaune);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 3px 10px;
+  }
+  .art-cover {
+    margin: 30px 0 8px;
+  }
+  .art-cover img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-pop);
+  }
+  .art-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 56px;
+    padding: 34px 0 40px;
+    align-items: start;
+  }
+  .prose {
+    max-width: 720px;
+    font-size: 1.02rem;
+    line-height: 1.75;
+    min-width: 0;
+  }
+  .prose :global(h2) {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.55rem;
+    margin: 40px 0 16px;
+    scroll-margin-top: 110px;
+    line-height: 1.15;
+  }
+  .prose :global(p) {
+    margin: 0 0 20px;
+    color: rgba(26, 23, 20, 0.85);
+  }
+  .prose :global(ul) {
+    margin: 0 0 20px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .prose :global(ul li) {
+    position: relative;
+    padding-left: 1.5em;
+  }
+  .prose :global(ul li)::before {
+    content: "→";
+    color: var(--caramel);
+    font-weight: var(--fw-black);
+    position: absolute;
+    left: 0;
+  }
+  .prose :global(blockquote) {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    border-left: 6px solid var(--jaune);
+    padding: 4px 0 4px 22px;
+    margin: 30px 0;
+  }
+  .prose :global(strong) {
+    color: var(--noir);
+  }
+  .author-box {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 24px;
+    margin: 44px 0 0;
+    box-shadow: var(--shadow-pop-sm);
+    align-items: center;
+  }
+  .author-box img {
+    width: 84px;
+    height: 84px;
+    border-radius: 14px;
+    border: 2px solid var(--noir);
+    object-fit: cover;
+    transform: rotate(-3deg);
+  }
+  .author-box .ab-kicker {
+    color: var(--caramel);
+  }
+  .author-box h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.2rem;
+  }
+  .author-box p {
+    font-size: 0.92rem;
+    color: rgba(26, 23, 20, 0.78);
+    margin-top: 6px;
+  }
+  .toc {
+    position: sticky;
+    top: 96px;
+    display: grid;
+    gap: 22px;
+  }
+  .toc-card {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .toc-card .mono {
+    color: var(--caramel);
+    display: block;
+    margin-bottom: 12px;
+  }
+  .toc-card ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 9px;
+    font-size: 0.88rem;
+  }
+  .toc-card a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .toc-card a:hover {
+    color: var(--caramel);
+    text-decoration: underline;
+  }
+  .side-cta {
+    background: var(--beige);
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .side-cta h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .side-cta p {
+    font-size: 0.85rem;
+    color: rgba(26, 23, 20, 0.75);
+    margin-bottom: 14px;
+  }
+  .side-btn {
+    padding: 11px 18px;
+    font-size: 0.9rem;
+  }
+  .rel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--noir);
+    padding-bottom: 12px;
+    margin-top: 26px;
+  }
+  .rel-head h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .rel-head a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--caramel);
+    text-decoration: none;
+  }
+  .rel-grid {
+    padding-top: 26px;
+  }
+
+  @media (max-width: 980px) {
+    .art-layout {
+      grid-template-columns: 1fr;
+    }
+    .toc {
+      position: static;
+    }
+    .art-cover img {
+      height: 240px;
+    }
   }
 </style>
+
+<script>
+  // Barre de progression de lecture.
+  (function () {
+    const bar = document.querySelector<HTMLElement>(".progress");
+    if (!bar) return;
+    addEventListener(
+      "scroll",
+      () => {
+        const h = document.documentElement;
+        bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + "%";
+      },
+      { passive: true },
+    );
+  })();
+</script>

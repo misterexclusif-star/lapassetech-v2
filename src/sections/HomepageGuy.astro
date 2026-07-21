@@ -1,167 +1,209 @@
 ---
 /**
- * HomepageGuy — le fondateur (aligné maquette MJ v4, SANS photo).
- * Gauche : eyebrow mono + titre + bio + citation + liens/CTA.
- * Droite : 4 stat cards empilées (16 / 100% / 40 / BA).
+ * HomepageGuy — « La réponse de quelqu'un qui est passé. » (v4.5, ancre #doutes).
+ * Polaroid scotché + quote card (guillemet serif géant) + 3 facts (38/16/0).
+ * Destination de la carte-question n°3 (Sophie).
+ * Portrait : public/images/guy.jpg (vraie photo, fournie le 17/07/2026).
  */
-import Button from "../components/Button.astro";
+const PORTRAIT =
+  "/images/guy.jpg";
 
-const stats = [
-  { v: "16", t: "Années en marketing et CRM", d: "Responsable marketing, responsable CRM dans des groupes de presse" },
-  { v: "100%", t: "Financé via POEI", d: "CDI garanti avant même de commencer la formation" },
-  { v: "38", t: "Ans au moment de la reconversion", d: "Sans diplôme informatique, sans réseau dans la tech" },
-  { v: "BA", t: "Business Analyst Salesforce", d: "Certifié · en poste · fondateur de LaPasseTech" },
+const facts = [
+  { v: "38", t: "ans à la reconversion" },
+  { v: "16", t: "ans de marketing valorisés" },
+  { v: "0", t: "diplôme informatique" },
 ];
 ---
 
-<section class="lpt-section guy" style="background:var(--lpt-guy-bg);">
-  <div class="lpt-container guy__grid">
-    <div class="guy__col">
-      <span class="lpt-mono guy__kicker">// pourquoi j'ai créé lapassetech</span>
-      <h2>Guy — celui <em class="lpt-em">qui est passé.</em></h2>
-
-      <p class="guy__p">
-        À 38 ans, après 16 ans dans le marketing, j'ai basculé dans la tech d'une
-        manière que je n'aurais jamais imaginée. <strong>Le même doute que toi</strong>
-        — et l'impression que le digital, c'était pour les autres.
-      </p>
-      <p class="guy__p">
-        Ce que j'ai découvert ? Que les formations existent, que les financements
-        aussi, et que <strong>mon expérience en marketing et CRM était un atout,
-        pas un handicap.</strong> Personne ne me l'avait dit avant.
-      </p>
-
-      <blockquote class="guy__quote">
-        « Pas un site de plus — ni inspirant ni inutile. Un site qui dit la vérité,
-        y compris quand ça dérange. »
-      </blockquote>
-
-      <div class="guy__actions">
-        <a class="guy__link" href="/a-propos">Lire mon parcours complet →</a>
-        <Button variant="accent" href="/bilan" label="Faire mon diagnostic gratuit" />
+<section id="doutes" class="doutes">
+  <div class="wrap">
+    <span class="eyebrow rv">trop vieux, sans diplôme ?</span>
+    <h2 class="rv d1">La réponse de quelqu'un qui est <em class="s">passé.</em></h2>
+    <div class="doutes-flex">
+      <figure class="polaroid rv d1">
+        <img src={PORTRAIT} alt="Guy, fondateur de LaPasseTech" loading="lazy" />
+        <figcaption>// guy · fondateur — passé en 2022</figcaption>
+      </figure>
+      <div class="quote-card rv d2">
+        <blockquote>
+          À 38 ans, sans diplôme informatique et sans réseau dans la tech, on m'a dit que c'était
+          trop tard. Mes 16 ans de marketing n'étaient pas un handicap — c'était mon meilleur
+          argument. Personne ne me l'avait dit avant.
+        </blockquote>
+        <div class="qc-sig">
+          <span class="chip">G</span>
+          <div>
+            <b>Guy</b>
+            <span class="mono">business analyst salesforce · fondateur</span>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="guy__stats">
+    <div class="doutes-facts">
       {
-        stats.map((s) => (
-          <div class="guy__stat">
-            <span class="guy__stat-v">{s.v}</span>
-            <div class="guy__stat-body">
-              <span class="guy__stat-t">{s.t}</span>
-              <span class="guy__stat-d">{s.d}</span>
-            </div>
+        facts.map((f, i) => (
+          <div class={`fact rv d${i + 1}`}>
+            <b>{f.v}</b>
+            <span>{f.t}</span>
           </div>
         ))
       }
+    </div>
+    <div class="doutes-cta rv">
+      <a href="/a-propos" class="btn btn-ghost">Lire mon parcours complet →</a>
     </div>
   </div>
 </section>
 
 <style>
-  .guy__grid {
+  .doutes {
+    padding: 60px 0 84px;
+  }
+  .doutes h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .doutes-flex {
     display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
-    gap: 56px;
-    align-items: start;
+    grid-template-columns: auto 1fr;
+    gap: 52px;
+    align-items: center;
+    max-width: 900px;
+    margin: 44px auto 0;
   }
-  .guy__kicker {
-    display: inline-block;
-    background: var(--accent);
-    color: var(--lpt-cream);
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
+  .polaroid {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: 10px;
+    padding: 12px 12px 16px;
+    box-shadow: var(--shadow-pop);
+    transform: rotate(-2.5deg);
+    width: 230px;
+    position: relative;
+    margin: 0;
   }
-  .guy__col h2 {
-    margin-top: 18px;
+  .polaroid::before {
+    content: "";
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%) rotate(2deg);
+    width: 96px;
+    height: 26px;
+    background: var(--caramel-16);
+    border: 1px dashed var(--caramel);
+    border-radius: 3px;
   }
-  .guy__p {
-    font-size: var(--fs-lead);
-    color: var(--text-body);
-    line-height: 1.6;
-    margin-top: 18px;
-    max-width: 560px;
+  .polaroid img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border: 2px solid var(--noir);
+    border-radius: 6px;
   }
-  .guy__p strong {
-    color: var(--text-strong);
-    font-weight: var(--fw-semi);
+  .polaroid figcaption {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    color: var(--caramel);
+    text-align: center;
+    margin-top: 10px;
   }
-  .guy__quote {
-    font-family: var(--font-serif);
+  .quote-card {
+    background: #fff;
+    border: 2px solid var(--noir);
+    border-radius: var(--r);
+    padding: 34px;
+    box-shadow: var(--shadow-pop);
+    position: relative;
+  }
+  .quote-card::before {
+    content: "«";
+    position: absolute;
+    top: -34px;
+    left: 26px;
+    font-family: var(--serif);
     font-style: italic;
-    font-size: var(--fs-quote);
-    line-height: 1.4;
-    color: var(--text-strong);
-    background: var(--surface-card);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    margin: 28px 0 0;
-    padding: 20px 26px;
-    max-width: 600px;
+    font-size: 5rem;
+    color: var(--caramel);
   }
-  .guy__actions {
+  .quote-card blockquote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+  .qc-sig {
+    margin-top: 20px;
     display: flex;
     align-items: center;
-    gap: 24px;
-    margin-top: 28px;
-    flex-wrap: wrap;
-  }
-  .guy__link {
-    font-family: var(--font-body);
-    font-weight: var(--fw-bold);
-    font-size: 14px;
-    color: var(--text-strong);
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--accent);
-  }
-
-  /* ── Stat cards empilées ── */
-  .guy__stats {
-    display: flex;
-    flex-direction: column;
     gap: 14px;
   }
-  .guy__stat {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 18px;
-    align-items: center;
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 22px 24px;
-  }
-  .guy__stat-v {
-    font-family: var(--font-display);
-    font-weight: var(--fw-black);
-    font-size: 38px;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--accent-strong);
-  }
-  .guy__stat-body {
+  .qc-sig .chip {
+    width: 44px;
+    height: 44px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 12px;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    transform: rotate(-5deg);
   }
-  .guy__stat-t {
-    font-family: var(--font-display);
-    font-weight: var(--fw-bold);
-    font-size: 16px;
-    color: var(--text-strong);
+  .qc-sig b {
+    font-family: var(--disp);
   }
-  .guy__stat-d {
-    font-size: 13px;
-    color: var(--text-body);
-    line-height: 1.45;
+  .qc-sig .mono {
+    display: block;
+    color: var(--caramel);
+    font-size: 0.68rem;
+  }
+  .doutes-facts {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .fact {
+    border: 2px solid var(--noir);
+    border-radius: 14px;
+    padding: 16px 22px;
+    background: var(--creme);
+    text-align: center;
+    min-width: 150px;
+  }
+  .fact b {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.7rem;
+    display: block;
+  }
+  .fact span {
+    font-size: 0.8rem;
+    color: rgba(26, 23, 20, 0.7);
+  }
+  .fact:nth-child(2) {
+    background: var(--jaune);
+  }
+  .fact:nth-child(2) span {
+    color: var(--noir);
+  }
+  .doutes-cta {
+    margin-top: 40px;
+    text-align: center;
   }
 
   @media (max-width: 980px) {
-    .guy__grid {
+    .doutes-flex {
       grid-template-columns: 1fr;
-      gap: 40px;
+      justify-items: center;
+      gap: 60px;
     }
   }
 </style>
