@@ -33,8 +33,10 @@ const fmtDate = (d: Date) =>
         Le digital, c'est pas <span class="hl">réservé</span> aux <em class="s">autres.</em>
       </h1>
       <p class="hero-lead rv d2">
-        Métiers, formations, financements — tout ce que j'aurais aimé savoir avant de me
-        reconvertir. <b
+        <span class="lead-intro"
+          >Métiers, formations, financements — tout ce que j'aurais aimé savoir avant de me
+          reconvertir.</span
+        > <b
           >Reconverti à 38 ans, après 16 ans de marketing, via une POEI, sans diplôme
           informatique.</b
         > Je suis <b>passé</b> dans la <b>Tech</b>. Toi aussi, tu peux.
@@ -339,6 +341,10 @@ const fmtDate = (d: Date) =>
     }
     /* un seul CTA sur mobile : le diagnostic ; la section guide reste plus bas */
     .hero-ctas .btn-ghost {
+      display: none;
+    }
+    /* lead court : on garde le récit en gras + la chute */
+    .hero-lead .lead-intro {
       display: none;
     }
   }
