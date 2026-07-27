@@ -196,6 +196,8 @@ em.s {
   border: 2px solid var(--noir);
   border-radius: var(--radius-pill);
   background: var(--creme);
+  /* les <button> n'héritent pas de la couleur : sans ça, Safari iOS les rend bleus */
+  color: var(--noir);
   cursor: pointer;
   transition: background 0.15s, transform 0.15s;
 }
