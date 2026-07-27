@@ -4,6 +4,8 @@
  * Logo D6av + 5 onglets (souligné caramel au hover/actif) + chip statut
  * PassBot (noir, point vert pulsé) + CTA jaune pilule ombrée.
  * Sticky, fond crème translucide, bordure basse noire 2px.
+ * ≤980px : nav horizontale masquée → burger + panneau plein écran crème
+ * (5 liens + chip PassBot + CTA bilan). Barre mobile : logo + CTA + burger.
  */
 import LogoMark from "./LogoMark.astro";
 
@@ -42,6 +44,41 @@ const isActive = (href: string) =>
       <span class="dot" aria-hidden="true"></span>PassBot · en ligne
     </span>
     <a href="/bilan" class="btn btn-jaune header-cta">Faire mon bilan</a>
+
+    <button
+      type="button"
+      class="burger"
+      id="nav-burger"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Ouvrir le menu"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="mobile-panel" id="mobile-menu">
+    <nav aria-label="Navigation mobile">
+      <ul class="mobile-nav">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="mobile-panel-foot">
+      <span class="passbot-chip" title="PassBot est disponible">
+        <span class="dot" aria-hidden="true"></span>PassBot · en ligne
+      </span>
+      <a href="/bilan" class="btn btn-jaune mobile-panel-cta">Faire mon bilan</a>
+    </div>
   </div>
 </header>
 
@@ -65,15 +102,16 @@ const isActive = (href: string) =>
     text-decoration: none;
     color: var(--noir);
     font-size: 1.35rem;
+    flex: none;
   }
-  nav ul {
+  .nav nav ul {
     display: flex;
     gap: 22px;
     list-style: none;
     margin: 0 0 0 auto;
     padding: 0;
   }
-  nav ul a {
+  .nav nav ul a {
     text-decoration: none;
     color: var(--noir);
     font-weight: var(--fw-medium);
@@ -81,7 +119,7 @@ const isActive = (href: string) =>
     position: relative;
     padding: 4px 0;
   }
-  nav ul a::after {
+  .nav nav ul a::after {
     content: "";
     position: absolute;
     left: 0;
@@ -91,11 +129,11 @@ const isActive = (href: string) =>
     background: var(--caramel);
     transition: width 0.2s;
   }
-  nav ul a:hover::after,
-  nav ul a[aria-current="page"]::after {
+  .nav nav ul a:hover::after,
+  .nav nav ul a[aria-current="page"]::after {
     width: 100%;
   }
-  nav ul a[aria-current="page"] {
+  .nav nav ul a[aria-current="page"] {
     font-weight: var(--fw-bold);
   }
   .passbot-chip {
@@ -133,28 +171,201 @@ const isActive = (href: string) =>
     white-space: nowrap;
   }
 
+  /* ── burger + panneau mobile (invisibles en desktop) ───── */
+  .burger {
+    display: none;
+    width: 44px;
+    height: 44px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: var(--creme);
+    border: 2px solid var(--noir);
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0;
+    flex: none;
+  }
+  .burger span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--noir);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .burger[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .burger[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+  .burger[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .mobile-panel {
+    display: none;
+  }
+  .mobile-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 10px 4px;
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.7rem;
+    letter-spacing: -0.01em;
+    color: var(--noir);
+    text-decoration: none;
+    border-bottom: 2px solid var(--noir-08);
+  }
+  .mobile-nav a[aria-current="page"] {
+    border-bottom-color: var(--caramel);
+  }
+  .mobile-panel-foot {
+    margin-top: auto;
+    padding-top: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .mobile-panel-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .passbot-chip .dot {
       animation: none;
     }
+    .burger span {
+      transition: none;
+    }
   }
   @media (max-width: 980px) {
-    nav ul {
+    .nav nav ul {
       display: none;
     }
-    .passbot-chip {
-      margin-left: auto;
-    }
-  }
-  @media (max-width: 640px) {
-    .passbot-chip {
+    /* le chip quitte la barre mobile ; il vit dans le panneau */
+    .nav > .passbot-chip {
       display: none;
     }
     .header-cta {
       margin-left: auto;
     }
+    .burger {
+      display: inline-flex;
+    }
+    .mobile-panel {
+      display: flex;
+      flex-direction: column;
+      /* le backdrop-filter du header en fait le containing block :
+         absolute + hauteur viewport plutôt que fixed (qui s'y écraserait) */
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      height: calc(100vh - 74px);
+      height: calc(100dvh - 74px);
+      z-index: 49;
+      background: var(--creme);
+      border-top: 2px solid var(--noir);
+      padding: 20px 24px 32px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+    }
+    .mobile-panel.open {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+  }
+  @media (max-width: 980px) and (prefers-reduced-motion: reduce) {
+    .mobile-panel {
+      transition: none;
+      transform: none;
+    }
+  }
+  @media (max-width: 640px) {
     .nav {
-      gap: 14px;
+      gap: 12px;
+    }
+    .logo-link {
+      font-size: 1.1rem;
+    }
+    .header-cta {
+      padding: 9px 13px;
+      font-size: 0.8rem;
+    }
+  }
+  @media (max-width: 380px) {
+    .nav {
+      gap: 8px;
+      padding-left: 14px;
+      padding-right: 14px;
+    }
+    .logo-link {
+      font-size: 0.95rem;
+    }
+    .header-cta {
+      padding: 7px 9px;
+      font-size: 0.72rem;
+    }
+    .burger {
+      width: 40px;
+      height: 40px;
     }
   }
 </style>
+
+<style is:global>
+  /* pas de scroll du body quand le panneau mobile est ouvert */
+  body.lpt-nav-open {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  // Burger mobile : aria-expanded, focus 1er lien, Échap, fermeture au clic lien.
+  (function () {
+    const burger = document.getElementById("nav-burger");
+    const panel = document.getElementById("mobile-menu");
+    if (!burger || !panel) return;
+
+    function setOpen(open: boolean) {
+      burger!.setAttribute("aria-expanded", String(open));
+      burger!.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+      panel!.classList.toggle("open", open);
+      document.body.classList.toggle("lpt-nav-open", open);
+      if (open) panel!.querySelector<HTMLElement>("a")?.focus();
+    }
+    const isOpen = () => burger!.getAttribute("aria-expanded") === "true";
+
+    burger.addEventListener("click", () => setOpen(!isOpen()));
+    panel.querySelectorAll("a").forEach((a) =>
+      a.addEventListener("click", () => setOpen(false)),
+    );
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isOpen()) {
+        setOpen(false);
+        burger!.focus();
+      }
+    });
+    // retour desktop pendant que le panneau est ouvert → on referme proprement
+    window.matchMedia("(min-width: 981px)").addEventListener("change", (e) => {
+      if (e.matches && isOpen()) setOpen(false);
+    });
+  })();
+</script>

@@ -54,7 +54,7 @@ const fmtDate = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year
       espaces distincts selon où tu en es.
     </p>
     <div class="media-grid rv d2">
-      <div>
+      <div class="col-articles">
         <div class="media-col-head">
           <h3>Articles récents</h3>
           <a href="/articles">Voir tous →</a>
@@ -74,6 +74,7 @@ const fmtDate = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year
           ))
         }
       </div>
+      <a href="/articles" class="articles-all-mobile">Tous les articles →</a>
       <div>
         <div class="media-col-head">
           <h3>Ressources actionnables</h3>
@@ -244,10 +245,37 @@ const fmtDate = (d: Date) => d.toLocaleDateString("fr-FR", { month: "long", year
     margin-top: 12px;
   }
 
+  /* lien mobile vers /articles — visible seulement quand la liste est masquée */
+  .articles-all-mobile {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: var(--fw-semi);
+    color: var(--noir);
+    text-decoration: none;
+    background: var(--creme);
+    border: 2px solid var(--noir);
+    border-radius: var(--radius-pill);
+    justify-self: start;
+  }
+
   @media (max-width: 980px) {
     .media-grid {
       grid-template-columns: 1fr;
       gap: 44px;
+    }
+  }
+  @media (max-width: 640px) {
+    /* le carrousel « à la une » du hero suffit : la liste doublonne */
+    .col-articles {
+      display: none;
+    }
+    .articles-all-mobile {
+      display: inline-flex;
     }
   }
 </style>

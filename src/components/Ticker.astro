@@ -101,4 +101,12 @@ const loop = [...items, ...items];
       animation: none;
     }
   }
+
+  /* mobile/tablette (breakpoint du burger) : le bandeau mange la hauteur
+     du premier écran et ses infos existent déjà dans les sections */
+  @media (max-width: 980px) {
+    .lpt-ticker {
+      display: none;
+    }
+  }
 </style>
