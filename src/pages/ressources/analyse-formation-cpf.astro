@@ -1,0 +1,859 @@
+---
+/**
+ * Ressource « Analyse n'importe quelle formation CPF avec l'IA » — gabarit ressource v4.5.
+ * Contenu repris à l'identique du HTML autonome du vault (analyse-formation-cpf-ia-v2.html) ;
+ * seul l'enrobage (breadcrumb, badges, modal PDF, « à lire ensuite ») suit le gabarit.
+ * Page statique (prime sur la route dynamique [slug].astro) : les blocs prompts / steps /
+ * pro-tips ne passent pas en Markdown — même raison que analyse-formation-cpf-ia.astro.
+ * Le bouton PDF ouvre une modal maison branchée sur POST /api/subscribe (type: "guide"
+ * → groupe MailerLite « guide » 182053505660355972), même circuit que le formulaire
+ * guide de la homepage. Aucun nouveau formulaire MailerLite.
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+// « À lire ensuite » — la ressource financement (demande CPF en 20 minutes).
+const next = (await getCollection("ressources", ({ data }) => !data.draft)).find(
+  (r) => r.id === "faire-sa-demande-cpf-en-20-minutes-chrono"
+);
+---
+
+<BaseLayout
+  title="Analyse n'importe quelle formation CPF avec l'IA — LaPasseTech"
+  description="5 prompts pour passer une formation CPF au détecteur de mensonges — avant d'y mettre tes droits et tes 150 € de ta poche."
+>
+  <div class="wrap">
+    <nav class="crumb" aria-label="Fil d'ariane">
+      <a href="/">accueil</a> → <a href="/ressources">ressources</a> → analyse-formation-cpf
+    </nav>
+
+    <div class="rs-head">
+      <div class="rtags rv">
+        <span class="lvl">débutant</span>
+        <span class="acat cat-fin">financement</span>
+        <span class="rtime">10 min</span>
+      </div>
+      <h1 class="rv d1">Analyse n'importe quelle formation CPF avec <em class="serif-italic">l'IA.</em></h1>
+      <p class="sub rv d2">
+        5 prompts pour passer une formation au <span class="hl">détecteur de mensonges</span> —
+        avant d'y mettre tes droits CPF et tes 150&nbsp;€ de ta poche.
+      </p>
+      <div><span class="chip-date rv d2">// à jour · juillet 2026</span></div>
+      <button class="btn-pdf rv d2" id="open-pdf-modal">⬇ Télécharger la version PDF</button>
+      <div>
+        <span class="passbot rv d3">PassBot · en ligne — il répond à tes questions sur lapassetech.fr</span>
+      </div>
+    </div>
+
+    <div class="rs-layout">
+      <!-- ══════════ 00 — AVANT DE COMMENCER ══════════ -->
+      <section class="idea">
+        <span class="idea-num">00</span>
+        <h2>Avant de <em class="serif-italic">commencer.</em></h2>
+        <p>
+          Chaque formation CPF engage tes droits — que tu ne récupéreras jamais — des mois de ta
+          vie, et depuis ce printemps, un billet de ta poche. Pendant ce temps, certains organismes
+          te promettent « un métier garanti en 3 mois ».
+        </p>
+        <div class="verite">
+          <strong>La vérité :</strong> reste à charge de 150&nbsp;€ depuis le 2 avril 2026 (avant :
+          103,20&nbsp;€). Exonéré si tu es demandeur d'emploi ou si ton employeur abonde.
+        </div>
+        <p>
+          Ce guide te donne 5 prompts à copier-coller dans <strong>Claude.ai</strong> (gratuit) pour
+          vérifier ce qu'on te vend, chiffrer ce que ça te coûte vraiment, et poser les questions
+          qui fâchent avant de signer. Fais-les dans l'ordre,
+          <strong>dans une seule conversation</strong> — chaque prompt s'appuie sur le précédent.
+        </p>
+        <h3>Ce qu'il te faut</h3>
+        <ul class="checklist">
+          <li>La page de vente ou le programme de la formation (lien ou PDF)</li>
+          <li>Ton solde CPF — visible sur moncompteformation.gouv.fr</li>
+          <li>Un compte Claude.ai gratuit, avec la recherche web activée</li>
+        </ul>
+      </section>
+
+      <!-- ══════════ 01 ══════════ -->
+      <section class="idea">
+        <span class="idea-num">01</span>
+        <h2>Le détecteur de signaux d'alarme</h2>
+        <p>
+          Avant de regarder le contenu, regarde le vendeur. Colle la page de vente de la formation :
+          Claude repère les techniques commerciales douteuses et vérifie si la certification promise
+          existe vraiment. 10 minutes qui peuvent t'éviter des mois de regret.
+        </p>
+        <ol class="steps">
+          <li><strong>Récupère la page de vente</strong> — copie le lien de la formation, ou glisse le programme PDF dans la conversation.</li>
+          <li><strong>Colle le prompt</strong> ci-dessous dans une nouvelle conversation Claude.ai.</li>
+          <li><strong>Lis le verdict</strong> — chaque signal d'alarme est cité mot pour mot depuis la page, pas inventé.</li>
+        </ol>
+        <div class="prompt-block">Agis comme un conseiller en évolution professionnelle indépendant, spécialiste des arnaques à la formation CPF. Tu n'as rien à me vendre.
+
+Voici la formation que j'envisage : [COLLE LE LIEN OU GLISSE LE PDF DU PROGRAMME].
+
+Analyse cette page comme un expert méfiant :
+
+1. SIGNAUX D'ALARME — Liste tout ce qui relève des techniques de vente douteuses : promesses d'emploi « garanties », urgence artificielle (« plus que 3 places »), salaires mirobolants sans source, avis invérifiables, flou sur le programme réel. Cite chaque élément mot pour mot depuis la page.
+2. CERTIFICATION — Identifie la certification exacte préparée. Cherche sur le site de France Compétences si elle est bien enregistrée au RNCP ou au Répertoire spécifique, son niveau, et sa date d'échéance. Si aucune certification officielle n'est mentionnée : dis-le clairement, c'est un signal majeur.
+3. CE QUI MANQUE — Liste les infos qu'un organisme sérieux afficherait et qui sont absentes : taux de réussite, taux d'insertion, sources, noms des formateurs, modalités d'évaluation.
+
+Termine par un verdict en une phrase : « à creuser », « prudence » ou « fuis », avec ta raison principale.</div>
+        <div class="pro-tip">
+          <strong>💡 Pro tip :</strong> Si la page de vente est un tunnel (impossible de voir le
+          programme sans laisser ton téléphone), c'est déjà un signal d'alarme. Les organismes
+          sérieux affichent leur programme — ils n'ont rien à cacher.
+        </div>
+      </section>
+
+      <!-- ══════════ 02 ══════════ -->
+      <section class="idea">
+        <span class="idea-num">02</span>
+        <h2>Le vérificateur de débouchés</h2>
+        <p>
+          Une formation peut être honnête ET inutile. La seule question qui compte : est-ce que ce
+          qu'on t'enseigne est ce que les employeurs demandent vraiment ? On ne devine pas — on
+          croise le programme avec de vraies offres d'emploi.
+        </p>
+        <ol class="steps">
+          <li><strong>Va sur France Travail, Indeed ou LinkedIn</strong> et copie le texte complet de 3 offres d'emploi du métier visé (dans ta région ou en télétravail).</li>
+          <li><strong>Reste dans la même conversation</strong> que le prompt 01 — Claude a déjà le programme.</li>
+          <li><strong>Colle le prompt</strong> avec tes 3 offres.</li>
+        </ol>
+        <div class="prompt-block">Voici 3 offres d'emploi réelles pour le métier que vise cette formation :
+
+OFFRE 1 : [COLLE LE TEXTE COMPLET]
+OFFRE 2 : [COLLE LE TEXTE COMPLET]
+OFFRE 3 : [COLLE LE TEXTE COMPLET]
+
+Croise ces offres avec le programme de la formation analysé plus haut :
+
+1. Fais un tableau : compétences demandées par les employeurs vs présence réelle dans le programme (couverte / survolée / absente).
+2. Liste ce que les employeurs exigent et que la formation n'enseigne PAS (outils, certifications, années d'expérience, diplômes).
+3. Vérifie le niveau d'entrée réel de ces offres : est-ce qu'elles recrutent des débutants reconvertis, ou des profils expérimentés ?
+4. Verdict honnête : à la sortie de cette formation, suis-je un candidat crédible pour ces 3 offres ? Si non, qu'est-ce qu'il me manquerait encore ?</div>
+        <div class="pro-tip">
+          <strong>💡 Pro tip :</strong> Prends des offres qui datent de moins d'un mois. Un marché
+          peut se retourner vite — les offres de l'an dernier racontent un marché qui n'existe plus.
+        </div>
+      </section>
+
+      <!-- ══════════ 03 ══════════ -->
+      <section class="idea">
+        <span class="idea-num">03</span>
+        <h2>Le calculateur du <em class="serif-italic">vrai</em> coût</h2>
+        <p>
+          Le prix affiché n'est pas le prix payé. Entre le reste à charge, le dépassement de tes
+          droits CPF, et les heures de ta vie investies, le vrai coût est toujours plus élevé que le
+          chiffre en gros sur la page. Chiffrons-le froidement.
+        </p>
+        <div class="prompt-block">Calcule le VRAI coût de cette formation pour ma situation :
+
+- Prix affiché de la formation : [PRIX] €
+- Mes droits CPF disponibles : [SOLDE] € (visible sur moncompteformation.gouv.fr)
+- Ma situation : [SALARIÉ / DEMANDEUR D'EMPLOI / INDÉPENDANT]
+- Mon employeur participe au financement : [OUI / NON / JE NE SAIS PAS]
+- Durée de la formation : [X MOIS], en [SOIRÉE-WEEKEND / TEMPS PLEIN / E-LEARNING LIBRE]
+- Mon salaire net actuel : [SALAIRE] € /mois
+- Salaire visé après reconversion (d'après les offres du prompt 02) : [SALAIRE CIBLE] € /mois
+
+Calcule et présente clairement :
+1. Ma sortie d'argent réelle : reste à charge forfaitaire (150 € depuis le 2 avril 2026 pour un salarié sans abondement employeur — vérifie sur service-public.fr si ce montant a changé depuis) + tout dépassement au-delà de mes droits CPF.
+2. Le coût invisible : heures de formation + éventuel manque à gagner si je réduis mon activité.
+3. Le point mort : en combien de mois le salaire cible rembourse-t-il l'investissement total ?
+4. Les alternatives : existe-t-il des dispositifs qui réduiraient la facture dans MA situation (abondement employeur, Transitions Pro, POEI/AFPR via France Travail, aides régionales) ? Explique chacun en une phrase.</div>
+        <div class="pro-tip">
+          <strong>💡 Pro tip :</strong> Si tu es demandeur d'emploi, le reste à charge de 150&nbsp;€
+          ne s'applique pas — et des dispositifs comme la POEI peuvent financer une formation
+          complète. C'est exactement comme ça que le fondateur de ce guide s'est reconverti :
+          renseigne-toi avant de payer quoi que ce soit.
+        </div>
+      </section>
+
+      <!-- ══════════ 04 ══════════ -->
+      <section class="idea">
+        <span class="idea-num">04</span>
+        <h2>Le comparateur</h2>
+        <p>
+          Ne jamais évaluer une formation seule — c'est comme acheter la première voiture visitée.
+          Trouve 1 ou 2 concurrentes sur le même métier, et laisse Claude construire le tableau de
+          décision que le commercial ne te montrera jamais.
+        </p>
+        <div class="prompt-block">Je compare [2 / 3] formations pour le même objectif métier : [MÉTIER VISÉ].
+
+FORMATION A : [LIEN OU PDF] — déjà analysée plus haut
+FORMATION B : [LIEN OU PDF]
+FORMATION C (optionnel) : [LIEN OU PDF]
+
+Construis un tableau comparatif objectif, ligne par ligne :
+- Prix affiché et coût réel pour moi (reprends ma situation du prompt 03)
+- Certification préparée : laquelle, RNCP ou non, quel niveau
+- Durée et format (et compatibilité avec un emploi à temps plein)
+- Contenu : couverture des compétences exigées par les offres du prompt 02
+- Accompagnement : mentorat, aide au placement, projets concrets, alumni
+- Taux d'insertion annoncé — et s'il est sourcé ou invérifiable
+
+Puis :
+1. Souligne les différences qui changent vraiment la donne (ignore le marketing).
+2. Dis-moi laquelle tu choisirais dans MA situation, et pourquoi en 3 phrases max.
+3. Dis-moi ce que tu vérifierais encore avant de signer.</div>
+        <div class="pro-tip">
+          <strong>💡 Pro tip :</strong> Ajoute toujours une option gratuite ou low-cost au comparatif
+          (MOOC, certifications éditeur, cours en ligne gratuits) — même si tu ne la choisis pas,
+          elle révèle ce que la formation payante apporte <em>vraiment</em> en plus.
+        </div>
+      </section>
+
+      <!-- ══════════ 05 ══════════ -->
+      <section class="idea">
+        <span class="idea-num">05</span>
+        <h2>Les questions qui <em class="serif-italic">fâchent.</em></h2>
+        <p>
+          Dernier filtre avant de signer : l'appel avec l'organisme. Un commercial est entraîné à
+          dérouler son script — pas à répondre à des questions précises. Claude te prépare ta liste,
+          personnalisée d'après tout ce que l'analyse a révélé.
+        </p>
+        <div class="prompt-block">Je vais appeler l'organisme de formation avant de me décider.
+
+D'après toute notre analyse (signaux d'alarme, trous du programme, coûts, comparaison), prépare-moi :
+
+1. Mes 8 questions prioritaires, classées de la plus importante à la moins importante, en commençant par les zones d'ombre détectées dans NOTRE analyse (pas des questions génériques).
+2. Pour chaque question : la réponse d'un organisme sérieux, et la réponse qui doit me faire fuir.
+3. Les 3 phrases de pression commerciale les plus probables qu'on va me sortir (« l'offre expire ce soir », etc.) et comment y répondre calmement.
+4. Le critère final : qu'est-ce qui, dans cet appel, doit déclencher un NON définitif quelle que soit la qualité du reste ?</div>
+        <div class="pro-tip">
+          <strong>💡 Pro tip :</strong> Demande systématiquement le taux d'insertion dans le métier
+          visé (pas le « taux de satisfaction ») et sa source. Un organisme qui forme vraiment des
+          reconvertis connaît ce chiffre par cœur. Celui qui botte en touche n'en a pas.
+        </div>
+      </section>
+
+      <!-- ══════════ BONUS ══════════ -->
+      <section class="idea">
+        <span class="idea-num">★</span>
+        <h2>Bonus — Le message aux anciens élèves</h2>
+        <p>
+          L'IA t'aide à trier — mais la vérité terrain, ce sont les anciens élèves qui l'ont. Et ils
+          sont faciles à trouver : tape le nom de la formation ou de l'organisme dans la barre de
+          recherche <strong>LinkedIn</strong>, filtre par « Personnes », et regarde qui l'affiche
+          dans son parcours. Vise ceux qui ont terminé il y a 6 à 18 mois : assez récents pour que
+          la formation soit la même, assez anciens pour savoir si elle a débouché sur un emploi.
+        </p>
+        <div class="prompt-block">Rédige-moi un message LinkedIn court (moins de 500 caractères) pour contacter un ancien élève de la formation [NOM DE LA FORMATION].
+
+Contexte : je suis [TON MÉTIER ACTUEL], j'envisage une reconversion vers [MÉTIER VISÉ], et j'hésite à m'inscrire.
+
+Le message doit : être humain et direct, sans flatterie artificielle ; dire pourquoi je le/la contacte lui/elle précisément ; poser UNE seule question (la plus utile pour ma décision) ; proposer 15 min d'échange sans insister.
+
+Propose 2 versions : une pour quelqu'un qui travaille aujourd'hui dans le métier visé, une pour quelqu'un qui semble ne pas y être arrivé — son retour est peut-être encore plus précieux.</div>
+        <div class="pro-tip">
+          <strong>💡 Pro tip :</strong> Trois réponses suffisent. Si les trois te disent la même
+          chose — dans un sens ou dans l'autre — tu as ta réponse. Et celui qui n'a <em>pas</em>
+          trouvé de poste après la formation est souvent le plus honnête sur ses limites.
+        </div>
+      </section>
+
+      <!-- ══════════ FINALE ══════════ -->
+      <section class="finale">
+        <div class="golden-rule">
+          <span class="eyebrow">// la_règle_d_or</span>
+          <h2>L'IA analyse, les anciens élèves <em class="serif-italic">confirment.</em></h2>
+          <span class="serif-italic gr-text">
+            Ces 5 prompts te protègent du marketing — mais aucune IA ne remplace trois messages
+            LinkedIn à ceux qui ont suivi la formation avant toi. C'est la vérification que
+            95&nbsp;% des gens ne font jamais, et c'est la seule qui ne peut pas te mentir.
+          </span>
+        </div>
+
+        <div class="cta-ecosystem">
+          <h3>Tu veux aller plus loin ?</h3>
+          <ul>
+            <li><a href="/ressources">Tout l'espace ressources gratuit</a> — guides, prompts, fiches métiers</li>
+            <li><a href="/">PassBot</a> — pose tes questions reconversion, il répond</li>
+            <li><a href="https://instagram.com/lapassetech" target="_blank" rel="noopener">@lapassetech sur Instagram</a> — méthodes concrètes chaque semaine</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ══════════ À LIRE ENSUITE ══════════ -->
+      {
+        next && (
+          <>
+            <div class="rel-head rv">
+              <h2>À lire ensuite</h2>
+              <a href="/ressources">Toutes les ressources →</a>
+            </div>
+            <div class="agrid next-grid">
+              <a href={`/ressources/${next.id}`} class="acard rv">
+                <span class="acat cat-fin">{next.data.theme.toLowerCase()}</span>
+                <h2>{next.data.title}</h2>
+                <p>{next.data.description}</p>
+                <span class="ameta">ressource{next.data.duration && ` · ${next.data.duration}`}</span>
+                <span class="alire">Ouvrir la ressource</span>
+              </a>
+            </div>
+          </>
+        )
+      }
+    </div>
+  </div>
+
+  <section class="page-cta">
+    <div class="wrap">
+      <h2>Pas sûr que ce soit ta priorité ? <em class="s">Vérifions.</em></h2>
+      <a href="/bilan" class="btn btn-jaune">Faire mon bilan gratuit →</a>
+      <span class="mono">// 5 minutes · sans email obligatoire</span>
+    </div>
+  </section>
+
+  <!-- ══════════ MODAL PDF — même circuit que le formulaire guide homepage ══════════ -->
+  <div class="pdf-modal" id="pdf-modal" hidden>
+    <div class="pdf-modal-backdrop" data-close></div>
+    <div class="pdf-modal-card" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
+      <button class="pdf-modal-close" data-close aria-label="Fermer">✕</button>
+      <form id="guide-form" novalidate>
+        <h3 id="pdf-modal-title">Recevoir le guide gratuitement</h3>
+        <p class="form-sub">On t'envoie le PDF par email. Pas de spam, désabonnement en un clic.</p>
+        <label class="mono form-label" for="guide-email">ton email</label>
+        <div class="field">
+          <input
+            type="email"
+            id="guide-email"
+            name="email"
+            placeholder="prenom@email.fr"
+            required
+            autocomplete="email"
+          />
+          <button type="submit" class="btn btn-jaune" id="guide-btn">
+            <span class="guide-btn-label">Recevoir le guide →</span>
+            <span class="guide-btn-loading" aria-hidden="true" style="display:none;">Envoi…</span>
+          </button>
+        </div>
+        <p class="form-error" id="guide-error" role="alert" aria-live="polite"></p>
+        <div class="form-ok" id="guide-success" role="status" style="display:none;">
+          ✅ <b>C'est parti !</b> Vérifie ta boîte mail — le guide est en route.
+        </div>
+        <span class="mono form-note">// et chaque semaine : un contenu actionnable dans ta boîte</span>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ===== Enrobage gabarit ressource (repris de RessourceLayout) ===== */
+  .rs-head {
+    padding: 26px 0 30px;
+    border-bottom: 2px solid var(--noir);
+  }
+  .rs-head h1 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: clamp(2rem, 4.2vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 14px 0 14px;
+  }
+  .rtags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+  .lvl {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    font-weight: var(--fw-semi);
+    padding: 4px 11px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--noir);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    background: #fff;
+  }
+  .lvl::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--jaune);
+    border: 1px solid var(--noir);
+  }
+  .rtime {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    background: var(--jaune);
+    border: 1.5px solid var(--noir);
+    border-radius: var(--radius-pill);
+    padding: 4px 11px;
+  }
+  .rs-layout {
+    max-width: 820px;
+    padding: 10px 0 60px;
+  }
+  .rel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--noir);
+    padding-bottom: 12px;
+    margin-top: 50px;
+  }
+  .rel-head h2 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .rel-head a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--caramel);
+    text-decoration: none;
+  }
+  .next-grid {
+    grid-template-columns: 1fr 1fr;
+    padding-top: 26px;
+    padding-bottom: 0;
+  }
+
+  /* ===== Cover (repris du lead magnet, contenu identique au HTML source) ===== */
+  .serif-italic {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--caramel);
+  }
+  .hl {
+    background: var(--jaune);
+    padding: 0 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .chip-date {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--lpt-ink);
+    background: var(--beige);
+    border: 2px solid var(--noir);
+    border-radius: 10px;
+    padding: 5px 12px;
+    transform: rotate(-1.2deg);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .btn-pdf {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 13px 26px;
+    background: var(--jaune);
+    color: var(--noir);
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 2px solid var(--noir);
+    border-radius: 999px;
+    box-shadow: var(--shadow-pop-sm);
+    cursor: pointer;
+  }
+  .btn-pdf:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--noir);
+  }
+  .passbot {
+    margin-top: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--lpt-gray);
+    border: 2px solid var(--noir);
+    border-radius: 999px;
+    padding: 8px 16px;
+    background: var(--lpt-paper);
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .passbot::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--vert); /* seul usage du vert autorisé */
+    display: inline-block;
+  }
+
+  /* ===== Corps du guide (identique à analyse-formation-cpf-ia) ===== */
+  .rs-layout h2,
+  .rs-layout h3 {
+    font-family: var(--disp);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--noir);
+    line-height: 1.12;
+  }
+  .rs-layout h2 { font-size: 1.7rem; margin-bottom: 14px; }
+  .rs-layout h3 { font-size: 1.05rem; margin: 22px 0 8px; }
+  .rs-layout p + p { margin-top: 12px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--caramel);
+    text-transform: lowercase;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .idea {
+    border-top: 2px solid var(--lpt-border);
+    padding-top: 40px;
+    margin-top: 48px;
+  }
+  .idea:first-child {
+    border-top: none;
+    margin-top: 24px;
+    padding-top: 0;
+  }
+  .idea-num {
+    font-family: var(--disp);
+    font-weight: 900;
+    font-size: 2.3rem;
+    color: var(--creme);
+    -webkit-text-stroke: 1.5px var(--caramel);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .prompt-block {
+    background: var(--caramel-deep);
+    color: var(--creme);
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    box-shadow: var(--shadow-pop);
+    padding: 20px 24px;
+    margin: 22px 2px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .prompt-block::before {
+    content: "📋 copie-colle ce prompt";
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 20px 0;
+    padding: 0;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 16px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--jaune);
+    color: var(--noir);
+    border: 2px solid var(--noir);
+    box-shadow: 3px 3px 0 var(--noir);
+    font-family: var(--disp);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pro-tip {
+    background: var(--beige);
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    box-shadow: var(--shadow-pop-sm);
+    padding: 16px 20px;
+    margin: 22px 2px;
+    font-size: 0.95rem;
+  }
+  .pro-tip strong { color: var(--caramel-deep); }
+  .verite {
+    border: 2px dashed var(--terracotta);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin: 22px 2px;
+    font-size: 0.98rem;
+    background: var(--lpt-paper);
+  }
+  .verite strong { color: var(--caramel); }
+  .checklist {
+    list-style: none;
+    margin: 20px 0;
+    padding: 0;
+  }
+  .checklist li {
+    padding-left: 34px;
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    border: 2px solid var(--noir);
+    background: var(--lpt-paper);
+    color: var(--caramel);
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .golden-rule {
+    background: var(--lpt-paper);
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    box-shadow: var(--shadow-pop);
+    padding: 32px;
+    margin: 48px 4px 0;
+    text-align: center;
+    transform: rotate(-0.6deg);
+  }
+  .gr-text {
+    font-size: 1.25rem;
+    display: block;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .cta-ecosystem {
+    margin: 36px 4px 0;
+    padding: 28px 32px;
+    background: var(--caramel-deep);
+    color: var(--creme);
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    box-shadow: var(--shadow-pop);
+  }
+  .cta-ecosystem h3 { color: var(--creme); margin-top: 0; }
+  .cta-ecosystem a {
+    color: var(--terracotta);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .cta-ecosystem ul {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+  .cta-ecosystem li { margin-bottom: 8px; }
+  .cta-ecosystem li::before {
+    content: "→ ";
+    color: var(--terracotta);
+    font-weight: 700;
+  }
+
+  /* ===== Modal PDF ===== */
+  .pdf-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .pdf-modal[hidden] { display: none; }
+  .pdf-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 23, 20, 0.55);
+  }
+  .pdf-modal-card {
+    position: relative;
+    background: var(--creme);
+    color: var(--noir);
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    padding: 34px;
+    box-shadow: 8px 8px 0 var(--noir);
+    max-width: 480px;
+    width: 100%;
+  }
+  .pdf-modal-card h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+  }
+  .pdf-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--noir);
+    border-radius: 50%;
+    background: var(--lpt-paper);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .pdf-modal-close:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--noir);
+  }
+  .form-sub {
+    font-size: 0.92rem;
+    color: rgba(26, 23, 20, 0.75);
+    margin-bottom: 22px;
+  }
+  .form-label {
+    display: block;
+    color: var(--caramel);
+    margin-bottom: 8px;
+  }
+  .field {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .field input {
+    flex: 1;
+    min-width: 200px;
+    font-family: var(--body);
+    font-size: 1rem;
+    padding: 14px 18px;
+    border: 2px solid var(--noir);
+    border-radius: var(--radius-pill);
+    background: #fff;
+  }
+  .form-error {
+    font-size: 0.82rem;
+    color: #a52815;
+    min-height: 18px;
+    margin: 8px 0 0;
+  }
+  .form-ok {
+    margin-top: 12px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-weight: var(--fw-medium);
+  }
+  .form-note {
+    display: block;
+    margin-top: 14px;
+    color: var(--caramel);
+  }
+
+  /* Impression : même pagination propre que le HTML source, chrome du site masqué. */
+  @page { size: A4; margin: 16mm 15mm; }
+  @media print {
+    :global(.v45-header), :global(.lpt-ticker), :global(.lpt-footer) { display: none !important; }
+    .btn-pdf, .crumb, .pdf-modal, .rel-head, .next-grid { display: none !important; }
+    :global(.page-cta) { display: none !important; }
+    .rs-layout { font-size: 10.5pt; max-width: none; padding: 0; }
+    .prompt-block { font-size: 0.78rem; line-height: 1.55; padding: 16px 20px; }
+    .steps li { margin-bottom: 12px; }
+    .pro-tip { font-size: 0.9rem; }
+    .rs-head { page-break-after: always; border-bottom: none; }
+    .idea { page-break-before: always; border-top: none; margin-top: 0; padding-top: 0; }
+    .finale { page-break-before: always; }
+    .prompt-block, .pro-tip, .verite, .golden-rule, .cta-ecosystem { break-inside: avoid; }
+    h2, h3 { break-after: avoid; }
+    .cta-ecosystem a::after {
+      content: " (" attr(href) ")";
+      font-family: var(--mono);
+      font-size: 0.75em;
+      color: var(--creme);
+    }
+  }
+</style>
+
+<script>
+  // Ouverture / fermeture de la modal PDF.
+  const modal = document.getElementById("pdf-modal")!;
+  const openBtn = document.getElementById("open-pdf-modal")!;
+  const input = document.getElementById("guide-email") as HTMLInputElement;
+
+  function openModal() {
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    input.focus();
+  }
+  function closeModal() {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  }
+  openBtn.addEventListener("click", openModal);
+  modal.querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.hidden) closeModal();
+  });
+
+  // Soumission — même circuit que le formulaire guide de la homepage :
+  // POST /api/subscribe { type: "guide" } → groupe MailerLite « guide ».
+  const form = document.getElementById("guide-form") as HTMLFormElement;
+  const btn = document.getElementById("guide-btn") as HTMLButtonElement;
+  const errEl = document.getElementById("guide-error")!;
+  const successEl = document.getElementById("guide-success")!;
+  const labelEl = btn.querySelector(".guide-btn-label") as HTMLElement;
+  const loadEl = btn.querySelector(".guide-btn-loading") as HTMLElement;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errEl.textContent = "";
+
+    const email = input.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = "Saisis une adresse email valide.";
+      input.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    labelEl.style.display = "none";
+    loadEl.style.display = "";
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, type: "guide" }),
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        form.querySelector(".field")!.setAttribute("style", "display:none");
+        successEl.style.display = "block";
+      } else {
+        errEl.textContent = data.error ?? "Une erreur est survenue, réessaie.";
+        btn.disabled = false;
+        labelEl.style.display = "";
+        loadEl.style.display = "none";
+      }
+    } catch {
+      errEl.textContent = "Erreur réseau, vérifie ta connexion et réessaie.";
+      btn.disabled = false;
+      labelEl.style.display = "";
+      loadEl.style.display = "none";
+    }
+  });
+</script>
