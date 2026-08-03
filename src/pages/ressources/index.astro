@@ -50,7 +50,7 @@ const filters: { label: string; value: string }[] = [
         Des pas-à-pas concrets, classés par thème et par niveau. Tu peux les faire le soir-même,
         sur ton téléphone.
       </p>
-      <span class="count rv d2" id="res-count">{ressources.length} ressources</span>
+      <span class="count rv d2" id="res-count">{ressources.length + 1} ressources</span>
     </div>
 
     <div class="toolbar rv">
@@ -74,6 +74,25 @@ const filters: { label: string; value: string }[] = [
     </div>
 
     <div class="agrid" id="res-grid">
+      <!-- Page statique hors collection (gabarit sur mesure) — carte ajoutée à la main. -->
+      <a
+        href="/ressources/analyse-formation-cpf"
+        class="acard rescard bl-jaune"
+        data-tag="Financement"
+        data-search="analyse n'importe quelle formation cpf avec l'ia 5 prompts pour passer une formation cpf au détecteur de mensonges — avant d'y mettre tes droits et tes 150 € de ta poche."
+      >
+        <div class="rtags">
+          <span class="lvl">débutant</span>
+          <span class="acat cat-fin">financement</span>
+        </div>
+        <h2>Analyse n'importe quelle formation CPF avec l'IA</h2>
+        <p>
+          5 prompts pour passer une formation CPF au détecteur de mensonges — avant d'y mettre tes
+          droits et tes 150&nbsp;€ de ta poche.
+        </p>
+        <span class="res-time">10 min</span>
+        <span class="alire">Ouvrir la ressource</span>
+      </a>
       {
         ressources.map((r) => (
           <a
