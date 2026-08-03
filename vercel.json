@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/ressources/analyse-formation-cpf-ia",
+      "destination": "/ressources/analyse-formation-cpf",
+      "statusCode": 301
+    }
+  ]
+}

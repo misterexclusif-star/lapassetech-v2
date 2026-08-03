@@ -43,6 +43,9 @@ const ressources = defineCollection({
     visual: z.string().optional(), // image polaroid du hero
     prereqs: z.array(z.string()).default([]), // « avant de commencer, prépare »
     doneWhen: z.array(z.string()).default([]), // « tu as terminé quand »
+    // Modal PDF : bouton affiché uniquement si pdfUrl est renseigné
+    pdfUrl: z.string().optional(), // ex: /guides/analyse-formation-cpf.pdf
+    subscribeType: z.string().optional(), // type /api/subscribe (défaut: newsletter)
     draft: z.boolean().default(false),
   }),
 });

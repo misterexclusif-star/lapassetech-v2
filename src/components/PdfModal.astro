@@ -1,0 +1,249 @@
+---
+/**
+ * PdfModal — modal de capture email avant téléchargement d'un PDF ressource.
+ * S'ouvre depuis n'importe quel élément portant l'attribut `data-open-pdf-modal`.
+ * Soumission : POST /api/subscribe { email, type: subscribeType }, puis
+ * téléchargement immédiat du PDF + lien de secours visible. Le fichier n'est
+ * jamais conditionné à la réception de l'email.
+ */
+interface Props {
+  /** Chemin du PDF servi (ex: /guides/analyse-formation-cpf.pdf) */
+  pdfUrl: string;
+  /** Type transmis à /api/subscribe — doit exister dans la liste blanche serveur */
+  subscribeType?: string;
+}
+
+const { pdfUrl, subscribeType = "newsletter" } = Astro.props;
+---
+
+<div
+  class="pdf-modal"
+  id="pdf-modal"
+  hidden
+  data-pdf-url={pdfUrl}
+  data-subscribe-type={subscribeType}
+>
+  <div class="pdf-modal-backdrop" data-close></div>
+  <div class="pdf-modal-card" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
+    <button class="pdf-modal-close" data-close aria-label="Fermer">✕</button>
+    <form id="pdf-modal-form" novalidate>
+      <h3 id="pdf-modal-title">Télécharger le PDF gratuitement</h3>
+      <p class="form-sub">Laisse ton email et le téléchargement démarre tout de suite.</p>
+      <label class="mono form-label" for="pdf-modal-email">ton email</label>
+      <input
+        type="email"
+        id="pdf-modal-email"
+        name="email"
+        placeholder="prenom@email.fr"
+        required
+        autocomplete="email"
+      />
+      <p class="form-consent">
+        En téléchargeant, tu reçois aussi les emails LaPasseTech. Désinscription en un clic, à
+        tout moment.
+      </p>
+      <button type="submit" class="btn btn-jaune" id="pdf-modal-btn">
+        <span class="pdf-btn-label">Télécharger le PDF →</span>
+        <span class="pdf-btn-loading" aria-hidden="true" style="display:none;">Envoi…</span>
+      </button>
+      <p class="form-error" id="pdf-modal-error" role="alert" aria-live="polite"></p>
+      <div class="form-ok" id="pdf-modal-success" role="status" style="display:none;">
+        ✅ <b>C'est parti !</b> Ton téléchargement démarre.
+        <a href={pdfUrl} download class="pdf-fallback"
+          >Le téléchargement n'a pas démarré ? Clique ici</a
+        >
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .pdf-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .pdf-modal[hidden] {
+    display: none;
+  }
+  .pdf-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 23, 20, 0.55);
+  }
+  .pdf-modal-card {
+    position: relative;
+    background: var(--creme);
+    color: var(--noir);
+    border: 2px solid var(--noir);
+    border-radius: 18px;
+    padding: 34px;
+    box-shadow: 8px 8px 0 var(--noir);
+    max-width: 480px;
+    width: 100%;
+  }
+  .pdf-modal-card h3 {
+    font-family: var(--disp);
+    font-weight: var(--fw-black);
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+  }
+  .pdf-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--noir);
+    border-radius: 50%;
+    background: var(--lpt-paper);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-pop-sm);
+  }
+  .pdf-modal-close:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--noir);
+  }
+  .form-sub {
+    font-size: 0.92rem;
+    color: rgba(26, 23, 20, 0.75);
+    margin-bottom: 22px;
+  }
+  .form-label {
+    display: block;
+    color: var(--caramel);
+    margin-bottom: 8px;
+  }
+  .pdf-modal-card input {
+    width: 100%;
+    font-family: var(--body);
+    font-size: 1rem;
+    padding: 14px 18px;
+    border: 2px solid var(--noir);
+    border-radius: var(--radius-pill);
+    background: #fff;
+  }
+  .form-consent {
+    font-size: 0.78rem;
+    color: rgba(26, 23, 20, 0.7);
+    margin: 10px 0 14px;
+    line-height: 1.5;
+  }
+  .form-error {
+    font-size: 0.82rem;
+    color: #a52815;
+    min-height: 18px;
+    margin: 8px 0 0;
+  }
+  .form-ok {
+    margin-top: 12px;
+    background: var(--jaune);
+    border: 2px solid var(--noir);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-weight: var(--fw-medium);
+  }
+  .pdf-fallback {
+    display: block;
+    margin-top: 8px;
+    color: var(--noir);
+    font-weight: 700;
+  }
+  @media print {
+    .pdf-modal {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Ouverture / fermeture — le déclencheur porte l'attribut data-open-pdf-modal.
+  const modal = document.getElementById("pdf-modal");
+  if (modal) {
+    const pdfUrl = modal.dataset.pdfUrl!;
+    const subscribeType = modal.dataset.subscribeType!;
+    const input = document.getElementById("pdf-modal-email") as HTMLInputElement;
+
+    function openModal() {
+      modal!.hidden = false;
+      document.body.style.overflow = "hidden";
+      input.focus();
+    }
+    function closeModal() {
+      modal!.hidden = true;
+      document.body.style.overflow = "";
+    }
+    document
+      .querySelectorAll("[data-open-pdf-modal]")
+      .forEach((el) => el.addEventListener("click", openModal));
+    modal
+      .querySelectorAll("[data-close]")
+      .forEach((el) => el.addEventListener("click", closeModal));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+
+    // Le téléchargement ne dépend pas de l'email : il démarre dès la réponse OK.
+    function triggerDownload() {
+      const a = document.createElement("a");
+      a.href = pdfUrl;
+      a.download = "";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    const form = document.getElementById("pdf-modal-form") as HTMLFormElement;
+    const btn = document.getElementById("pdf-modal-btn") as HTMLButtonElement;
+    const errEl = document.getElementById("pdf-modal-error")!;
+    const successEl = document.getElementById("pdf-modal-success")!;
+    const labelEl = btn.querySelector(".pdf-btn-label") as HTMLElement;
+    const loadEl = btn.querySelector(".pdf-btn-loading") as HTMLElement;
+
+    function setLoading(loading: boolean) {
+      btn.disabled = loading;
+      labelEl.style.display = loading ? "none" : "";
+      loadEl.style.display = loading ? "" : "none";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errEl.textContent = "";
+
+      const email = input.value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = "Saisis une adresse email valide.";
+        input.focus();
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const res = await fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, type: subscribeType }),
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          triggerDownload();
+          successEl.style.display = "block";
+          btn.style.display = "none";
+        } else {
+          // La modal reste ouverte et l'email saisi n'est pas perdu.
+          errEl.textContent = data.error ?? "Une erreur est survenue, réessaie.";
+          setLoading(false);
+        }
+      } catch {
+        errEl.textContent = "Erreur réseau, vérifie ta connexion et réessaie.";
+        setLoading(false);
+      }
+    });
+  }
+</script>

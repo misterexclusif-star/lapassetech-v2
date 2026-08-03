@@ -4,13 +4,14 @@
  * Contenu repris à l'identique du HTML autonome du vault (analyse-formation-cpf-ia-v2.html) ;
  * seul l'enrobage (breadcrumb, badges, modal PDF, « à lire ensuite ») suit le gabarit.
  * Page statique (prime sur la route dynamique [slug].astro) : les blocs prompts / steps /
- * pro-tips ne passent pas en Markdown — même raison que analyse-formation-cpf-ia.astro.
- * Le bouton PDF ouvre une modal maison branchée sur POST /api/subscribe (type: "guide"
- * → groupe MailerLite « guide » 182053505660355972), même circuit que le formulaire
- * guide de la homepage. Aucun nouveau formulaire MailerLite.
+ * pro-tips ne passent pas en Markdown.
+ * Le bouton PDF ouvre la modal PdfModal branchée sur POST /api/subscribe
+ * (type: "lm-cpf" → groupe MailerLite dédié au lead magnet CPF), avec
+ * téléchargement direct du PDF après soumission.
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import PdfModal from "../../components/PdfModal.astro";
 
 // « À lire ensuite » — la ressource financement (demande CPF en 20 minutes).
 const next = (await getCollection("ressources", ({ data }) => !data.draft)).find(
@@ -39,7 +40,7 @@ const next = (await getCollection("ressources", ({ data }) => !data.draft)).find
         avant d'y mettre tes droits CPF et tes 150&nbsp;€ de ta poche.
       </p>
       <div><span class="chip-date rv d2">// à jour · juillet 2026</span></div>
-      <button class="btn-pdf rv d2" id="open-pdf-modal">⬇ Télécharger la version PDF</button>
+      <button class="btn-pdf rv d2" type="button" data-open-pdf-modal>⬇ Télécharger la version PDF</button>
       <div>
         <span class="passbot rv d3">PassBot · en ligne — il répond à tes questions sur lapassetech.fr</span>
       </div>
@@ -305,37 +306,7 @@ Propose 2 versions : une pour quelqu'un qui travaille aujourd'hui dans le métie
     </div>
   </section>
 
-  <!-- ══════════ MODAL PDF — même circuit que le formulaire guide homepage ══════════ -->
-  <div class="pdf-modal" id="pdf-modal" hidden>
-    <div class="pdf-modal-backdrop" data-close></div>
-    <div class="pdf-modal-card" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
-      <button class="pdf-modal-close" data-close aria-label="Fermer">✕</button>
-      <form id="guide-form" novalidate>
-        <h3 id="pdf-modal-title">Recevoir le guide gratuitement</h3>
-        <p class="form-sub">On t'envoie le PDF par email. Pas de spam, désabonnement en un clic.</p>
-        <label class="mono form-label" for="guide-email">ton email</label>
-        <div class="field">
-          <input
-            type="email"
-            id="guide-email"
-            name="email"
-            placeholder="prenom@email.fr"
-            required
-            autocomplete="email"
-          />
-          <button type="submit" class="btn btn-jaune" id="guide-btn">
-            <span class="guide-btn-label">Recevoir le guide →</span>
-            <span class="guide-btn-loading" aria-hidden="true" style="display:none;">Envoi…</span>
-          </button>
-        </div>
-        <p class="form-error" id="guide-error" role="alert" aria-live="polite"></p>
-        <div class="form-ok" id="guide-success" role="status" style="display:none;">
-          ✅ <b>C'est parti !</b> Vérifie ta boîte mail — le guide est en route.
-        </div>
-        <span class="mono form-note">// et chaque semaine : un contenu actionnable dans ta boîte</span>
-      </form>
-    </div>
-  </div>
+  <PdfModal pdfUrl="/guides/analyse-formation-cpf.pdf" subscribeType="lm-cpf" />
 </BaseLayout>
 
 <style>
@@ -668,106 +639,11 @@ Propose 2 versions : une pour quelqu'un qui travaille aujourd'hui dans le métie
     font-weight: 700;
   }
 
-  /* ===== Modal PDF ===== */
-  .pdf-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .pdf-modal[hidden] { display: none; }
-  .pdf-modal-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(26, 23, 20, 0.55);
-  }
-  .pdf-modal-card {
-    position: relative;
-    background: var(--creme);
-    color: var(--noir);
-    border: 2px solid var(--noir);
-    border-radius: 18px;
-    padding: 34px;
-    box-shadow: 8px 8px 0 var(--noir);
-    max-width: 480px;
-    width: 100%;
-  }
-  .pdf-modal-card h3 {
-    font-family: var(--disp);
-    font-weight: var(--fw-black);
-    font-size: 1.5rem;
-    margin: 0 0 8px;
-  }
-  .pdf-modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 34px;
-    height: 34px;
-    border: 2px solid var(--noir);
-    border-radius: 50%;
-    background: var(--lpt-paper);
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: var(--shadow-pop-sm);
-  }
-  .pdf-modal-close:hover {
-    transform: translate(1px, 1px);
-    box-shadow: 1px 1px 0 var(--noir);
-  }
-  .form-sub {
-    font-size: 0.92rem;
-    color: rgba(26, 23, 20, 0.75);
-    margin-bottom: 22px;
-  }
-  .form-label {
-    display: block;
-    color: var(--caramel);
-    margin-bottom: 8px;
-  }
-  .field {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .field input {
-    flex: 1;
-    min-width: 200px;
-    font-family: var(--body);
-    font-size: 1rem;
-    padding: 14px 18px;
-    border: 2px solid var(--noir);
-    border-radius: var(--radius-pill);
-    background: #fff;
-  }
-  .form-error {
-    font-size: 0.82rem;
-    color: #a52815;
-    min-height: 18px;
-    margin: 8px 0 0;
-  }
-  .form-ok {
-    margin-top: 12px;
-    background: var(--jaune);
-    border: 2px solid var(--noir);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-weight: var(--fw-medium);
-  }
-  .form-note {
-    display: block;
-    margin-top: 14px;
-    color: var(--caramel);
-  }
-
   /* Impression : même pagination propre que le HTML source, chrome du site masqué. */
   @page { size: A4; margin: 16mm 15mm; }
   @media print {
     :global(.v45-header), :global(.lpt-ticker), :global(.lpt-footer) { display: none !important; }
-    .btn-pdf, .crumb, .pdf-modal, .rel-head, .next-grid { display: none !important; }
+    .btn-pdf, .crumb, .rel-head, .next-grid { display: none !important; }
     :global(.page-cta) { display: none !important; }
     .rs-layout { font-size: 10.5pt; max-width: none; padding: 0; }
     .prompt-block { font-size: 0.78rem; line-height: 1.55; padding: 16px 20px; }
@@ -787,73 +663,3 @@ Propose 2 versions : une pour quelqu'un qui travaille aujourd'hui dans le métie
   }
 </style>
 
-<script>
-  // Ouverture / fermeture de la modal PDF.
-  const modal = document.getElementById("pdf-modal")!;
-  const openBtn = document.getElementById("open-pdf-modal")!;
-  const input = document.getElementById("guide-email") as HTMLInputElement;
-
-  function openModal() {
-    modal.hidden = false;
-    document.body.style.overflow = "hidden";
-    input.focus();
-  }
-  function closeModal() {
-    modal.hidden = true;
-    document.body.style.overflow = "";
-  }
-  openBtn.addEventListener("click", openModal);
-  modal.querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !modal.hidden) closeModal();
-  });
-
-  // Soumission — même circuit que le formulaire guide de la homepage :
-  // POST /api/subscribe { type: "guide" } → groupe MailerLite « guide ».
-  const form = document.getElementById("guide-form") as HTMLFormElement;
-  const btn = document.getElementById("guide-btn") as HTMLButtonElement;
-  const errEl = document.getElementById("guide-error")!;
-  const successEl = document.getElementById("guide-success")!;
-  const labelEl = btn.querySelector(".guide-btn-label") as HTMLElement;
-  const loadEl = btn.querySelector(".guide-btn-loading") as HTMLElement;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errEl.textContent = "";
-
-    const email = input.value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errEl.textContent = "Saisis une adresse email valide.";
-      input.focus();
-      return;
-    }
-
-    btn.disabled = true;
-    labelEl.style.display = "none";
-    loadEl.style.display = "";
-
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, type: "guide" }),
-      });
-      const data = await res.json();
-
-      if (data.ok) {
-        form.querySelector(".field")!.setAttribute("style", "display:none");
-        successEl.style.display = "block";
-      } else {
-        errEl.textContent = data.error ?? "Une erreur est survenue, réessaie.";
-        btn.disabled = false;
-        labelEl.style.display = "";
-        loadEl.style.display = "none";
-      }
-    } catch {
-      errEl.textContent = "Erreur réseau, vérifie ta connexion et réessaie.";
-      btn.disabled = false;
-      labelEl.style.display = "";
-      loadEl.style.display = "none";
-    }
-  });
-</script>

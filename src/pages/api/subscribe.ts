@@ -3,16 +3,18 @@
  * Ajoute un abonné MailerLite au bon groupe selon le type de formulaire.
  * Cet endpoint tourne côté serveur (Vercel Function) — la clé API n'est jamais exposée.
  *
- * Body JSON : { email: string, type: "newsletter" | "guide" }
+ * Body JSON : { email: string, type: "newsletter" | "lm-cpf" | "guide" }
  * Réponse   : { ok: true } | { ok: false, error: string }
  */
 export const prerender = false;
 
 import type { APIRoute } from "astro";
 
-// IDs des groupes MailerLite (récupérés via API)
+// IDs des groupes MailerLite (récupérés via API).
+// Liste blanche : tout type absent de cette table renvoie un 400, jamais de fallback.
 const GROUPS: Record<string, string> = {
   newsletter: "181397749489469390",
+  "lm-cpf":   "193915705970656499",
   guide:      "182053505660355972",
 };
 

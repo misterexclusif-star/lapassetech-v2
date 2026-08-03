@@ -8,6 +8,7 @@
  */
 import { getCollection } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
+import PdfModal from "../components/PdfModal.astro";
 
 interface Props {
   id?: string;
@@ -20,6 +21,8 @@ interface Props {
   prereqs?: string[];
   doneWhen?: string[];
   links?: { label: string; url: string; note?: string }[];
+  pdfUrl?: string;
+  subscribeType?: string;
 }
 
 const {
@@ -33,6 +36,8 @@ const {
   prereqs = [],
   doneWhen = [],
   links = [],
+  pdfUrl,
+  subscribeType = "newsletter",
 } = Astro.props;
 
 const levelLabels: Record<string, string> = {
@@ -70,6 +75,13 @@ const nextRes = (await getCollection("ressources", ({ data }) => !data.draft))
         </div>
         <h1 class="rv d1">{title}</h1>
         {description && <p class="sub rv d2">{description}</p>}
+        {
+          pdfUrl && (
+            <button class="btn-pdf rv d2" type="button" data-open-pdf-modal>
+              ⬇ Télécharger la version PDF
+            </button>
+          )
+        }
       </div>
       {
         visual && (
@@ -164,9 +176,29 @@ const nextRes = (await getCollection("ressources", ({ data }) => !data.draft))
       <span class="mono">// 5 minutes · sans email obligatoire</span>
     </div>
   </section>
+
+  {pdfUrl && <PdfModal pdfUrl={pdfUrl} subscribeType={subscribeType} />}
 </BaseLayout>
 
 <style>
+  .btn-pdf {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 13px 26px;
+    background: var(--jaune);
+    color: var(--noir);
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: 2px solid var(--noir);
+    border-radius: 999px;
+    box-shadow: var(--shadow-pop-sm);
+    cursor: pointer;
+  }
+  .btn-pdf:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--noir);
+  }
   .rs-head {
     padding: 26px 0 30px;
     border-bottom: 2px solid var(--noir);
